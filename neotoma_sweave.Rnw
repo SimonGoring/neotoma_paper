@@ -189,8 +189,17 @@ Phenacomy intermedius is a species of vole found in western North America from N
 
 P. intermedius is found
 <<>>=
-pinter.sites <- get_dataset(taxonname='Phenacomy*')
-pinter.down <- get_download(sapply(pinter.sites, function(x)x$DatasetID))
+fauna.sites <- get_dataset(datasettype='vertebrate fauna')
+
+#  Temporary until the get.sample is fixed in get_download for dataset 4574.
+faun.down <- list()
+
+for(i in 1:length(aa)){
+  tester <- try(get_download(aa[i]))
+  if(!class(tester) == 'try-error') faun.down[[i]] <- tester
+}
+
+fauna.down <- get_download(sapply(pinter.sites, function(x)x$DatasetID))
 ### Note issue here with Mammuthus for Owl Cave and others.
 
 
