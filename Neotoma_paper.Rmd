@@ -1,3 +1,14 @@
+--- 
+title: Neotoma paper
+author: Simon Goring
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+pdf_document: 
+pandoc_args: "-H margins.sty" 
+bibliography: neotoma_bib.bib 
+csl: ecology-letters.csl 
+--- 
+
 neotoma: A Programmatic Interface to the Neotoma Paleoecological Database
 ========================================================
 
