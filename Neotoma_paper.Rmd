@@ -1,3 +1,14 @@
+--- 
+title: Neotoma paper
+author: Simon Goring
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+pdf_document: 
+pandoc_args: "-H margins.sty" 
+bibliography: neotoma_bib.bib 
+csl: ecology-letters.csl 
+--- 
+
 neotoma: A Programmatic Interface to the Neotoma Paleoecological Database
 ========================================================
 
@@ -25,6 +36,16 @@ Examples
 Macdonald and Cwynar (1985) used pollen percentage data for Pinus to map the northward migration of lodgepole pine (Pinus contorta) following glaciation.  In their study a cutoff of 15% Pinus pollen is associated with presence at pollen sample sites.  Recent work by Strong and Hills (2013) has remapped the migration front using a lower pollen proportion (5%) and more sites.  Here we attempt to replicate the analysis as an example both of the strengths of the package and limitations of paleoinformatic approaches.
 
 To begin we must define a spatial bounding box and a set of taxa of interest.  Strong and Hills (2013) use a region approximately bounded by 54oN to the south and 65oN to the North, and from 110oW to 130oW.  The command `get_site` is used to find all sites within a bounding box:
+
+# These are just some options I like to set - KR
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  error = FALSE,
+  tidy = TRUE,
+  message = FALSE
+)
+```
 
 ```{r}
 library(neotoma)
