@@ -190,3 +190,75 @@ grid.arrange(mapped, regress, nrow=1)
 ```
 
 And so we see a clear pattern of migration by *Pinus* in northwestern North America.  These results match up broadly with the findings of Strong and Hills (\cite{strong2013holocene}) who suggest that *Pinus* reached a northern extent between 59 and 60oN at approximately 7 - 10kyr as a result of geographic barriers.
+
+### Mammal Distributions in the Pleistocene
+
+Grahm et al. use their paper to look for patterns of change through the Pleistocene in fossil assemblages.
+
+First we need to obtain all fossil assemblages from Neotoma for vertabeate fauna, 
+```{r, message=FALSE, warning=FALSE}
+
+mam.set <- get_dataset(datasettype= 'vertebrate fauna', loc = c(-125, 24, -66, 49.5))
+
+#  Calling this many sites can be very time consuming.  It takes approximately an
+#  hour to run fully.
+mam.dl <- get_download(sapply(mam.set, function(x)x$DatasetID))
+
+```
+
+So, now we have all the sites, we need to bin them into time periods and a spatial 150 x 150km grid.  To do that we first need to build a large table with time and xy coordinates for each site. The time periods for much of the mammal data is not the same as for pollen data however.  Most mammal sites have younger and older bounds, but no estimates of exact age.
+
+
+```{r}
+library(plyr)
+
+#  To be moved into the neotoma package.
+source('R/compile_it.R')
+
+compiled.mam <- ldply(mam.dl, .fun = function(x) compile_it(x), .progress = 'text')
+
+#  We assign time bins to the data.  The command findInterval should tell us if it is
+#  
+time.bins <- c(500, 4000, 10000, 15000, 20000)
+
+#  This is not the best option, age bounds cross our pre-defined bins, however
+#  solving this is more complex than this example requires.
+mean.age <- apply(compiled.mam[,c('ageold', 'ageyoung', 'age')], 1, mean, na.rm=TRUE)
+interval <- findInterval(mean.age, time.bins)
+
+compiled.mam$ageInterval <- c('Modern', 'Late Holocene', 'Early-Mid Holocene', 'Late Glacial', 'Full Glacial', 'Late Pleistocene')[interval+1]
+
+mam.melt <- melt(compiled.mam, 
+                 measure.vars = 10:(ncol(compiled.mam)-1),
+                 na.rm=TRUE,
+                 factorsAsStrings = TRUE)
+
+mam.melt$ageInterval <- factor(mam.melt$ageInterval, 
+                               levels = c('Modern', 'Late Holocene', 
+                                          'Early-Mid Holocene',
+                                          'Late Glacial', 'Full Glacial',
+                                          'Late Pleistocene'))
+
+mam.lat <- dcast(data=mam.melt, variable ~ ageInterval, value.var = 'lat' , 
+                 fun.aggregate = mean, drop = TRUE)[,c(1,3,5,6)]
+
+#  We only want taxa that appear at all time periods:
+mam.lat <- mam.lat[rowSums(is.na(mam.lat)) == 0, ]
+
+#  Group the samples based on the range & direction (N vs S) of migration.
+mam.lat$grouping <- factor(findInterval(mam.lat[,2] - mam.lat[,4], 
+                                        c(-11, -1, 1, 20)),
+                           labels = c('Southward', 'Stationary', 'Northward'))
+                           
+
+mam.lat.melt <- melt(mam.lat); colnames(mam.lat.melt)[2:3] <- c('cluster', 'Era')
+
+ggplot(mam.lat.melt, aes(x = Era, y = value)) + geom_path(aes(group = variable, color = cluster)) + facet_wrap(~cluster) +
+  scale_x_discrete(expand=c(.1,0)) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+So we can see that at this basic analytic scale species are not uniformly responding to climatic warming following deglaciation.  These findings basically echo those of Graham et al who showed that taxon response is effectively individualistic.  While we do see the pre-ponderance of migration is northward, a number of taxa show little migratory response and a number show southward migration.
+
+It is important to remember that serious limitations of this analysis do exist.
