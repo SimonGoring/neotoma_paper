@@ -37,7 +37,17 @@ Macdonald and Cwynar (\cite{macdonald1991post}) used pollen percentage data for 
 
 To begin we must define a spatial bounding box and a set of taxa of interest.  Strong and Hills (\cite{strong2013holocene}) use a region approximately bounded by 54^oN to the south and 65^oN to the North, and from 110^oW to 130^oW.  The command `get_site` is used to find all sites within a bounding box:
 
-```{r, echo=TRUE, message=TRUE}
+# These are just some options I like to set - KR
+```{r, echo = FALSE, message = FALSE}
+knitr::opts_chunk$set(
+  comment = "#>",
+  error = FALSE,
+  tidy = TRUE,
+  message = FALSE
+)
+```
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
 library(neotoma)
 library(ggmap)
 library(ggplot2)
