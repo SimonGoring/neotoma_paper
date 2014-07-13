@@ -1,7 +1,7 @@
 --- 
 title: Neotoma paper
 author: Simon Goring
-date: "09 July, 2014"
+date: "13 July, 2014"
 output: 
 pdf_document: 
 pandoc_args: "-H margins.sty" 
@@ -16,14 +16,18 @@ Abstract:
 -------------------
 
 Paleoecological data is an integral part of ecological analysis.  It provides an opportunity to study vegetation and climate interactions at time scales that cannot be observed through modern field studies, and allows us to observe changes in so-called 'slow' processes associated with centennial and millennial scale changes in climate.
+
 Here we describe the R package `neotoma`, to be used to obtain and manipulate paleoecological data from the Neotoma Paleoecological Database.  `neotoma` searches the Neotoma Database for datasets associated with location, taxa or dataset types using the database's Application Programming Interface.  The package can return full datasets or metadata associated with sites and provides the ability to standardize taxonomies using one of several recognized standard taxonomies from the published literature.
+
 To assist with the use of the package we provide examples of key functions using examples from the published literature, for both plant and mammal taxa.
 
 Introduction
 --------------------
-Paleoecological data is increasingly used to understand patterns of biogeographical, climatic and evolutionary change at multiple spatial and temporal scales.  Paleoecoinformatics (\cite{brewer2012paleo}) is increasingly providing tools to researchers across disciplines to access and use large datasets spanning thousands of years.  These datasets may be used to provide better insight into patterns of biomass burning (Blarquez et al, 2013; Power et al.), regional vegetation change (\cite{blois2013modeling,blarquez2014disentangling}) or changes in physical processes over time (\cite{goring2012depo}).  The statistical software R (\cite{RCoreTeam2014}) is commonly used for analysis of paleoecological data and several packages in R exist for analysis (`analogue`: \cite{analogue2013, analogue2007}; `rioja`: \cite{rioja2013}, `Bchron`: \cite{bchron2014}, `paleofire`: \cite{paleofire2014}). Notwithstanding, the use of extensive paleoecological resources within R has traditionally relied on *ad hoc* methods of obtaining and importing data.  This has meant reliance on static online datasets such as the NOAA Paleoclimate repository or North American Modern Pollen Database, and on the distribution of individual datasets from author to analyst.
+Paleoecological data is increasingly used to understand patterns of biogeographical, climatic and evolutionary change at multiple spatial and temporal scales.  Paleoecoinformatics ([@brewer2012paleo; @uhen2013card]) is increasingly providing tools to researchers across disciplines to access and use large datasets spanning thousands of years.  These datasets may be used to provide better insight into patterns of biomass burning (Blarquez et al, 2013; Power et al.), regional vegetation change ([@blois2013modeling; @blarquez2014disentangling]) or changes in physical processes over time ([@goring2012depo]).  Critically, paleoecological data lags behind modern ecological cyber-infrastructure in regards to accessibility and extent.  The increasing interest in uniting ecological and paleoecological data to understand modern ecological patterns and future responses [@fritz2013diversity; @behrensmeyer2012building; @dietl2011conservation] means that efforts to unite these two, seemingly independednt data-streams will rely, in part, on more robust tools to access and synthesize paleoecological data.
 
-With an increasing push to provide paleoecological publications that include numerically reproducible results (e.g., \cite{goring2012depo,gill2013linking,goring2013pollen}) it is important to provide tools that allow analysts to directly access dynamic datasets, and to provide tools to support reproducible workflows.  The rOpenSci project has provided a number of tools that can directly interact with Application Programmatic Interfaces (APIs) to access data from a number of databases including rfishbase (FishBase: \cite{boettiger2012rfishbase}) and taxize (Encyclopedia of Life, iPlant/Taxosaurus and others: \cite{chamberlain2013taxize}) among others.
+The statistical software R ([@RCoreTeam2014]) is commonly used for analysis of paleoecological data and several packages in R exist for analysis (`analogue`: [@analogue2013; @analogue2007]; `rioja`: [@rioja2013], `Bchron`: [@bchron2014], `paleofire`: [@paleofire2014]). Notwithstanding these packages, the use of extensive paleoecological resources within R has traditionally relied on *ad hoc* methods of obtaining and importing data.  This has meant reliance on static online datasets such as the NOAA Paleoclimate repository or North American Modern Pollen Database, and on the distribution of individual datasets from author to analyst.
+
+With an increasing push to provide paleoecological publications that include numerically reproducible results (e.g., [@goring2012depo; @gill2013linking; @goring2013pollen]) it is important to provide tools that allow analysts to directly access dynamic datasets, and to provide tools to support reproducible workflows.  The rOpenSci project has provided a number of tools that can directly interact with Application Programmatic Interfaces (APIs) to access data from a number of databases including rfishbase (FishBase: [@boettiger2012rfishbase]) and taxize (Encyclopedia of Life, iPlant/Taxosaurus and others: [@chamberlain2013taxize]) among others.
 
 To illustrate use cases for the `neotoma` package we present examples drawn from the paleoecological literature to illustrate how `neotoma` provides the tools to perform research that is critical to understanding paleoecological change in the Pleistocene in an open and reproducible manner.
 
@@ -33,11 +37,10 @@ Here we describe `neotoma`, an R package that acts as an interface between a lar
 
 Examples
 ------------------
-Macdonald and Cwynar (\cite{macdonald1991post}) used pollen percentage data for *Pinus* to map the northward migration of lodgepole pine (*Pinus contorta* var *latifolia*) following glaciation.  In their study a cutoff of 15% Pinus pollen is associated with presence at pollen sample sites.  Recent work by Strong and Hills (\cite{strong2013holocene}) has remapped the migration front using a lower pollen proportion (5%) and more sites.  Here we attempt to replicate the analysis as an example both of the strengths of the package and limitations of paleoinformatic approaches.
+Macdonald and Cwynar ([@macdonald1991post]) used pollen percentage data for *Pinus* to map the northward migration of lodgepole pine (*Pinus contorta* var *latifolia*) following glaciation.  In their study a cutoff of 15% Pinus pollen is associated with presence at pollen sample sites.  Recent work by Strong and Hills ([@strong2013holocene]) has remapped the migration front using a lower pollen proportion (5%) and more sites.  Here we attempt to replicate the analysis as an example both of the strengths of the package and limitations of paleoinformatic approaches.
 
-To begin we must define a spatial bounding box and a set of taxa of interest.  Strong and Hills (\cite{strong2013holocene}) use a region approximately bounded by 54^oN to the south and 65^oN to the North, and from 110^oW to 130^oW.  The command `get_site` is used to find all sites within a bounding box:
+To begin we must define a spatial bounding box and a set of taxa of interest.  Strong and Hills ([@strong2013holocene]) use a region approximately bounded by 54^oN to the south and 65^oN to the North, and from 110^oW to 130^oW.  The command `get_site` is used to find all sites within a bounding box:
 
-# These are just some options I like to set - KR
 
 
 
@@ -95,18 +98,19 @@ all.downloads <- suppressMessages(get_download(sapply(all.datasets, function(x) 
 In most cases the `get_download` command will return a message for an individual core such as:
 
 ```
-API call was successful. Returned record for Cottonwood Slough
+API call was successful. Returned record for Cottonwood Slough.
+API call was successful. Returned record for Goring Woods.
 ```
 
-The `download` object is a list with six objects.  The `metadata` is again a list with a `dataset`, similar to the one returned by `get_dataset` and then `pi.data`, information about the investigator.  The `sample.meta` is where the depth and age information is stored. The actual chronologies are stored in the `chronology` list.  If a core has a single record the list has a length of one.  Some cores have multiple chronologies and these are added to the list.  The default chronology is always represented in `sample.meta`, and is always the first `chronology`.  If you choose to build your own chronology using Bacon (\cite{blaauw2011flexible}) or another method you can obtain the chronological controls for the core using the `get_chroncontrol` function and the chronology ID in either `sample.meta` or any one of the `chronology` objects, however the chronological controls used to build a chronology may vary.  Often the default model contains the most accurate chronological control data.
+The `download` object is a list with six objects.  The `metadata` is again a list with a `dataset`, similar to the one returned by `get_dataset` and then `pi.data`, information about the investigator.  The `sample.meta` is where the depth and age information is stored. The actual chronologies are stored in the `chronology` list.  If a core has a single record the list has a length of one.  Some cores have multiple chronologies and these are added to the list.  The default chronology is always represented in `sample.meta`, and is always the first `chronology`.  If you choose to build your own chronology using `Bacon` ([@blaauw2011flexible]) or another method you can obtain the chronological controls for the core using the `get_chroncontrol` function and the chronology ID in either `sample.meta` or any one of the `chronology` objects.  While the chronological controls used to build a chronology may vary across chronologies for a single site, the default model often contains the most accurate chronological control data.
 
-The `taxon.list` is a critical component of a `download` object.  It lists the taxa found in the core, as well as any laboratory data, along with the units of measurement and taxonomic grouping.  This is important information for determining which taxa make it into pollen percentages. The `counts` are the actual count or percentage data recorded for the core.  The `lab.data` contains information about any spike used to determine concentrations, sample quantities and, in some cases, charcoal counts.
+The `taxon.list` is a critical component of the `download` object.  It lists the taxa found in the core, as well as any laboratory data, along with the units of measurement and taxonomic grouping.  This is important information for determining which taxa make it into pollen percentages. The `counts` are the actual count or percentage data recorded for the core.  The `lab.data` contains information about any spike used to determine concentrations, sample quantities and, in some cases, charcoal counts.
 
 We have 42 records in our analysis. The pollen taxonomy can vary substantially across cores often depending on researcher skill, or changing taxonomies for species, genera or families over time.  This shifting taxonomy is often problematic to deal with.  The `neotoma` package implements a taxonomic standardizer to attempt to standardize to one of four published taxonomies for the United States and Canada.  While this function can be helpful in many cases it should also be used with care.  The aggregation table is accessible using `data(pollen.equiv)` and the function to compile the data is called `compile_list`.
 
-For our purposes we are really only interested in the percentage of *Pinus* in the core, so we can compile the taxa to the most straightforward taxonomy, 'P25' from Gavin *et al*. (\cite{gavin2003statistical}).  The first record downloaded is Andy Lake, published by Szeicz (\cite{szeicz1995late}).  We can see in the `download` the `taxon.table` has 5 columns:
+For our purposes we are really only interested in the percentage of *Pinus* in the core, so we can compile the taxa to the most straightforward taxonomy, 'P25' from Gavin *et al*. ([@gavin2003statistical]).  The first record downloaded is Andy Lake, published by Szeicz ([@szeicz1995late]).  We can see in the `download` the `taxon.table` has 5 columns:
 
-```{r as.is=TRUE} kable(head(all.downloads[[1]]$taxon.list))`
+```{r, results='as is'} kable(head(all.downloads[[1]]$taxon.list))`
 
 Once we apply the `compile_list` function to the dataset using the 'P25' compiler:
 
@@ -115,9 +119,138 @@ Once we apply the `compile_list` function to the dataset using the 'P25' compile
 compiled.cores <- lapply(all.downloads, function(x) compile_list(x, "P25"))
 ```
 
+```
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+#> Warning: 'compile_list' is deprecated.
+#> Use 'compile_taxa' instead.
+#> See help("Deprecated") and help("neotoma-deprecated").
+```
+
 we can see that the `taxon.table` now has an extra column (we've removed several columns to improve readability here).
 
-```{r as.is=TRUE} kable(head(compiled.cores[[1]]$taxon.list[,c(1, 5, 6)]))`
+```{r, results = 'as.is'} kable(head(compiled.cores[[1]]$taxon.list[,c(1, 5, 6)]))`
 
 The function `compile_list` returns an object that looks exactly like the `download` passed to it, however, the `taxon.list` data.frame gains a column named `compressed` that links the original taxonomy to the revised taxonomy.  This acts as an important check for researchers who choose to use this package for large-scale analysis.  Here we see that taxa such as *Potentilla* is lumped into `Other`, along with spores and other taxa.  The `compile_list` function can also accept user-defined tables for aggregation if the provided compilations are not acceptable.
 
@@ -145,9 +278,9 @@ ggplot(data = core.data, aes(x = value, y = age)) + geom_path(alpha = 0.5) +
 
 ![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7.png) 
 
-Andy Lake (\cite{szeicz1995late}) shows changes through time, particularly for *Betula* and *Alnus*, but little *Pinus* pollen.
+Andy Lake ([@szeicz1995late]) shows changes through time, particularly for *Betula* and *Alnus*, but little *Pinus* pollen.
 
-Pollen data is found in the `counts` slot.  We can figure out which sample has the first local *Pinus* presence using a cutoff of 5% (/cite{strong2013holocene}).  Programmatically we can find which rows in the *Pinus* column have presence over 5% and then find the highest row number since age increases with row number.
+Pollen data is found in the `counts` slot.  We can figure out which sample has the first local *Pinus* presence using a cutoff of 5% ([@strong2013holocene]).  Programmatically we can find which rows in the *Pinus* column have presence over 5% and then find the highest row number since age increases with row number.
 
 
 ```r
@@ -200,15 +333,16 @@ grid.arrange(mapped, regress, nrow = 1)
 
 ![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8.png) 
 
-And so we see a clear pattern of migration by *Pinus* in northwestern North America.  These results match up broadly with the findings of Strong and Hills (\cite{strong2013holocene}) who suggest that *Pinus* reached a northern extent between 59 and 60oN at approximately 7 - 10kyr as a result of geographic barriers.
+And so we see a clear pattern of migration by *Pinus* in northwestern North America.  These results match up broadly with the findings of Strong and Hills ([@strong2013holocene]) who suggest that *Pinus* reached a northern extent between 59 and 60oN at approximately 7 - 10kyr as a result of geographic barriers.
 
 ### Mammal Distributions in the Pleistocene
 
-Grahm et al. use their paper to look for patterns of change through the Pleistocene in fossil assemblages.
+Grahm et al. [@graham1996spatial] look for patterns of change in mammal distributions through the Pleistocene to modern era using fossil assemblages assembled from FAUNMAP.  The paper uses multiple complex analyses to show in part, that mammal species have responded in a Gleasonian manner to climate change since the late-Pleistocene.  Their paper shows some species migrating northward in response to warming climates, others staying relatively stable and some moving southward.  Since FAUNMAP has been incorporated into Neotoma we aim to replicate tests of species distributional changes in a straightforward manner to demonstrate the utility of `neotoma` in analysing mammal distributions and change through time.
 
 First we need to obtain all fossil assemblages from Neotoma for vertabeate fauna, 
 
 ```r
+# Bounding box is effectively the continental USA, excluding Alaska.
 mam.set <- get_dataset(datasettype = "vertebrate fauna", loc = c(-125, 24, -66, 
     49.5))
 
@@ -217,8 +351,7 @@ mam.set <- get_dataset(datasettype = "vertebrate fauna", loc = c(-125, 24, -66,
 mam.dl <- get_download(sapply(mam.set, function(x) x$DatasetID))
 ```
 
-So, now we have all the sites, we need to bin them into time periods and a spatial 150 x 150km grid.  To do that we first need to build a large table with time and xy coordinates for each site. The time periods for much of the mammal data is not the same as for pollen data however.  Most mammal sites have younger and older bounds, but no estimates of exact age.
-
+So, now we have all the sites, we need to bin them into time periods as in Graham et al. [@graham1996spatial].  To do that we first need to build a large table with time and `xy` coordinates for each site. Time data in `sample.meta` is not the same as for for pollen data, where many pollen sites contain an age (often mean age) and upper and lower bounds.  Most mammal sites have younger and older bounds, but no estimates of exact age.  In this case we take a short-cut and simply average the younger and older bounds to save the reader from having to examine too much code.
 
 
 ```r
@@ -236,7 +369,10 @@ compiled.mam <- ldply(mam.dl, .fun = function(x) compile_it(x), .progress = "tex
 
 ```r
 # We assign time bins to the data.  The command findInterval should tell us
-# if it is
+# if it is in an inteval equivalent to the Modern (0 - 500ybp), Late
+# Holocene (500 - 4000ybp), Early-Mid Holocene (4kyr - 10kyr), Late Glacial
+# (10kyr - 15kyr), Full Glacial (15kyr - 20kyr) or Late Pleistocene
+# (20kyr+).
 time.bins <- c(500, 4000, 10000, 15000, 20000)
 
 # This is not the best option, age bounds cross our pre-defined bins,
@@ -266,14 +402,23 @@ mam.lat$grouping <- factor(findInterval(mam.lat[, 2] - mam.lat[, 4], c(-11,
 
 mam.lat.melt <- melt(mam.lat)
 colnames(mam.lat.melt)[2:3] <- c("cluster", "Era")
+```
 
+```r
 ggplot(mam.lat.melt, aes(x = Era, y = value)) + geom_path(aes(group = variable, 
     color = cluster)) + facet_wrap(~cluster) + scale_x_discrete(expand = c(0.1, 
     0)) + theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
-![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10.png) 
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11.png) 
 
-So we can see that at this basic analytic scale species are not uniformly responding to climatic warming following deglaciation.  These findings basically echo those of Graham et al who showed that taxon response is effectively individualistic.  While we do see the pre-ponderance of migration is northward, a number of taxa show little migratory response and a number show southward migration.
+So we can see that at this basic analytic scale species are not uniformly responding to climatic warming following deglaciation.  These findings basically echo those of Graham et al. [@graham1996science] who showed that taxon response is largely individualistic.  While we do see the pre-ponderance of migration is northward, a number of taxa show little migratory response and a number show southward migration.  In this example we fail to include movement to the west or east, and ignore the issues that may be associated with the complex topography of the mountainous west.  Regardless, it is clear that the use of `neotoma` can support research that is reproducible and robust.
 
-It is important to remember that serious limitations of this analysis do exist.
+Conclusion
+==========================
+The increasing pressure to develop large-scale databases requires the development of tools that can access the data and can leave reproducible analyses so that others can build from and verify results.
+
+Here we present the `neotoma` package for R [@RCoreTeam2014] and use examples from the literature to show its utility.  `neotoma` joins a number of other existing packages that are designed either to exploit exisiting paleoecological datasets [@paleofire2014] or to manipulate paleoecological data [@analogue2013; @analogue2007; @rioja2013].  The `neotoma` package itself is available either from the CRAN repository, or from GitHub where ongoing development continues with help from the public.
+
+The use of the Neotoma database continues to expand, and here we provide researchers with the tools to move analytics to an open framework using R [@RCoreTeam2014] so that methods can be more fully visible.
+
