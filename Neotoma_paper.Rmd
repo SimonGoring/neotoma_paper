@@ -228,6 +228,7 @@ And so we see a clear pattern of migration by *Pinus* in northwestern North Amer
 Grahm et al. [@graham1996spatial] look for patterns of change in mammal distributions through the Pleistocene to modern era using fossil assemblages collated from FAUNMAP.  The paper uses multiple complex analyses to show in part, that mammal species have responded in a Gleasonian manner to climate change since the late-Pleistocene.  Their paper shows some species migrating northward in response to warming climates, others staying relatively stable and some moving southward.  Since FAUNMAP has been incorporated into Neotoma we aim to replicate tests of species distributional changes in a straightforward manner to demonstrate the utility of `neotoma` in analysing mammal distributions and change through time.
 
 First we need to obtain all fossil assemblages from Neotoma for vertabeate fauna, 
+
 ```{r, message=FALSE, warning=FALSE}
 
 #  Bounding box is effectively the continental USA, excluding Alaska.
@@ -284,6 +285,7 @@ mam.lat$grouping <- factor(findInterval(mam.lat[,2] - mam.lat[,4],
 
 mam.lat.melt <- melt(mam.lat); colnames(mam.lat.melt)[2:3] <- c('cluster', 'Era')
 ```
+
 ```{r, fig.width=7, fig.height=4, echo=TRUE, warning=FALSE}
 ggplot(mam.lat.melt, aes(x = Era, y = value)) + geom_path(aes(group = variable, color = cluster)) + facet_wrap(~cluster) +
   scale_x_discrete(expand=c(.1,0)) + 
