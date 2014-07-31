@@ -115,7 +115,7 @@ The `metadata` component is again a list with a `dataset`, similar to the one re
 
 The `taxon.list` component is a critical part of the `download` object.  It lists the taxa found in the core, as well as any laboratory data, along with the units of measurement and taxonomic grouping.  This is important information for determining which taxa make it into pollen percentages. The `counts` are the actual count or percentage data recorded for the core.  The `lab.data` component contains information about any spike used to determine concentrations, sample quantities and, in some cases, charcoal counts.
 
-We have `r length(all.downloads)` records in our analysis. The pollen taxonomy can vary substantially across cores often depending on researcher skill, or changing taxonomies for species, genera or families over time.  This shifting taxonomy is often problematic to deal with.  The `neotoma` package implements a taxonomic standardizer to attempt to standardize to one of four published taxonomies for the United States and Canada.  While this function can be helpful in many cases it should also be used with care.  The aggregation table is accessible using `data(pollen.equiv)` and the function to compile the data is called `compile_taxa`.
+We have `r length(all.downloads)` records in our analysis. Pollen taxonomy can vary substantially across cores often depending on researcher skill, or changing taxonomies for species, genera or families over time.  This shifting taxonomy is often problematic to deal with.  The `neotoma` package implements a taxonomic standardizer to attempt to standardize to one of four published taxonomies for the United States and Canada.  While this function can be helpful in many cases it should also be used with care.  The aggregation table is accessible using `data(pollen.equiv)` and the function to compile the data is called `compile_taxa`.
 
 For our purposes we are really only interested in the percentage of *Pinus* in the core, so we can compile the taxa to the most straightforward taxonomy, 'P25' from Gavin *et al*. ([@gavin2003statistical]).  The first record downloaded is Andy Lake, published by Szeicz ([@szeicz1995late]).  We can see in the `download` the `taxon.table` has 5 columns:
 
@@ -127,15 +127,17 @@ Once we apply the `compile_taxa` function to the dataset using the 'P25' compile
 
 ```{r}
 
-compiled.cores <- lapply(all.downloads, function(x) compile_taxa(x, 'P25'))
+compiled.cores <- lapply(all.downloads, compile_taxa, list.name = 'P25')
 
 ```
 
-we can see that the `taxon.table` now has an extra column (we've removed several columns to improve readability here).
+we can see that the `taxon.table` now has an extra column (note that we've removed several columns to improve readability here).
 
-```{r, results = 'as.is'} kable(head(compiled.cores[[1]]$taxon.list[,c(1, 5, 6)]))`
+```{r, results = 'as.is'}
+kable(head(compiled.cores[[1]]$taxon.list[,c(1, 5, 6)]))
+```
 
-The function `compile_taxa` returns an object that looks exactly like the `download` passed to it, however, the `taxon.list` data.frame gains a column named `compressed` that links the original taxonomy to the revised taxonomy.  This acts as an important check for researchers who choose to use this package for large-scale analysis.  Here we see that taxa such as *Potentilla* is lumped into `Other`, along with spores and other taxa.  The `compile_taxa` function can also accept user-defined tables for aggregation if the provided compilations are not acceptable.
+`compile_taxa` returns an object that looks exactly like the `download` object passed to it, however, the `taxon.list` data frame gains a column named `compressed` that links the original taxonomy to the revised taxonomy.  This acts as an important check for researchers who choose to use this package for large-scale analysis.  Here we see that taxa such as *Potentilla* is lumped into `Other`, along with spores and other taxa.  The `compile_taxa` function can also accept user-defined tables for aggregation if the provided compilations are not acceptable.
 
 In this case the counts look reasonable, and the synonomy appears to have been applied correctly (although we're really only interested in *Pinus*).  We now transform our `counts` into percentages to standardize across cores.  We can see what a single core looks like:
 
@@ -164,7 +166,7 @@ ggplot(data = core.data, aes(x = value, y = age)) +
 
 Andy Lake ([@szeicz1995late]) shows changes through time, particularly for *Betula* and *Alnus*, but little *Pinus* pollen.
 
-Pollen data is found in the `counts` slot.  We can figure out which sample has the first local *Pinus* presence using a cutoff of 5% ([@strong2013holocene]).  Programmatically we can find which rows in the *Pinus* column have presence over 5% and then find the highest row number since age increases with row number.
+Pollen data is found in the `counts` component.  We want to determine which sample has the first local *Pinus* presence using a cutoff of 5% ([@strong2013holocene]).  Programmatically we can find which rows in the *Pinus* column have presence over 5% and then find the highest row number since age increases with row number.
 
 ```{r, echo=TRUE, fig.width=6, fig.height = 3, warning=FALSE}
 
@@ -175,7 +177,7 @@ top.pinus <- function(x){
   #  Find the highest row index associated with Pinus presence over 5%
   oldest.row <- max(which(x.pct[, 'Pinus'] > .05))
   
-  #  return a data.frame with site name and locations, and then the age and date type
+  #  return a data frame with site name and locations, and then the age and date type
   #  associated with the oldest recorded Pinus presence.
   #  We preserve date type since some records have ages in radiocarbon years.
   
@@ -223,7 +225,7 @@ And so we see a clear pattern of migration by *Pinus* in northwestern North Amer
 
 ### Mammal Distributions in the Pleistocene
 
-Grahm et al. [@graham1996spatial] look for patterns of change in mammal distributions through the Pleistocene to modern era using fossil assemblages assembled from FAUNMAP.  The paper uses multiple complex analyses to show in part, that mammal species have responded in a Gleasonian manner to climate change since the late-Pleistocene.  Their paper shows some species migrating northward in response to warming climates, others staying relatively stable and some moving southward.  Since FAUNMAP has been incorporated into Neotoma we aim to replicate tests of species distributional changes in a straightforward manner to demonstrate the utility of `neotoma` in analysing mammal distributions and change through time.
+Grahm et al. [@graham1996spatial] look for patterns of change in mammal distributions through the Pleistocene to modern era using fossil assemblages collated from FAUNMAP.  The paper uses multiple complex analyses to show in part, that mammal species have responded in a Gleasonian manner to climate change since the late-Pleistocene.  Their paper shows some species migrating northward in response to warming climates, others staying relatively stable and some moving southward.  Since FAUNMAP has been incorporated into Neotoma we aim to replicate tests of species distributional changes in a straightforward manner to demonstrate the utility of `neotoma` in analysing mammal distributions and change through time.
 
 First we need to obtain all fossil assemblages from Neotoma for vertabeate fauna, 
 ```{r, message=FALSE, warning=FALSE}
@@ -233,19 +235,19 @@ mam.set <- get_dataset(datasettype= 'vertebrate fauna', loc = c(-125, 24, -66, 4
 
 #  Calling this many sites can be very time consuming.  It takes approximately an
 #  hour to run fully.
-mam.dl <- get_download(sapply(mam.set, function(x)x$DatasetID))
+mam.dl <- get_download(sapply(mam.set, '[[', "DatasetID"))
 
 ```
 
 So, now we have all the sites, we need to bin them into time periods as in Graham et al. [@graham1996spatial].  To do that we first need to build a large table with time and `xy` coordinates for each site. Time data in `sample.meta` is not the same as for for pollen data, where many pollen sites contain an age (often mean age) and upper and lower bounds.  Most mammal sites have younger and older bounds, but no estimates of exact age.  In this case we take a short-cut and simply average the younger and older bounds to save the reader from having to examine too much code.
 
 ```{r, echo = TRUE, message=FALSE, warning=FALSE}
-library(plyr)
+library("plyr")
 
 #  To be moved into the neotoma package.
 source('R/compile_it.R')
 
-compiled.mam <- ldply(mam.dl, .fun = function(x) compile_it(x), .progress = 'text')
+compiled.mam <- ldply(mam.dl, .fun = compile_it, .progress = 'text')
 
 #  We assign time bins to the data.  The command findInterval should tell us if it is
 #  in an inteval equivalent to the Modern (0 - 500ybp), Late Holocene (500 - 
@@ -255,21 +257,18 @@ time.bins <- c(500, 4000, 10000, 15000, 20000)
 
 #  This is not the best option, age bounds cross our pre-defined bins, however
 #  solving this is more complex than this example requires.
-mean.age <- apply(compiled.mam[,c('ageold', 'ageyoung', 'age')], 1, mean, na.rm=TRUE)
+mean.age <- rowMeans(compiled.mam[,c('ageold', 'ageyoung', 'age')], na.rm = TRUE)
 interval <- findInterval(mean.age, time.bins)
 
-compiled.mam$ageInterval <- c('Modern', 'Late Holocene', 'Early-Mid Holocene', 'Late Glacial', 'Full Glacial', 'Late Pleistocene')[interval+1]
+periods <- c('Modern', 'Late Holocene', 'Early-Mid Holocene', 'Late Glacial', 'Full Glacial', 'Late Pleistocene')
+compiled.mam$ageInterval <- periods[interval+1]
 
 mam.melt <- melt(compiled.mam, 
                  measure.vars = 10:(ncol(compiled.mam)-1),
                  na.rm=TRUE,
                  factorsAsStrings = TRUE)
 
-mam.melt$ageInterval <- factor(mam.melt$ageInterval, 
-                               levels = c('Modern', 'Late Holocene', 
-                                          'Early-Mid Holocene',
-                                          'Late Glacial', 'Full Glacial',
-                                          'Late Pleistocene'))
+mam.melt$ageInterval <- factor(mam.melt$ageInterval, levels = periods)
 
 mam.lat <- dcast(data=mam.melt, variable ~ ageInterval, value.var = 'lat' , 
                  fun.aggregate = mean, drop = TRUE)[,c(1,3,5,6)]
