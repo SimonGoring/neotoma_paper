@@ -15,9 +15,9 @@ neotoma: A Programmatic Interface to the Neotoma Paleoecological Database
 Abstract:
 -------------------
 
-Paleoecological data is an integral part of ecological analysis.  It provides an opportunity to study vegetation and climate interactions at time scales that cannot be observed through modern field studies, and allows us to observe changes in so-called 'slow' processes associated with centennial and millennial scale changes in climate.
+Paleoecological data is an integral part of ecological analysis.  It provides an opportunity to study vegetation and climate interactions at time scales that cannot be observed through modern field studies, and allows us to observe changes in ecological processes that operate at centennial and millennial scales.  Paleoecological inference also can allow us to understand ecological processes in the absence of widespread antrhopogenic influence.
 
-Here we describe the R package `neotoma`, to be used to obtain and manipulate paleoecological data from the Neotoma Paleoecological Database.  `neotoma` searches the Neotoma Database for datasets associated with location, taxa or dataset types using the database's Application Programming Interface.  The package can return full datasets or metadata associated with sites and provides the ability to standardize taxonomies using one of several recognized standard taxonomies from the published literature.
+Here we describe the R package `neotoma`, to be used to obtain and manipulate paleoecological data from the Neotoma Paleoecological Database (\url{http://www.neotomadb.org}).  `neotoma` searches the Neotoma Database for datasets associated with location, taxa or dataset types using the database's Application Programming Interface.  The package can return full datasets or metadata associated with sites and provides the ability to standardize taxonomies using one of several recognized standard taxonomies from the published literature.
 
 To assist with the use of the package we provide examples of key functions using examples from the published literature, for both plant and mammal taxa.
 
@@ -60,15 +60,15 @@ library(plyr)
 library(Bchron)
 library(gridExtra)
 
-all.sites <- get_site(loc = c(-140, 50, -110, 65))
+all.sites <- get_site(loc = c(-140, 45, -110, 65))
 ```
 
 The `get_sites` command returns a site `data.frame`, with `siteID`, `latitude`, `longitude`, `altitude`, `SiteName`, and `SiteDescription`.  Each row represents a unique site.
 
 We can see that this returns a total of `R nrow(all.sites)` sites.  Sites are effectively containers for datasets though.  Generally it's better to search for datasets.  When you search for a dataset you can limit the type of dataset, either by looking for specific taxa, or by describing the dataset type.  Here we will look for all taxa beginning with *Pinus* in pollen dataset.  We use the `*` wildcard to indicate any and all taxa with *Pinus* in their name:
 
-```{r}
-all.datasets <- get_dataset(loc = c(-140, 50, -110, 65),
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+all.datasets <- get_dataset(loc = c(-140, 45, -110, 65),
                              datasettype='pollen',
                              taxonname='Pinus*')
 
@@ -78,15 +78,20 @@ A dataset is a larger data object.  The dataset has site information, but it als
 
 Here the API tells us we now have only `r length(all.datasets)` records of the original `r nrow(all.sites)`.  Many of the samples are pollen surface samples, or vertebrate fauna, meaning pollen core data comprises less than half of the records.  Regardless, we now know that there is pollen core data from `r length(all.datasets)` sites and we can plot those sites over our original `r nrow(all.sites)`.
 
-```{r}
-bc.map <- get_map(location = c(-120, 60), zoom = 4)
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
 
-ggmap(bc.map) +
+map <- map_data('world')
+
+ggplot(data = data.frame(map), aes(long, lat)) + 
+  geom_polygon(aes(group=group), color='blue', alpha=0.2) +
   geom_point(data = all.sites, aes(x = long, y = lat)) +
   geom_point(data = get_site(dataset = all.datasets), 
              aes(x = long, y = lat), 
              color = 2) +
-  xlab('Longitude West') + ylab('Latitude North')
+  xlab('Longitude West') + ylab('Latitude North') +
+  coord_map(projection='albers', lat0=40, lat1=65, 
+            xlim=c(-140, -110), ylim=c(40, 70))
+
 ```
 
 So we see that there are a number of sites in the interior of British Columbia  that have no core pollen.  For many of these cores pollen records exist.  This is an obvious limitation of the use of large datasets.  While many dataset have been entered into Neotoma, a large number have yet to make their way into the repository.  An advantage of the API based analysis however is that analysis using Neotoma can be updated continuously as new sites are added.
@@ -96,8 +101,7 @@ Let's get the data for each of the cores we have:
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 #  This step may be time consuming when you run it, particularly if you have a
 #  slow internet connection.
-all.downloads <- suppressMessages(get_download(sapply(all.datasets, 
-                                                      function(x)x$DatasetID)))
+all.downloads <- suppressMessages(get_download(dataset = all.datasets)))
 ```
 
 In most cases the `get_download` command will return a message for an individual core such as:
@@ -115,13 +119,13 @@ We have `r length(all.downloads)` records in our analysis. The pollen taxonomy c
 
 For our purposes we are really only interested in the percentage of *Pinus* in the core, so we can compile the taxa to the most straightforward taxonomy, 'P25' from Gavin *et al*. ([@gavin2003statistical]).  The first record downloaded is Andy Lake, published by Szeicz ([@szeicz1995late]).  We can see in the `download` the `taxon.table` has 5 columns:
 
-```{r, results='as is'} 
+```{r, results='as is'}
 kable(head(all.downloads[[1]]$taxon.list))
 ```
 
 Once we apply the `compile_taxa` function to the dataset using the 'P25' compiler:
 
-```{r}
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
 
 compiled.cores <- lapply(all.downloads, function(x) compile_taxa(x, 'P25'))
 
@@ -135,7 +139,7 @@ The function `compile_taxa` returns an object that looks exactly like the `downl
 
 In this case the counts look reasonable, and the synonomy appears to have been applied correctly (although we're really only interested in *Pinus*).  We now transform our `counts` into percentages to standardize across cores.  We can see what a single core looks like:
 
-```{r, fig.height=3, fig.width=6}
+```{r, fig.height=3, fig.width=6, echo=TRUE, message=FALSE, warning=FALSE}
 #  Get the percentage data for the first core:
 core.pct <- as.data.frame(compiled.cores[[1]]$counts / rowSums(compiled.cores[[1]]$counts)) * 100
 
@@ -222,14 +226,14 @@ And so we see a clear pattern of migration by *Pinus* in northwestern North Amer
 Grahm et al. [@graham1996spatial] look for patterns of change in mammal distributions through the Pleistocene to modern era using fossil assemblages assembled from FAUNMAP.  The paper uses multiple complex analyses to show in part, that mammal species have responded in a Gleasonian manner to climate change since the late-Pleistocene.  Their paper shows some species migrating northward in response to warming climates, others staying relatively stable and some moving southward.  Since FAUNMAP has been incorporated into Neotoma we aim to replicate tests of species distributional changes in a straightforward manner to demonstrate the utility of `neotoma` in analysing mammal distributions and change through time.
 
 First we need to obtain all fossil assemblages from Neotoma for vertabeate fauna, 
-```{r, message=FALSE, warning=FALSE}
+```{r, message=FALSE, warning=FALSE, echo=TRUE}
 
 #  Bounding box is effectively the continental USA, excluding Alaska.
 mam.set <- get_dataset(datasettype= 'vertebrate fauna', loc = c(-125, 24, -66, 49.5))
 
 #  Calling this many sites can be very time consuming.  It takes approximately an
 #  hour to run fully.
-mam.dl <- get_download(sapply(mam.set, function(x)x$DatasetID))
+mam.dl <- get_download(dataset = mam.set)
 
 ```
 
