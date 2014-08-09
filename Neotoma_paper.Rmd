@@ -12,6 +12,18 @@ csl: ecology-letters.csl
 neotoma: A Programmatic Interface to the Neotoma Paleoecological Database
 ========================================================
 
+```{r, echo = FALSE, message = FALSE}
+# Simon: Note that these are global options that apply to all chunks below.
+knitr::opts_chunk$set(
+  comment = " ",
+  error = FALSE,
+  # Note: I have set EVAL to false just to make the bib work. 
+  # Once the bib is fixed, you'll set this to TRUE or just delete this line.
+  eval = FALSE,
+  tidy = TRUE
+)
+```
+
 Abstract:
 -------------------
 
