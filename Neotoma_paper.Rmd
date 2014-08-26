@@ -82,7 +82,7 @@ library("ggplot2")
 library("reshape2")
 library("plyr")
 library("Bchron")    # in turn requires rgl, ks, hdcde ... get rid of this one?
-library("gridExtra") # use multiplot function instead? 
+library("gridExtra") # use multiplot function instead?
 library("knitr")
 
 all.sites <- get_site(loc = c(-140, 45, -110, 65))
@@ -90,7 +90,7 @@ all.sites <- get_site(loc = c(-140, 45, -110, 65))
 
 `get_site()` returns an object of class `site` and `data.frame`, with the columns `siteid`, `sitename`, `lat`, `long`, `elev`, `description`, `long_acc`, and `lat_acc`.  Each row represents a unique site, and provides enough descriptive data to plot sites and understand the spatial extent of a site.  Using the class assingment `site` allows objects returned by `get_site()` to be easily recognized by other functions, so that site information can easily be used to obtain datasets or whole data downloads.
 
-Our code above returns a total of `r nrow(all.sites)` sites.  Sites, conceptually, are containers for datasets.  Generally it's better to search for a neotoma dataset.  The `neotoma` package allows you to use almost all of the same search terms in `get_dataset()` as in `get_site()`, and returns a more complete description of the datasets available.  But, when you search for a dataset you can also limit the type of dataset, either by looking for specific taxa, or by describing the dataset type (*e.g.*, `pollen` or `mammal`).  In the next example we will look for all taxa beginning with *Pinus* in a pollen dataset within a bounding box corresponding to Washington Sata in the USA and British Columbia and the Yukon Territory in Canada.  We use the `*` wildcard to indicate any and all taxa with *Pinus* in their name:
+Our code above returns a total of `r nrow(all.sites)` sites.  Sites, conceptually, are containers for datasets.  Generally it's better to search for a neotoma dataset.  The `neotoma` package allows you to use almost all of the same search terms in `get_dataset()` as in `get_site()`, and returns a more complete description of the datasets available.  But, when you search for a dataset you can also limit the type of dataset, either by looking for specific taxa, or by describing the dataset type (*e.g.*, `pollen` or `mammal`).  In the next example we will look for all taxa beginning with *Pinus* in a pollen dataset within a bounding box corresponding to Washington State in the USA and British Columbia and the Yukon Territory in Canada.  We use the `*` wildcard to indicate any and all taxa with *Pinus* in their name:
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 all.datasets <- get_dataset(loc = c(-140, 45, -110, 65),
@@ -105,13 +105,6 @@ The API tells us we now have `r length(all.datasets)` datasets from the original
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 
-# i like to see the provincial borders...
-bc.map <- get_map(location = c(-120, 60), zoom = 4)
-ggmap(bc.map) + geom_point(data = all.sites, aes(x = long, y = lat)) + 
-  geom_point(data = get_site(dataset = all.datasets), aes(x = long, y = lat), color = 2) + 
-  xlab("Longitude West") + ylab("Latitude North")
-
-# or this?
 map <- map_data('world')
 ggplot(data = data.frame(map), aes(long, lat)) + 
   geom_polygon(aes(group=group), color='blue', alpha=0.2) +
@@ -121,7 +114,7 @@ ggplot(data = data.frame(map), aes(long, lat)) +
              color = 2) +
   xlab('Longitude West') + ylab('Latitude North') +
   coord_map(projection='albers', lat0=40, lat1=65, 
-            xlim=c(-140, -110), ylim=c(40, 70))
+            xlim=c(-140, -110), ylim=c(45, 70))
 
 ```
 
@@ -207,7 +200,7 @@ top.pinus <- function(x){
   x.pct <- x$counts / rowSums(x$counts)
 
   #  Find the highest row index associated with Pinus presence over 5%
-  oldest.row <- if (any(x.pct[, 'Pinus'] > .05) ) { max(which(x.pct[, 'Pinus'] > .05)) } else {oldest.row=0}
+  oldest.row <- ifelse(any(x.pct[, 'Pinus'] > .05), max(which(x.pct[, 'Pinus'] > .05)), 0)
 
   #  return a data frame with site name and locations, and then the age and date type
   #  associated with the oldest recorded Pinus presence.
@@ -220,7 +213,7 @@ top.pinus <- function(x){
                date = x$sample.meta$AgeType[oldest.row]))
     } else {
       return(NULL)
-    }
+  }
 }
 
 #  Apply the function 'top.pinus' to each core (here we use the plyr function ldply so we can
@@ -244,8 +237,8 @@ wmean.date <- function(x)sum(x$ageGrid*x$densities / sum(x$densities))
 
 summary.pinus$age[radio.years] <- sapply(calibrated, wmean.date)
 summary.pinus <- na.omit(summary.pinus)
-# why the heck is the next line in here?
-# summary.pinus <- summary.pinus[(summary.pinus$age < 2000) & (summary.pinus$long < -130),]
+
+summary.pinus <- summary.pinus[!((summary.pinus$age < 2000) & (summary.pinus$long < -130)),]
 
 #  We're using a loess curve here but the curve can be improved by using a monotone spline.
 regress <- ggplot(summary.pinus, aes(x = lat, y = age)) +
@@ -263,11 +256,7 @@ mapped <- ggplot(data = data.frame(map), aes(long, lat)) +
             xlim=c(-140, -110), ylim=c(40, 70)) +
   theme(legend.position = 'none')
 
-# grid.arrange(mapped, regress, nrow=1)
-
-# To make side-by-side plots, can use multiplot
-multiplot(mapped, regress, cols=2) # we can get rid of grid.arrange if we do this...
-
+grid.arrange(mapped, regress, nrow=1)
 ```
 
 And so we see a clear pattern of migration by *Pinus* in northwestern North America.  These results match up broadly with the findings of Strong and Hills [@strong2013holocene] who suggest that *Pinus* reached a northern extent between 59 and 60oN at approximately 7 - 10kyr as a result of geographic barriers.
@@ -314,6 +303,7 @@ interval <- findInterval(mean.age, time.bins)
 periods <- c('Modern', 'Late Holocene', 'Early-Mid Holocene', 'Late Glacial', 'Full Glacial', 'Late Pleistocene')
 compiled.mam$ageInterval <- periods[interval+1]
 
+#  The melt and dcast commands are in reshape2
 mam.melt <- melt(compiled.mam,
                  measure.vars = 10:(ncol(compiled.mam)-1),
                  na.rm=TRUE,
