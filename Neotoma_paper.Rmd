@@ -178,15 +178,15 @@ In this case the counts look reasonable, and the synonomy appears to have been a
 ```{r, fig.height=3, fig.width=6, echo=TRUE, message=FALSE, warning=FALSE}
 #  Get the percentage data for the first core using 'tran' in the analogue 
 #  package.
-core.pct <- as.data.frame(tran(compiled.cores[[1]]$counts, method='percent'))
+core.pct <- tran(compiled.cores[[1]]$counts, method = "percent")
 
 core.pct$age <-   compiled.cores[[1]]$sample.meta$Age
 
-#  Eliminate taxa with no samples greater than 5%.
-core.pct <- core.pct[, colSums(core.pct>4)>0]
+#  Eliminate taxa with no samples greater than 4%.
+core.pct <- chooseTaxa(core.pct, max.abun = 4)
 
 #  Plotted using the Stratiplot function in 'analogue', very naive plotting for demonstration.
-Stratiplot(age ~ ., core.pct, sort = 'wa', type = 'poly', ylim=c(0, max(core.pct$age)))
+Stratiplot(age ~ ., core.pct, sort = 'wa', type = 'poly', ylim = c(0, max(core.pct$age)))
 ```
 
 Andy Lake [@szeicz1995late] shows changes through time, particularly for *Betula* and *Alnus*, but little *Pinus* pollen.
@@ -196,8 +196,8 @@ Pollen data is found in the `counts` component of the `download`.  We want to de
 ```{r, echo=TRUE, fig.width=6, fig.height = 3, warning=FALSE}
 
 top.pinus <- function(x){
-  #  Convert the core data into proportions by dividing counts by the sum of the row.
-  x.pct <- x$counts / rowSums(x$counts)
+  #  Convert the core data into proportions.
+  x.pct <- tran(x$counts, method = "proportion")
   
   #  Cores must span at least 5000 years (and have non NA dates), otherwise they 
   #  date the arrival of Pinus too late!
