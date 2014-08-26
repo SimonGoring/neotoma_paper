@@ -1,0 +1,7 @@
++ remove analogue package?
+- leave this in.  Just add a simple example that doesn't need anything else.
++ remove BChron?
+- same as above.
++ kill ggmap references
++ look for canadian province borders
++ Are some sites in there twice?
