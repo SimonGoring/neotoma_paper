@@ -1,26 +1,28 @@
 compile_it <-function(x){
   
-  if(class(x) == 'list'){
+#   if(class(x) == 'list'){
+  if ('list' %in% class(x)) {
     
-    if(is.null(x$metadata$site.data$SiteName)) x$metadata$site.data$SiteName <- paste('NoName_ID', i)
+    if(is.null(x$metadata$site.data$sitename)) x$metadata$site.data$sitename <- paste('NoName_ID', i)
     if(is.null(x$sample.meta$depths)) x$sample.meta$depths <- NA
     if(is.null(x$sample.meta$Age)) x$sample.meta$Age <- NA
-    if(is.null(x$metadata$site.data$LatitudeNorth)) x$metadata$site.data$LatitudeNorth <- NA
-    if(is.null(x$metadata$site.data$LongitudeWest)) x$metadata$site.data$LongitudeWest <- NA
+    if(is.null(x$metadata$site.data$lat)) x$metadata$site.data$lat <- NA
+    if(is.null(x$metadata$site.data$long)) x$metadata$site.data$long <- NA
     
-    site.info <- data.frame(sitename = x$metadata$site.data$SiteName,
+    site.info <- data.frame(sitename = x$metadata$site.data$sitename,
                             depth = x$sample.meta$depths,
                             age = x$sample.meta$Age,
                             ageold = x$sample.meta$AgeOlder,
                             ageyoung = x$sample.meta$AgeYounger,                            
                             date.type = x$sample.meta$AgeType,
-                            lat = x$metadata$site.data$LatitudeNorth,
-                            long = x$metadata$site.data$LongitudeWest,
-                            dataset = x$metadata$site.data$SiteName,
+                            lat = x$metadata$site.data$lat,
+                            long = x$metadata$site.data$long,
+                            dataset = x$metadata$site.data$siteid,
                             x$counts)
     
   }
-  if(!class(x) == 'list'){
+#   if(class(x) != 'list'){
+  if(!('list' %in% !class(x))){
     site.info <- data.frame(sitename = NA,
                             depth = NA,
                             age = NA,

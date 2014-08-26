@@ -57,7 +57,7 @@ library("ggmap")
 library("ggplot2")
 library("reshape2")
 library("plyr")
-library("Bchron")
+library("Bchron") # in turn requires rgl, ks, hdcde ...
 library("gridExtra")
 
 all.sites <- get_site(loc = c(-140, 45, -110, 65))
@@ -80,17 +80,22 @@ Here the API tells us we now have only `r length(all.datasets)` records of the o
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 
-map <- map_data('world')
+# map <- map_data('world')
+bc.map <- get_map(location = c(-120, 60), zoom = 4)
 
-ggplot(data = data.frame(map), aes(long, lat)) + 
-  geom_polygon(aes(group=group), color='blue', alpha=0.2) +
-  geom_point(data = all.sites, aes(x = long, y = lat)) +
-  geom_point(data = get_site(dataset = all.datasets),
-             aes(x = long, y = lat),
-             color = 2) +
-  xlab('Longitude West') + ylab('Latitude North') +
-  coord_map(projection='albers', lat0=40, lat1=65, 
-            xlim=c(-140, -110), ylim=c(40, 70))
+# ggplot(data = data.frame(map), aes(long, lat)) + 
+#   geom_polygon(aes(group=group), color='blue', alpha=0.2) +
+#   geom_point(data = all.sites, aes(x = long, y = lat)) +
+#   geom_point(data = get_site(dataset = all.datasets),
+#              aes(x = long, y = lat),
+#              color = 2) +
+#   xlab('Longitude West') + ylab('Latitude North') +
+#   coord_map(projection='albers', lat0=40, lat1=65, 
+#             xlim=c(-140, -110), ylim=c(40, 70))
+
+ggmap(bc.map) + geom_point(data = all.sites, aes(x = long, y = lat)) + 
+  geom_point(data = get_site(dataset = all.datasets), aes(x = long, y = lat), color = 2) + 
+  xlab("Longitude West") + ylab("Latitude North")
 
 ```
 
@@ -101,7 +106,7 @@ Let's get the data for each of the cores we have:
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 #  This step may be time consuming when you run it, particularly if you have a
 #  slow internet connection.
-all.downloads <- suppressMessages(get_download(dataset = all.datasets)))
+all.downloads <- suppressMessages(get_download(dataset = all.datasets))
 ```
 
 In most cases `get_download` will return a message for an individual core such as:
@@ -181,17 +186,21 @@ top.pinus <- function(x){
   x.pct <- x$counts / rowSums(x$counts)
 
   #  Find the highest row index associated with Pinus presence over 5%
-  oldest.row <- max(which(x.pct[, 'Pinus'] > .05))
+  oldest.row <- if (any(x.pct[, 'Pinus'] > .05) ) { max(which(x.pct[, 'Pinus'] > .05)) } else {oldest.row=0}
 
   #  return a data frame with site name and locations, and then the age and date type
   #  associated with the oldest recorded Pinus presence.
   #  We preserve date type since some records have ages in radiocarbon years.
-
-  data.frame(site = x$metadata$site.data$SiteName,
-             lat = x$metadata$site.data$LatitudeNorth,
-             long = x$metadata$site.data$LongitudeWest,
-             age = x$sample.meta$Age[oldest.row],
-             date = x$sample.meta$AgeType[oldest.row])
+  
+  if (oldest.row>0){
+    return(data.frame(site = x$metadata$site.data$sitename,
+               lat = x$metadata$site.data$lat,
+               long = x$metadata$site.data$long,
+               age = x$sample.meta$Age[oldest.row],
+               date = x$sample.meta$AgeType[oldest.row]))
+    } else {
+      return(NULL)
+    }
 }
 
 #  Apply this function to each core (here we use the plyr functions so we can return
@@ -241,7 +250,13 @@ mam.set <- get_dataset(datasettype= 'vertebrate fauna', loc = c(-125, 24, -66, 4
 
 #  Calling this many sites can be very time consuming.  It takes approximately an
 #  hour to run fully.
-mam.dl <- get_download(dataset = mam.set)
+if (!file.exists('mam.dl.Rdata')){
+  mam.dl <- get_download(dataset = mam.set)
+  save(mam.dl, file='mam.dl.Rdata')
+} else {
+  load('mam.dl.Rdata')
+}
+
 
 ```
 
@@ -253,6 +268,7 @@ library("plyr")
 #  To be moved into the neotoma package.
 source('R/compile_it.R')
 
+class(mam.dl) <- 'list'
 compiled.mam <- ldply(mam.dl, .fun = compile_it, .progress = 'text')
 
 #  We assign time bins to the data.  The command findInterval should tell us if it is
