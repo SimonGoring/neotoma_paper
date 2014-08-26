@@ -178,7 +178,7 @@ In this case the counts look reasonable, and the synonomy appears to have been a
 ```{r, fig.height=3, fig.width=6, echo=TRUE, message=FALSE, warning=FALSE}
 #  Get the percentage data for the first core using 'tran' in the analogue 
 #  package.
-core.pct <- tran(compiled.cores[[1]]$counts, method = "percent")
+core.pct <- data.frame(tran(compiled.cores[[1]]$counts, method = "percent"))
 
 core.pct$age <-   compiled.cores[[1]]$sample.meta$Age
 
@@ -186,7 +186,7 @@ core.pct$age <-   compiled.cores[[1]]$sample.meta$Age
 core.pct <- chooseTaxa(core.pct, max.abun = 4)
 
 #  Plotted using the Stratiplot function in 'analogue', very naive plotting for demonstration.
-Stratiplot(age ~ ., core.pct, sort = 'wa', type = 'poly', ylim = c(0, max(core.pct$age)))
+Stratiplot(age ~ ., core.pct, sort = 'wa', type = 'poly')
 ```
 
 Andy Lake [@szeicz1995late] shows changes through time, particularly for *Betula* and *Alnus*, but little *Pinus* pollen.
