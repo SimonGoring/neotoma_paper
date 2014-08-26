@@ -198,9 +198,13 @@ Pollen data is found in the `counts` component of the `download`.  We want to de
 top.pinus <- function(x){
   #  Convert the core data into proportions by dividing counts by the sum of the row.
   x.pct <- x$counts / rowSums(x$counts)
+  
+  #  Cores must span at least 5000 years (and have non NA dates), otherwise they 
+  #  date the arrival of Pinus too late!
+  old.enough <- max(x$sample.meta$Age) > 5000 & !all(is.na(x$sample.meta$Age))
 
   #  Find the highest row index associated with Pinus presence over 5%
-  oldest.row <- ifelse(any(x.pct[, 'Pinus'] > .05), max(which(x.pct[, 'Pinus'] > .05)), 0)
+  oldest.row <- ifelse(any(x.pct[, 'Pinus'] > .05 & old.enough), max(which(x.pct[, 'Pinus'] > .05)), 0)
 
   #  return a data frame with site name and locations, and then the age and date type
   #  associated with the oldest recorded Pinus presence.
