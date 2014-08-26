@@ -1,5 +1,5 @@
-#  PANDOC file:
-library(knitr)
 
-knit('Neotoma_paper.Rmd', encoding = "utf-8")
-system("pandoc -o neotoma_paper.docx Neotoma_paper.md")
+library(devtools)
+install_github('rmarkdown', 'rstudio')
+library(rmarkdown)
+render('Neotoma_paper.Rmd', 'word_document')
