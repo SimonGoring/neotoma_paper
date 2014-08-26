@@ -76,13 +76,13 @@ knitr::opts_chunk$set(
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 library("neotoma")
-library("analogue")
+library("analogue") # why don't we use our ggplot pollen diagram code?
 library("ggmap")
 library("ggplot2")
 library("reshape2")
 library("plyr")
-library("Bchron") # in turn requires rgl, ks, hdcde ...
-library("gridExtra")
+library("Bchron")    # in turn requires rgl, ks, hdcde ... get rid of this one?
+library("gridExtra") # use multiplot function instead? 
 library("knitr")
 
 all.sites <- get_site(loc = c(-140, 45, -110, 65))
