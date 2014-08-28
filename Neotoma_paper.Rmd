@@ -60,9 +60,59 @@ Each of these objects, `site`, `dataset` and `download` can be obtained using di
 
 Examples
 ------------------
+### A simple example
+A researcher is interested in finding the pollen record for Marion Lake, in British Columbia [@mathewes1973palynological] and comparing the change in Alnus pollen to pollen from Louise Pond [@pellatt1997holocene] on Haida G'Waii, further north.  We can search for specific sites by name using `get_site()`:
+
+```{r}
+library("neotoma")
+library("analogue")
+
+marion <- get_site(sitename = 'Marion Lake%')
+louise <- get_site(sitename = 'Louise Pond%')
+```
+
+`get_site()` returns an object of class `site`, which is a data frame with columns `siteid`, `sitename`, `lat`, `long`, `elev`, `description`, `long_acc`, and `lat_acc`.  Each row represents a unique site, and provides enough descriptive data to plot sites and understand the spatial extent of a site.  Using the class assignment `site` allows objects returned by `get_site()` to be easily recognized by other functions, so that site information can easily be used to obtain datasets or whole data downloads.  Sites, conceptually, are containers for datasets.  Generally it's better to search for a neotoma dataset.  The `neotoma` package allows you to use almost all of the same search terms in `get_dataset()` as in `get_site()`, and returns a more complete description of the datasets available.
+
+To get the `dataset` for these records we can simplify the workflow by `rbind()`ing the two site records, and then using `get_dataset()` directly:
+
+```{r}
+western.sites <- rbind(marion, louise)
+western.data  <- get_dataset(western.sites)
+
+```
+
+A `dataset` is an `list` with additional class `"dataset"`.  The dataset has site information, but it also has information about the specific dataset, so the site data is nested within the dataset.  The use of a specific `dataset` class allows us to easily move between `get_dataset()`, `get_site()` and `get_download()` by using S3 methods in R.
+
+To obtain the actual pollen records we use `get_download()`:
+
+```{r}
+
+western.dl <- get_download(western.data)
+
+```
+
+`get_download()` returns an object of class `"download"`, which is a `list` of length equal to the number of sites returned.  In most cases `get_download()` will return a message for an individual core as it is running, that can be turned off using the argument `verbose = FALSE`.
+
+Both the `get_download()` and `get_dataset()` functions also record the time at which the API was accessed.  Because of the large size of most `download`s there is a special print function that limits output size, however, the objects remain `list`s and can be manipulated as such in R.
+
+A single `download` object is a `list` with six components:
+
+```{r}
+names(all.downloads[[1]])
+```
+
+The `metadata` component is equivalent to a `dataset` returned by `get_dataset()`.  The `sample.meta` component is where the core depth and age information is stored. The actual chronologies are stored in `chronologies`.  If a core has a single age model then `chronologies` has a length of one.  Some cores have multiple chronologies and these are added to the list.  The default chronology is always represented in `sample.meta`, and is always the first `chronology`.  If you choose to build your own chronology using `Bacon` [@blaauw2011flexible] or another method you can obtain the chronological controls for the core using `get_chroncontrol()` and the chronology ID in either `sample.meta` or any one of the `chronologies` objects.  While the chronological controls used to build a chronology may vary across chronologies for a single site, the default model contains the most accurate chronological control data.
+
+The `taxon.list` component is a critical part of the `download` object.  It lists the taxa found in the core, as well as any laboratory data, along with the units of measurement and taxonomic grouping.  This is important information for determining which taxa make it into pollen percentages. The `counts` are the actual count or percentage data recorded for the core.  The `lab.data` component contains information about any spike used to determine concentrations, sample quantities and, in some cases, charcoal counts.
+
+We have `r length(all.downloads)` records in our analysis. Pollen taxonomy can vary substantially across cores often depending on researcher skill, or changing taxonomies for species, genera or families over time.  This shifting taxonomy is often problematic to deal with.  The `neotoma` package implements a taxonomic standardizer to attempt to standardize to one of four published taxonomies for the United States and Canada.  While this function can be helpful in many cases it should also be used with care.  The aggregation table is accessible using `data(pollen.equiv)` and the function to compile the data is called `compile_taxa()`.  It can accomodate either the internal translation table provided with the package, or a user defined package.
+
+To simplify our plotting we will use 
+
+### Pinus migration following the last Glacial Maximum
 Macdonald and Cwynar [-@macdonald1991post] used pollen percentage data for *Pinus* to map the northward migration of lodgepole pine (*Pinus contorta* var *latifolia*) following glaciation.  In their study a cutoff of 15% *Pinus* pollen is associated with presence at pollen sample sites.  Recent work by Strong and Hills [@strong2013holocene] has remapped the migration front using a lower pollen proportion (5%) and more sites.  Here, we attempt to replicate the analysis as an example both of the strengths of the package and limitations of paleoinformatic approaches.
 
-To begin we must define a spatial bounding box and a set of taxa of interest.  Strong and Hills [-@strong2013holocene] use a region approximately bounded by 54^o^N to the south and 65^o^N to the North, and from 110^o^W to 130^o^W.  The function `get_site()` is used to find all sites within a bounding box:
+To begin we must define a spatial bounding box and a set of taxa of interest.  Strong and Hills [-@strong2013holocene] use a region approximately bounded by 54^o^N to the south and 65^o^N to the North, and from 110^o^W to 130^o^W.  We can use `get_site()` to find all sites within a bounding box:
 
 ```{r, echo = FALSE, message = FALSE, warning=FALSE}
 # These are just some options I like to set - KR
@@ -75,8 +125,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
-library("neotoma")
-library("analogue") # why don't we use our ggplot pollen diagram code?
+
 library("ggmap")
 library("ggplot2")
 library("reshape2")
@@ -88,17 +137,14 @@ library("knitr")
 all.sites <- get_site(loc = c(-140, 45, -110, 65))
 ```
 
-`get_site()` returns an object of class `site`, which is a data frame with columns `siteid`, `sitename`, `lat`, `long`, `elev`, `description`, `long_acc`, and `lat_acc`.  Each row represents a unique site, and provides enough descriptive data to plot sites and understand the spatial extent of a site.  Using the class assingment `site` allows objects returned by `get_site()` to be easily recognized by other functions, so that site information can easily be used to obtain datasets or whole data downloads.
 
-Our code above returns a total of `r nrow(all.sites)` sites.  Sites, conceptually, are containers for datasets.  Generally it's better to search for a neotoma dataset.  The `neotoma` package allows you to use almost all of the same search terms in `get_dataset()` as in `get_site()`, and returns a more complete description of the datasets available.  But, when you search for a dataset you can also limit the type of dataset, either by looking for specific taxa, or by describing the dataset type (*e.g.*, `'pollen'` or `'mammal'`).  In the next example we will look for all taxa beginning with *Pinus* in a pollen dataset within a bounding box corresponding to Washington State in the USA and British Columbia and the Yukon Territory in Canada.  We use the `*` wildcard to indicate any and all taxa with *Pinus* in their name:
+Our code above returns a total of `r nrow(all.sites)` sites.  While `get_site` is similar to `get_dataset()`, `get_dataset()` can also limit the type of dataset, either by looking for specific taxa, or by describing the dataset type (*e.g.*, `'pollen'` or `'mammal'`).  In the next example we will look for all taxa beginning with *Pinus* in a pollen dataset within a bounding box corresponding to Washington State in the USA and British Columbia and the Yukon Territory in Canada.  We use the `*` wildcard to indicate any and all taxa with *Pinus* in their name:
 
 ```{r, echo=TRUE, message=FALSE, warning=FALSE}
 all.datasets <- get_dataset(loc = c(-140, 45, -110, 65),
                             datasettype = 'pollen',
                             taxonname = 'Pinus*')
 ```
-
-A `dataset` is an `list` with additional class `"dataset"`.  The dataset has site information, but it also has information about the specific dataset, so the site data is nested within the dataset.  The use of a specific `dataset` class allows us to easily move between `get_dataset()`, `get_site()` and `get_download()` by using S3 methods in R.
 
 The API tells us we now have `r length(all.datasets)` datasets from the original `r nrow(all.sites)` sites.  Many of the samples that are not included are pollen surface samples, or vertebrate fauna, meaning pollen core data comprises much less than half of the records.  Regardless, we now know that there is pollen core data from `r length(all.datasets)` sites and we can plot those sites over our original `r nrow(all.sites)`.
 
@@ -133,22 +179,6 @@ if (!file.exists("all.downloads.Rdata")){
 }
   
 ```
-
-`get_download()` returns an object of class `"download"`, which is a `list` of length equal to the number of sites returned.  In most cases `get_download()` will return a message for an individual core as it is running, that can be turned off using the argument `verbose = FALSE`.
-
-Both the `get_download()` and `get_dataset()` functions also record the time at which the API was accessed.  Because of the large size of most `download`s there is a special print function that limits output size, however, the objects remain `list`s and can be manipulated as such in R.
-
-A single `download` object is a `list` with six components:
-
-```{r}
-names(all.downloads[[1]])
-```
-
-The `metadata` component is equivalent to a `dataset` returned by `get_dataset()`.  The `sample.meta` component is where the core depth and age information is stored. The actual chronologies are stored in `chronologies`.  If a core has a single age model then `chronologies` has a length of one.  Some cores have multiple chronologies and these are added to the list.  The default chronology is always represented in `sample.meta`, and is always the first `chronology`.  If you choose to build your own chronology using `Bacon` [@blaauw2011flexible] or another method you can obtain the chronological controls for the core using `get_chroncontrol()` and the chronology ID in either `sample.meta` or any one of the `chronologies` objects.  While the chronological controls used to build a chronology may vary across chronologies for a single site, the default model contains the most accurate chronological control data.
-
-The `taxon.list` component is a critical part of the `download` object.  It lists the taxa found in the core, as well as any laboratory data, along with the units of measurement and taxonomic grouping.  This is important information for determining which taxa make it into pollen percentages. The `counts` are the actual count or percentage data recorded for the core.  The `lab.data` component contains information about any spike used to determine concentrations, sample quantities and, in some cases, charcoal counts.
-
-We have `r length(all.downloads)` records in our analysis. Pollen taxonomy can vary substantially across cores often depending on researcher skill, or changing taxonomies for species, genera or families over time.  This shifting taxonomy is often problematic to deal with.  The `neotoma` package implements a taxonomic standardizer to attempt to standardize to one of four published taxonomies for the United States and Canada.  While this function can be helpful in many cases it should also be used with care.  The aggregation table is accessible using `data(pollen.equiv)` and the function to compile the data is called `compile_taxa()`.  It can accomodate either the internal translation table provided with the package, or a user defined package.
 
 For our purposes we are really only interested in the percentage of *Pinus* in the core, so we can compile the taxa to the most straightforward taxonomy, 'P25' from @gavin2003statistical.  The first record downloaded is Andy Lake, published by @szeicz1995late.  We can see in the `download` the `taxon.table` has 5 columns:
 
