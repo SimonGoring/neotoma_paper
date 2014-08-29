@@ -35,13 +35,13 @@ To assist with the use of the `neotoma` package we provide examples of key funct
 
 Introduction
 --------------------
-Paleoecological data are used to understand patterns and drivers of biogeographical, climatic and evolutionary change at multiple spatial and temporal scales.  Paleoecoinformatics [@brewer2012paleo; @uhen2013card] is increasingly providing tools to researchers across disciplines to access and use large datasets spanning thousands of years.  These datasets may be used to provide better insight into patterns of biomass burning (Blarquez et al, 2013; Power et al.), regional vegetation change [@blois2013modeling; @blarquez2014disentangling] or changing sedimentation rates through time [@goring2012depo]. The increasing interest in uniting ecological and paleoecological data to understand modern ecological patterns and responses to climate change [@fritz2013diversity; @behrensmeyer2012building; @dietl2011conservation] means that efforts to unite these two, seemingly independedent data-streams will rely, in part, on more robust tools to access and synthesize paleoecological data.
+Paleoecological data are used to understand patterns and drivers of biogeographical, climatic and evolutionary change at multiple spatial and temporal scales.  Paleoecoinformatics [@brewer2012paleo; @uhen2013card] is increasingly providing tools to researchers across disciplines to access and use large datasets spanning thousands of years.  These datasets may be used to provide better insight into patterns of biomass burning [@marlon2013global], regional vegetation change [@blois2013modeling; @blarquez2014disentangling] or changing sedimentation rates through time [@goring2012depo]. The increasing interest in uniting ecological and paleoecological data to understand modern ecological patterns and responses to climate change [@fritz2013diversity; @behrensmeyer2012building; @dietl2011conservation] means that efforts to unite these two, seemingly independedent data-streams will rely, in part, on more robust tools to access and synthesize paleoecological data.
 
 The Neotoma Paleoecological Database is the result of longstanding collaboration between the European Pollen Database and the North American Pollen Database [@grimm2013databases].  The database framework was generalized from pollen data to accomodate other macro- and microfossil data and other geochemistry information including loss-on-ignition and isotope records.  Constituent databases include the European, Indo-Pacific, Latin American, North American Pollen Database, FAUNMAP (Pliocene to Quaternary mammal fossils in the continental United States), the North American Non-Marine Ostrocode Database, and the Diatom Paleolimnology Data Cooperative.  Work is underway to include the North American Fossil Beetle Database, testate amoeba records, the North American Plant Macrofossil Database and the Digital Archaeological Record, thus further expanding the data that can be accomodated by Neotoma.  Through the use of data stewards - domain-specific experts who can check for inaccuracies, upload and manage data records - Neotoma can support high quality assurance for each of the constituent data types, and receive feedback from research communities involved with each specific data type [@grimm2013databases].
 
 From the paleoecological database Neotoma has also developed Application Programming Interfaces, that allow users to query the database through the internet using properly formed URLs.  For example, the URL: http://api.neotomadb.org/v1/apps/geochronologies/?datasetid=8 will return all geochronological data for a single record associated with the datasetid provided.  
 
-The statistical software R [@RCoreTeam2014] is commonly used for analysis of paleoecological data and several packages in R exist for analysis including `analogue` [@analogue2013; @analogue2007] and `rioja` [@rioja2013] for paleoenvironmental reconstruction, `Bchron` for radiocarbon dating and age-depth modeling [@bchron2014] and `paleofire` to access and analyse charcoal data [@paleofire2014]. Notwithstanding these packages, the use of extensive paleoecological resources within R has traditionally relied on *ad hoc* methods of obtaining and importing data.  This has meant reliance on datasets such as those from the NOAA Paleoclimate Repository or the North American Modern Pollen Database, and on the distribution of individual datasets from author to analyst.
+The statistical software R [@RCoreTeam2014] is commonly used for analysis of paleoecological data and several packages in R exist for analysis including `analogue` [@analogue2013; @analogue2007] and `rioja` [@rioja2013] for paleoenvironmental reconstruction, `Bchron` for radiocarbon dating and age-depth modeling [@bchron2014] and `paleofire` to access and analyse charcoal data [@blarquez2014paleofire]. Notwithstanding these packages, the use of extensive paleoecological resources within R has traditionally relied on *ad hoc* methods of obtaining and importing data.  This has meant reliance on datasets such as those from the NOAA Paleoclimate Repository or the North American Modern Pollen Database, and on the distribution of individual datasets from author to analyst.
 
 With an increasing push to provide paleoecological publications that include numerically reproducible results (e.g., @goring2012depo; @gill2013linking; @goring2013pollen) it is important to provide tools that allow analysts to directly access dynamic datasets, and to provide tools to support reproducible workflows.  The rOpenSci project has provided a number of tools that can directly interact with application programmatic interfaces (APIs) to access data from a number of databases including rfishbase (FishBase: [@boettiger2012rfishbase] and taxize (Encyclopedia of Life, iPlant/Taxosaurus and others: [@chamberlain2013taxize] among others.
 
@@ -83,7 +83,7 @@ western.data  <- get_dataset(western.sites)
 
 A `dataset` is an `list` with additional class `"dataset"`.  The dataset has site information, but it also has information about the specific dataset, so the site data is nested within the dataset.  The use of a specific `dataset` class allows us to easily move between `get_dataset()`, `get_site()` and `get_download()` by using S3 methods in R.
 
-To obtain the actual pollen records we use `get_download()`:
+To obtain the actual pollen records we use `get_download()` directly on the dataset returned from our earlier `get_dataset()` call:
 
 ```{r}
 
@@ -98,16 +98,51 @@ Both the `get_download()` and `get_dataset()` functions also record the time at 
 A single `download` object is a `list` with six components:
 
 ```{r}
-names(all.downloads[[1]])
+names(western.dl[[1]])
 ```
 
 The `metadata` component is equivalent to a `dataset` returned by `get_dataset()`.  The `sample.meta` component is where the core depth and age information is stored. The actual chronologies are stored in `chronologies`.  If a core has a single age model then `chronologies` has a length of one.  Some cores have multiple chronologies and these are added to the list.  The default chronology is always represented in `sample.meta`, and is always the first `chronology`.  If you choose to build your own chronology using `Bacon` [@blaauw2011flexible] or another method you can obtain the chronological controls for the core using `get_chroncontrol()` and the chronology ID in either `sample.meta` or any one of the `chronologies` objects.  While the chronological controls used to build a chronology may vary across chronologies for a single site, the default model contains the most accurate chronological control data.
 
 The `taxon.list` component is a critical part of the `download` object.  It lists the taxa found in the core, as well as any laboratory data, along with the units of measurement and taxonomic grouping.  This is important information for determining which taxa make it into pollen percentages. The `counts` are the actual count or percentage data recorded for the core.  The `lab.data` component contains information about any spike used to determine concentrations, sample quantities and, in some cases, charcoal counts.
 
-We have `r length(all.downloads)` records in our analysis. Pollen taxonomy can vary substantially across cores often depending on researcher skill, or changing taxonomies for species, genera or families over time.  This shifting taxonomy is often problematic to deal with.  The `neotoma` package implements a taxonomic standardizer to attempt to standardize to one of four published taxonomies for the United States and Canada.  While this function can be helpful in many cases it should also be used with care.  The aggregation table is accessible using `data(pollen.equiv)` and the function to compile the data is called `compile_taxa()`.  It can accomodate either the internal translation table provided with the package, or a user defined package.
+We have `r length(western.dl)` records downloaded, one for Marion Lake and one for Louise Pond. Pollen taxonomy can vary substantially across cores often depending on researcher skill, or changing taxonomies for species, genera or families over time.  This shifting taxonomy is often problematic to deal with.  The `neotoma` package implements a taxonomic standardizer to attempt to standardize to one of four published taxonomies for the United States and Canada.  While this function can be helpful in many cases it should also be used with care.  The aggregation table is accessible using `data(pollen.equiv)` and the function to compile the data is called `compile_taxa()`.  It can accomodate either the internal translation table provided with the package, or a user defined package.
 
-To simplify our plotting we will use 
+In this case we are interested in the percentage of *Alnus* in the core, so we can compile the taxa to the most straightforward taxonomy, 'P25' from @gavin2003statistical.  The first record downloaded is Marion Lake.  We can see in the `download` the `taxon.table` has 5 columns:
+
+```{r, results='as is'}
+kable(head(western.dl[[1]]$taxon.list))
+```
+
+Once we apply `compile_taxa()` to the dataset using the 'P25' compiler:
+
+```{r, echo=TRUE, message=FALSE, warning=FALSE}
+
+western.comp <- compile_taxa(western.dl, list.name = 'P25')
+
+```
+
+we can see that the `taxon.table` now has an extra column (note that we've removed several columns to improve readability here).
+
+```{r, results = 'as.is'}
+kable(head(western.comp[[1]]$taxon.list[,c(1, 5, 6)]))
+```
+
+`compile_taxa()` returns an object that looks exactly like the `download` object passed to it, however, the `taxon.list` data frame gains a column named `compressed` that links the original taxonomy to the revised taxonomy.  This acts as an important check for researchers who choose to use this package for large-scale analysis.  Here we see that all the spore types listed have been lumped into a single *Other*.  The `compile_taxa()` function can also accept user-defined tables for aggregation if the provided compilations are not acceptable.
+
+In this case the counts look reasonable, and the synonomy appears to have been applied correctly (although we're really only interested in *Alnus*).  We now transform our `counts` into percentages to standardize across cores.  We can see what happens with *Alnus* on the west coast of North America during the Holocene:
+
+```{r}
+alnus.df = data.frame(alnus = c(tran(x=western.comp[[1]]$counts, method='percent')[,'Alnus'],
+                                tran(x=western.comp[[2]]$counts, method='percent')[,'Alnus']),
+                      ages  = c(western.comp[[1]]$sample.meta$Age,
+                                western.comp[[2]]$sample.meta$Age),
+                      site = c(rep('Marion', nrow(western.comp[[1]]$counts)),
+                               rep('Louise', nrow(western.comp[[2]]$counts))))
+
+plot(alnus~ages, data = alnus.df, col = alnus.df$site, pch = 19)
+```
+
+In this example we see that Marion Lake (red) maintains much higher proportions of *Alnus* throughout it's history, and has a rapid increase in *Alnus* pollen during the historical period.  This rapid shift in the last 200 years is likely as a result of rapid colonization by pioneer *Alnus rubra* following forest clearance in the lower mainland of British Columbia.
 
 ### Pinus migration following the last Glacial Maximum
 Macdonald and Cwynar [-@macdonald1991post] used pollen percentage data for *Pinus* to map the northward migration of lodgepole pine (*Pinus contorta* var *latifolia*) following glaciation.  In their study a cutoff of 15% *Pinus* pollen is associated with presence at pollen sample sites.  Recent work by Strong and Hills [@strong2013holocene] has remapped the migration front using a lower pollen proportion (5%) and more sites.  Here, we attempt to replicate the analysis as an example both of the strengths of the package and limitations of paleoinformatic approaches.
@@ -180,29 +215,9 @@ if (!file.exists("all.downloads.Rdata")){
   
 ```
 
-For our purposes we are really only interested in the percentage of *Pinus* in the core, so we can compile the taxa to the most straightforward taxonomy, 'P25' from @gavin2003statistical.  The first record downloaded is Andy Lake, published by @szeicz1995late.  We can see in the `download` the `taxon.table` has 5 columns:
+For our purposes we are really only interested in the percentage of *Pinus* in the core, so we can again compile the taxa using the 'P25' taxonomy [@gavin2003statistical].
 
-```{r, results='as is'}
-kable(head(all.downloads[[1]]$taxon.list))
-```
-
-Once we apply `compile_taxa()` to the dataset using the 'P25' compiler:
-
-```{r, echo=TRUE, message=FALSE, warning=FALSE}
-
-compiled.cores <- compile_taxa(all.downloads, list.name = 'P25')
-
-```
-
-we can see that the `taxon.table` now has an extra column (note that we've removed several columns to improve readability here).
-
-```{r, results = 'as.is'}
-kable(head(compiled.cores[[1]]$taxon.list[,c(1, 5, 6)]))
-```
-
-`compile_taxa()` returns an object that looks exactly like the `download` object passed to it, however, the `taxon.list` data frame gains a column named `compressed` that links the original taxonomy to the revised taxonomy.  This acts as an important check for researchers who choose to use this package for large-scale analysis.  Here we see that the two *Picea* taxa have been lumped into a single *Picea* taxon and Lycopodiaceae has been assigned to 'Other'.  The `compile_taxa()` function can also accept user-defined tables for aggregation if the provided compilations are not acceptable.
-
-In this case the counts look reasonable, and the synonomy appears to have been applied correctly (although we're really only interested in *Pinus*).  We now transform our `counts` into percentages to standardize across cores.  We can see what a single core looks like:
+In this case the synonomy (not shown) appears to have been applied correctly (although we're really only interested in *Pinus*).  We now transform our `counts` into percentages to standardize across cores.  We can see what a single core looks like:
 
 ```{r, fig.height=3, fig.width=6, echo=TRUE, message=FALSE, warning=FALSE}
 #  Get the percentage data for the first core using 'tran' in the analogue 
