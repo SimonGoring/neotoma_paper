@@ -63,7 +63,7 @@ Examples
 Here we present several examples that both introduce users to the `neotoma` package, and highlight how `neotoma` can be used in a paleoecological worklfow. We beging with a simple example in which we compare change in Alnus between two sites, followed by two more involved examples where we look at Pine migration and mammal distributions.
 
 ### A simple example
-A researcher is interested in finding the pollen record for Marion Lake, in British Columbia [@mathewes1973palynological] and comparing the change in Alnus pollen to pollen from Louise Pond [@pellatt1997holocene] on Haida G'Waii, further north.  We can search for specific sites by name using `get_site()`:
+A researcher is interested in finding the pollen record for Marion Lake, in British Columbia [@mathewes1973palynological] and comparing the change in Alnus pollen to pollen from Louise Pond [@pellatt1997holocene] on Haida G'Waii, further north.  We search for specific sites by name using `get_site()`, and make use of the wildcard `%` to catch all sites whose site names begin with `Marion Lake` or `Louise Pond`:
 
 ```{r load-pkgs-1}
 library("neotoma")
