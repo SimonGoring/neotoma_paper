@@ -33,8 +33,6 @@ The R package `neotoma` obtains and manipulates data from the Neotoma Paleoecolo
 
 Here we illustrate how the `neotoma` package can be used in a paleoecological workflow using examples from the published literature, for both plant and mammal taxa.
 
-#To assist with the use of the `neotoma` package we provide examples of key functions using examples from the published literature, for both plant and mammal taxa.
-
 Introduction
 --------------------
 Paleoecological data are used to understand patterns and drivers of biogeographical, climatic and evolutionary change at multiple spatial and temporal scales.  Paleoecoinformatics [@brewer2012paleo; @uhen2013card] is increasingly providing tools to researchers across disciplines to access and use large datasets spanning thousands of years.  These datasets may be used to provide better insight into patterns of biomass burning [@marlon2013global], regional vegetation change [@blois2013modeling; @blarquez2014disentangling] or temporal change in sedimentation rates [@goring2012depo]. The increasing interest in uniting ecological and paleoecological data to understand modern ecological patterns and responses to climate change [@fritz2013diversity; @behrensmeyer2012building; @dietl2011conservation] means that efforts to unite these two, seemingly independedent data-streams will rely, in part, on more robust tools to access and synthesize paleoecological data.
