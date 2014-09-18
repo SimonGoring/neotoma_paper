@@ -68,8 +68,8 @@ library("neotoma")
 library("analogue")
 library("knitr")
 
-marion <- get_site(sitename = 'Marion Lake%')
-louise <- get_site(sitename = 'Louise Pond%')
+marion <- get_site(sitename = 'Marion Lake*')
+louise <- get_site(sitename = 'Louise Pond*')
 ```
 
 `get_site()` returns an object of class `"site"`, which is a data frame with columns `siteid`, `sitename`, `lat`, `long`, `elev`, `description`, `long_acc`, and `lat_acc`.  Each row represents a unique site, and provides enough descriptive data to plot sites and understand the spatial extent of a site.  Using the class assignment `"site"` allows objects returned by `get_site()` to be easily recognized by other functions, so that site information can easily be used to obtain datasets or whole data downloads.  Sites, conceptually, are containers for datasets.  Generally it's better to search for a neotoma dataset.  The `neotoma` package allows you to use almost all of the same search terms in `get_dataset()` as in `get_site()`, and returns a more complete description of the datasets available, however, `get_site()` is the only method by which you can search by site name.
