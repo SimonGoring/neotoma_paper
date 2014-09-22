@@ -1,0 +1,390 @@
+---
+title: Neotoma paper
+author: Simon Goring
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output:
+pdf_document:
+pandoc_args: "-H margins.sty"
+bibliography: neotoma_bib.bib
+csl: harvard1.csl
+---
+
+neotoma: A Programmatic Interface to the Neotoma Paleoecological Database
+========================================================
+
+```{r setup-knitr, echo = FALSE, message = FALSE}
+# Simon: Note that these are global options that apply to all chunks below.
+knitr::opts_chunk$set(
+  comment = " ",
+  error = FALSE,
+  # Note: I have set EVAL to false just to make the bib work. 
+  # Once the bib is fixed, you'll set this to TRUE or just delete this line.
+  eval = TRUE,
+  tidy = TRUE
+)
+```
+
+Abstract:
+-------------------
+
+Paleoecological data is integral to ecological analysis, providing an opportunity to study interactions between communities and abiotic environments at centennial to millenial time scales. Through the analysis of paleodata, we can also observe changes in ecological processes that occur infrequently, such as megadroughts, hurricanes, rapid climatic change and volcanic eruptions. Based on the analyses of paleodata, we can then make paleoecological inferences about ecological processes in the absence of widespread antrhopogenic influence.
+
+The R package `neotoma` is a new tool to help streamline the paleoecological workflow by obtaining and manipulating data from the Neotoma Paleoecological Database (Neotoma: http://www.neotomadb.org).  The Neotoma Database is a searchable repository for multiproxy paleoecological records spanning the past 5 million years, providing the opportunity to explore biogeographic patterns from the Pliocene to the present.  `neotoma` searches the Neotoma Database for datasets using search keys that can include location, taxon or dataset type (*e.g.*, pollen, mammal, ostrocode) using the database's Application Programming Interface (API).  The package returns a set of nested metadata associated with the site, including the full assemblage record, dataset specific information (age range of samples, date of accession into Neotoma, site principle investigator) and site specific information (location, site name and description).  `neotoma` also provides a set of tools to allow cross-site analysis, including the ability to standardize taxonomies using standard taxonomies from the published literature (limited to pollen taxa), or user provided taxonomies.
+
+We illustrate how the `neotoma` package can be used in a paleoecological workflow through examples from the published literature, for both plant and mammal taxa.
+
+Introduction
+--------------------
+Paleoecological data are used to understand patterns and drivers of biogeographical, climatic and evolutionary change at multiple spatial and temporal scales.  Paleoecoinformatics [@brewer2012paleo; @uhen2013card] is increasingly providing tools to researchers across disciplines to access and use large datasets spanning thousands of years.  These datasets may be used to provide better insight into patterns of biomass burning [@marlon2013global], regional vegetation change [@blois2013modeling; @blarquez2014disentangling] or temporal change in sedimentation rates [@goring2012depo]. The increasing interest in uniting ecological and paleoecological data to understand modern ecological patterns and responses to climate change [@fritz2013diversity; @behrensmeyer2012building; @dietl2011conservation] means that efforts to unite these two, seemingly independedent data-streams will rely, in part, on more robust tools to access and synthesize paleoecological data.
+
+The Neotoma Paleoecological Database is the result of longstanding collaboration between the European Pollen Database and the North American Pollen Database [@grimm2013databases].  The database framework was generalized from pollen data to accomodate additional macro- and microfossil data as well as geochemistry information, including loss-on-ignition and isotope records.  Constituent databases include the European, Indo-Pacific, Latin American, North American Pollen Database, FAUNMAP (Pliocene to Quaternary mammal fossils in the continental United States), the North American Non-Marine Ostrocode Database, and the Diatom Paleolimnology Data Cooperative.  Work is underway to include the North American Fossil Beetle Database, testate amoeba records, the North American Plant Macrofossil Database and the Digital Archaeological Record, thus further expanding the types of data that can be accomodated by Neotoma.  Through the use of data stewards - domain-specific experts who can check for inaccuracies, upload and manage data records - Neotoma can support high quality assurance for each of the constituent data types, and receive feedback from research communities working with specific data types [@grimm2013databases].
+
+The authors of the Neotoma Database have also developed Application Programming Interfaces, which allow users to query the database using the internet and properly formed URLs.  For example, the URL: http://api.neotomadb.org/v1/apps/geochronologies/?datasetid=8 will return all geochronological data for a single record associated with the datasetid provided.  
+
+The analysis of paleoecological data is commonly performed using the statistical software R [@RCoreTeam2014]. There are several R packages that are particularly useful in a paleoecological workflow including `analogue` [@analogue2013; @analogue2007] and `rioja` [@rioja2013] for paleoenvironmental reconstruction, `Bchron` for radiocarbon dating and age-depth modeling [@bchron2014] and `paleofire` to access and analyse charcoal data [@blarquez2014paleofire]. Notwithstanding these packages, the use of extensive paleoecological resources within R has traditionally relied on *ad hoc* methods of obtaining and importing data.  This has meant reliance on datasets such as those from the NOAA Paleoclimate Repository or the North American Modern Pollen Database, and on the distribution of individual datasets from author to analyst. 
+
+With an increasing push to provide paleoecological publications that include numerically reproducible results (e.g., @goring2012depo; @gill2013linking; @goring2013pollen) it is important to develop user-friendly tools that both allow analysts to directly access dynamic datasets and support reproducible workflows.  The rOpenSci project - one venue that allows developers to provide such tools - has provided a number of tools that can directly interact with application programmatic interfaces (APIs) to access data from a number of databases including rfishbase (FishBase: [@boettiger2012rfishbase]) and taxize (Encyclopedia of Life, iPlant/Taxosaurus and others: [@chamberlain2013taxize]) among others.
+
+The `neotoma` package addresses concerns regarding data access and workflow reproducibility by providing users with tools that allow paleoecologists to query, download, organize, and summarize data from the Neotoma Database using R. First we describe the `neotoma` package, then we illustrate how `neotoma` can simplify the paleoecological workflow and allow users to perform research that is critical to understanding paleoecological change in the Pleistocene in an open and reproducible manner.
+
+The `neotoma` package
+---------------------------
+`neotoma` is an R package that acts as an interface between a large dynamic database (the Neotoma Paleoecological Database: [http://neotomadb.org]()) and statistical tools in R.  The `neotoma` package uses an API to send data requests to Neotoma, and then forms data objects that can interact with existing packages such as `analogue` [@analogue2013] and `rioja` [@rioja2013], that are used for environmental reconstruction, manipulation and presentation of paleoecological data.  The `neotoma` package also includes tools to standardize pollen data across sample sites using either a standard or user-defined set of pollen taxa.
+
+Data in the neotoma package is represented in three main classes: `"site"`; `"dataset"`; and `"download"`. A `"site"` is the most basic form of spatial information and is a representation of all data points as a special class of `data.frame`.  A `"site"` contains site names, locations and, when supplied, site descriptions, along with a unique `siteID`.  Individual sites can be associated with one or more `"dataset"`s.  A `"dataset"` is a special type of `list` that includes a `"site"` class for each dataset, but also includes information about the particular dataset, including the data type, the principle investigator, the submission date to Neotoma and the date that the information was accessed from Neotoma using the R package.  The `"dataset"` also includes a unique `dataset.id` that can be used to access the full `"download"`.  A `"download"` contains both the `"site"` and `"dataset"` information, but it also contains the full data object for the dataset it references, whether it is pollen, ostrocode, mammal or other data.
+
+![Data object flow](misc/flowchart.png)
+**Figure 1**. *Flow chart describing how the three main classes relate to one another in the `neotoma` package, and how the helper functions used to move from one data type to another.*
+
+Each of these objects, `"site"`, `"dataset"` and `"download"` can be obtained using direct calls to the API, or using functions defined in the `neotoma` package. In the following section, 
+
+Examples
+------------------
+Here we present several examples that both introduce users to the `neotoma` package, and highlight how `neotoma` can be used in a paleoecological workflow. We beging with a simple example in which we compare change in Alnus between two sites, followed by two more involved examples where we look first at Pine migration, and then mammal distributions.
+
+### A simple example
+In this example we work through how to find and compare Alnus pollen changes through time using pollen records for Marion Lake, in British Columbia [@mathewes1973palynological] and Louise Pond [@pellatt1997holocene] on Haida G'Waii, further north.  We search for specific sites by name using `get_site()`, and make use of the wildcard `%` to catch all sites whose site names begin with `Marion Lake` or `Louise Pond`:
+
+```{r load-pkgs-1}
+library("neotoma")
+library("analogue")
+library("knitr")
+
+marion <- get_site(sitename = 'Marion Lake*')
+louise <- get_site(sitename = 'Louise Pond*')
+```
+
+`get_site()` returns an object of class `"site"`, which is a data frame with columns `siteid`, `sitename`, `lat`, `long`, `elev`, `description`, `long_acc`, and `lat_acc`. Here we queried the database for site based on sitenames, but alternatively we could have queried the database for sites within a geographical bounding box, or by geopolitical region. Each row of the object returned by `get_site` represents a unique site, and provides enough descriptive data to plot site locations and understand the spatial extent of a site.  Using the class assignment `"site"` allows objects returned by `get_site()` to be recognized by other functions, so that site information can easily be used to obtain datasets or whole data downloads.  Sites, conceptually, are containers for datasets. Generally it is preferable to search for a neotoma dataset beacuse `get_dataset()` returns a more complete description of the datasets available.  The search terms for both `get_site()` and `get_dataset()` are mostly identical, however, `get_site()` is the only method by which allows one to search by site name.
+
+To get the `"dataset"` for these records we can simplify the workflow by `rbind()`ing the two site records, and then using `get_dataset()` directly (Figure 1):
+
+```{r get-dataset-simple}
+western.sites <- rbind(marion, louise)
+western.data  <- get_dataset(western.sites)
+```
+
+A `"dataset"` is a `list` with additional class `"dataset"`.  The dataset contains site information as well as information about the specific dataset, so the site data is nested within the dataset.  The use of a specific `"dataset"` class allows us to easily move between `get_dataset()`, `get_site()` and `get_download()` by using S3 methods in R.
+
+To obtain the actual pollen records we use `get_download()` directly on the dataset returned from our earlier `get_dataset()` call (Figure 1):
+
+```{r download-western}
+western.dl <- get_download(western.data)
+```
+
+`get_download()` returns an object of class `"download"`, which is a `list` of length equal to the number of sites returned.  In most cases `get_download()` will return a message for an individual core as it is running, that can be turned off using the argument `verbose = FALSE`.
+
+Both the `get_download()` and `get_dataset()` functions also record the time at which the API was accessed.  Due to the large size of most `"download"` objects there is a special print function that limits output size, however, the objects remain `list`s and can be manipulated as such in R.
+
+A single `"download"` object is a `list` with six components:
+
+```{r names-western}
+names(western.dl[[1]])
+```
+
+The `metadata` component is equivalent to a `"dataset"` returned by `get_dataset()`.  The `sample.meta` component stores the core depth and age information, while the actual chronologies are stored in `chronologies`.  If a core has a single age model, then `chronologies` has a length of one.  Some cores can have multiple chronologies and these are added to the `chronologies` list.  The default chronology is always represented in `sample.meta`, and is always the first `chronology`.  If you choose to build your own chronology using `Bacon` [@blaauw2011flexible] or another method you can obtain the chronological controls for the core using `get_chroncontrol()` with the chronology ID in either `sample.meta` or any one of the `chronologies` objects.  While the chronological controls used to build a chronology may vary across chronologies for a single site, the default model contains the most accurate chronological control data.
+
+The `taxon.list` component is a critical part of the `"download"` object.  It lists the taxa found in the core, as well as any laboratory data, along with the units of measurement and taxonomic grouping.  This is important information for determining which taxa make it into pollen percentages. The `counts` are the actual count or percentage data recorded for the core.  The `lab.data` component contains information about any spike used to determine concentrations, sample quantities and, in some cases, charcoal counts.
+
+We have `r length(western.dl)` records downloaded, one for Marion Lake and one for Louise Pond. Pollen taxonomy can vary substantially across cores often depending on researcher skill, or changing taxonomies for species, genera or families over time.  This shifting taxonomy is often problematic to deal with.  The `neotoma` package implements a taxonomic standardization function which allows users to standardize taxa to one of four published taxonomies for the United States and Canada.  While this function can be helpful in many cases it should also be used with care.  The aggregation table is accessible using `data(pollen.equiv)` and the function to compile the data is called `compile_taxa()`.  It can accomodate either the internal translation table provided with the package, or a user defined translation table.
+
+In this case we are interested in the percentage of *Alnus* in the core, so we choose to compile the taxa to the most straightforward taxonomy, 'P25' from @gavin2003statistical.  The first record downloaded is Marion Lake.  We can see in the `"download"` the `taxon.table` has 5 columns:
+
+
+```{r kable-western, results='as is'}
+kable(head(western.dl[[1]]$taxon.list))
+```
+
+Once we apply `compile_taxa()` to the dataset using the 'P25' compiler:
+
+```{r compile-taxa-western, echo=TRUE, message=FALSE, warning=FALSE}
+western.comp <- compile_taxa(western.dl, list.name = 'P25')
+```
+
+we can see that the `taxon.table` now has an extra column (note that we've removed several columns to improve readability here).
+
+```{r kable-wstern-2, results = 'as.is'}
+kable(head(western.comp[[1]]$taxon.list[,c(1, 5, 6)]))
+```
+
+`compile_taxa()` returns an object that looks exactly like the `"download"` object passed to it, however, the `taxon.list` data frame gains a column named `compressed` that links the original taxonomy to the revised taxonomy.  This acts as an important check for researchers who choose to use this package for large-scale analysis.  Here we see that all the spore types listed have been lumped into a single *Other*.  The `compile_taxa()` function can also accept user-defined tables for aggregation if the provided compilations are not acceptable.
+
+In this case the counts look reasonable, and the synonomy appears to have been applied correctly (although we're really only interested in *Alnus*).  We now transform our `counts` into percentages to standardize across cores.  We can see what happens with *Alnus* on the west coast of North America during the Holocene:
+
+```{r alnus-data-plot}
+alnus.df = data.frame(alnus = c(tran(x=western.comp[[1]]$counts, method='percent')[,'Alnus'],
+                                tran(x=western.comp[[2]]$counts, method='percent')[,'Alnus']),
+                      ages  = c(western.comp[[1]]$sample.meta$Age,
+                                western.comp[[2]]$sample.meta$Age),
+                      site = c(rep('Marion', nrow(western.comp[[1]]$counts)),
+                               rep('Louise', nrow(western.comp[[2]]$counts))))
+
+plot(alnus~ages, data = alnus.df, col = alnus.df$site, pch = 19)
+```
+
+In this example we see that Marion Lake (red) maintains much higher proportions of *Alnus* throughout it's history, and has a rapid increase in *Alnus* pollen during the historical period.  This rapid shift in the last 200 years is likely as a result of rapid colonization by pioneer *Alnus rubra* following forest clearance in the lower mainland of British Columbia.
+
+### Pinus migration following the last Glacial Maximum
+Macdonald and Cwynar [-@macdonald1991post] used pollen percentage data for *Pinus* to map the northward migration of lodgepole pine (*Pinus contorta* var *latifolia*) following glaciation.  In their study a cutoff of 15% *Pinus* pollen is associated with presence at pollen sample sites.  Recent work by Strong and Hills [@strong2013holocene] has remapped the migration front using a lower pollen proportion (5%) and more sites.  Here, we attempt to replicate the analysis as an example both of the strengths of the package and limitations of paleoinformatic approaches.
+
+To begin we must define a spatial bounding box and a set of taxa of interest.  Strong and Hills [-@strong2013holocene] use a region approximately bounded by 54^o^N to the south and 65^o^N to the North, and from 110^o^W to 130^o^W.  We can use `get_site()` to find all sites within a bounding box:
+
+```{r knitr-opts-2, echo = FALSE, message = FALSE, warning=FALSE}
+# These are just some options I like to set - KR
+knitr::opts_chunk$set(
+  comment = "#>",
+  error = FALSE,
+  tidy = TRUE,
+  message = FALSE
+)
+```
+
+
+```{r load-pkgs-example-2, echo=TRUE, message=FALSE, warning=FALSE}
+#install.packages('ggmap', 'ggplot2', 'reshape2', 'plyr', 'Bchron', 'gridExtra')
+library("ggmap")
+library("ggplot2")
+library("reshape2")
+library("plyr")
+library("Bchron")
+library("gridExtra")
+
+all.sites <- get_site(loc = c(-140, 45, -110, 65))
+```
+
+
+Our code above returns a total of `r nrow(all.sites)` sites.  While `get_site` is similar to `get_dataset()`, `get_dataset()` can also limit the type of dataset, either by looking for specific taxa, or by describing the dataset type (*e.g.*, `'pollen'` or `'mammal'`).  In the next example we will look for all taxa beginning with *Pinus* in a pollen dataset within a bounding box corresponding to Washington State in the USA and British Columbia and the Yukon Territory in Canada.  We use the `*` wildcard to indicate any and all taxa with *Pinus* in their name:
+
+```{r all-datasets-pinus, echo=TRUE, message=FALSE, warning=FALSE}
+all.datasets <- get_dataset(loc = c(-140, 45, -110, 65),
+                            datasettype = 'pollen',
+                            taxonname = 'Pinus*')
+```
+
+The API tells us we now have `r length(all.datasets)` datasets from the original `r nrow(all.sites)` sites.  Many of the samples that are not included are pollen surface samples, or vertebrate fauna, meaning pollen core data comprises much less than half of the records.  Regardless, we now know that there is pollen core data from `r length(all.datasets)` sites and we can plot those sites over our original `r nrow(all.sites)`.
+
+```{r map-pinus-example, echo=TRUE, message=FALSE, warning=FALSE}
+map <- map_data('world')
+ggplot(data = data.frame(map), aes(x = long, y = lat)) + 
+  geom_polygon(aes(group = group), color = 'blue', alpha = 0.2) +
+  geom_point(data = all.sites, aes(x = long, y = lat)) +
+  geom_point(data = get_site(all.datasets),
+             aes(x = long, y = lat),
+             color = 2) +
+  xlab('Longitude West') + ylab('Latitude North') +
+  coord_map(projection = 'albers', lat0 = 40, lat1 = 65, 
+            xlim = c(-140, -110), ylim = c(45, 70))
+```
+
+So we see that there are a number of sites in the interior of British Columbia that have no core pollen.  For many of these cores pollen records exist.  This is an obvious limitation of the use of large datasets.  While many dataset have been entered into Neotoma, a large number have yet to make their way into the repository.  An advantage of the API-based analysis however is that analysis using Neotoma can be updated continuously as new sites are added.
+
+Let's get the data for each of the cores we have.  Because we have assigned the `"dataset"` class to the output of `get_dataset()` it means that the function `get_download()` can immediately recognize the `"dataset"` object and extract the dataset ID from it to use in obtaining full records from the API:
+
+```{r get-downloads-pinus, echo=TRUE, message=FALSE, warning=FALSE}
+#  Downloading the data may be time consuming, 
+#  particularly with a slow internet connection
+
+if (!file.exists("all.downloads.Rdata")){
+  all.downloads <- get_download(all.datasets, verbose = FALSE)
+  save(all.downloads, file="all.downloads.Rdata")
+} else {
+  load(file="all.downloads.Rdata")
+}
+```
+
+For our purposes we are really only interested in the percentage of *Pinus* in the core, so we can again compile the taxa using the 'P25' taxonomy [@gavin2003statistical].
+
+In this case the synonomy (not shown) appears to have been applied correctly (although we're really only interested in *Pinus*).  We now transform our `counts` into percentages to standardize across cores.  We can see what a single core looks like:
+
+```{r pinus-stratiplot, fig.height=3, fig.width=6, echo=TRUE, message=FALSE, warning=FALSE}
+
+compiled.cores <- compile_taxa(all.downloads, 'P25')
+core.pct       <- data.frame(tran(compiled.cores[[1]]$counts, method = "percent"))
+core.pct$age   <- compiled.cores[[1]]$sample.meta$Age
+
+#  Eliminate taxa with no samples greater than 4%.
+core.pct <- chooseTaxa(core.pct, max.abun = 4)
+
+#  Plotted using the Stratiplot function in 'analogue', very naive plotting for demonstration.
+Stratiplot(age ~ ., core.pct, sort = 'wa', type = 'poly')
+```
+
+Andy Lake [@szeicz1995late] shows changes through time, particularly for *Betula* and *Alnus*, but little *Pinus* pollen.
+
+Pollen data is found in the `counts` component of the `"download"`.  We want to determine which sample has the first local *Pinus* presence in each core using a cutoff of 5% [@strong2013holocene].  Programmatically we can find which rows in the *Pinus* column have presence over 5% and then find the highest row number since age increases with row number.
+
+```{r pinus-first-occur, echo=TRUE, fig.width=6, fig.height = 3, warning=FALSE}
+
+top.pinus <- function(x){
+  #  Convert the core data into proportions.
+  x.pct <- tran(x$counts, method = "proportion")
+  
+  #  Cores must span at least 5000 years (and have non NA dates), otherwise they 
+  #  date the arrival of Pinus too late!
+  old.enough <- max(x$sample.meta$Age) > 5000 & !all(is.na(x$sample.meta$Age))
+
+  #  Find the highest row index associated with Pinus presence over 5%
+  oldest.row <- ifelse(any(x.pct[, 'Pinus'] > .05 & old.enough), max(which(x.pct[, 'Pinus'] > .05)), 0)
+
+  #  return a data frame with site name and locations, and then the age and date type
+  #  associated with the oldest recorded Pinus presence.
+  #  We preserve date type since some records have ages in radiocarbon years.
+  if (oldest.row>0){
+    return(data.frame(site = x$metadata$site.data$sitename,
+               lat = x$metadata$site.data$lat,
+               long = x$metadata$site.data$long,
+               age = x$sample.meta$Age[oldest.row],
+               date = x$sample.meta$AgeType[oldest.row]))
+    } else {
+      return(NULL)
+  }
+}
+
+#  Apply the function 'top.pinus' to each core (here we use the plyr function ldply so we can
+#  pass in a list (compiled.cores) and return a data.frame.
+summary.pinus <- ldply(compiled.cores, top.pinus)
+
+#  Calibrate dates that are recorded in radiocarbon years. 
+#  In most cases the dating uncertainty is unknown. Here we assume a 100 year SD for calibration.
+#  This is likely too small for some earlier dates, but is good enough for this simple example.
+radio.years <- summary.pinus$date %in% 'Radiocarbon years BP'
+
+# Calibrate ages using BChronCalibrate from the BChron package:
+calibrated <- BchronCalibrate(summary.pinus$age[ radio.years ],
+                ageSds    = rep(100, sum(radio.years, na.rm=TRUE)),
+                calCurves = rep('intcal13',
+                                sum(radio.years, na.rm=TRUE)))
+
+#  Calibrated contains the full calibration curve for each date, we want the weighted mean:
+wmean.date <- function(x) sum(x$ageGrid*x$densities / sum(x$densities))
+
+summary.pinus$age[radio.years] <- sapply(calibrated, wmean.date)
+summary.pinus <- na.omit(summary.pinus)
+
+summary.pinus <- summary.pinus[!((summary.pinus$age < 2000) & (summary.pinus$long < -130)),]
+
+#  We're using a loess curve here but the curve can be improved by using a monotone spline.
+regress <- ggplot(summary.pinus, aes(x = lat, y = age)) +
+  geom_point(aes(color = age), size = 2) +
+  scale_y_reverse(expand = c(0,100)) +
+  xlab('Latitude North') + ylab('Years Before Present') +
+  geom_smooth(n = 40, method = 'loess') +
+  geom_rect(aes(xmin = 59, xmax = 60, ymin = 7000, ymax = 10000), color = 2, fill = 'blue', alpha = 0.01)
+
+mapped <- ggplot(data = data.frame(map), aes(x = long, y = lat)) + 
+  geom_polygon(aes(group = group), color='blue', alpha = 0.2) +
+  geom_point(data = summary.pinus, 
+             aes(x = long, y = lat, colour = age), size = 3) +
+    coord_map(projection = 'albers', lat0 = 40, lat1 = 65, 
+            xlim = c(-140, -110), ylim = c(40, 70)) +
+  theme(legend.position = 'none')
+
+grid.arrange(mapped, regress, nrow = 1)
+```
+
+And so we see a clear pattern of migration by *Pinus* in northwestern North America.  These results match up broadly with the findings of Strong and Hills [@strong2013holocene] who suggest that *Pinus* reached a northern extent between 59 and 60^o^N at approximately 7 - 10kyr as a result of geographic barriers.
+
+### Mammal Distributions in the Pleistocene
+
+Graham et al. [@graham1996spatial] looked for patterns of change in mammal distributions through the Pleistocene to modern era using fossil assemblages collated from FAUNMAP.  Using a range of data analysis techniques, they show that mammal species have responded in a Gleasonian manner to climate change since the late-Pleistocene.  Their results indicate some species migrating northward in response to warming climates, others staying relatively stable and some moving southward.  The FAUNMAP database has since been incorporated into Neotoma, so we test species distributional changes to demonstrate the utility of `neotoma` in analysing mammal distributions and change through time.
+
+First we need to obtain all fossil assemblages from Neotoma for vertabeate fauna, 
+```{r mammal-example, message=FALSE, warning=FALSE, echo=TRUE}
+#  Bounding box is effectively the continental USA, excluding Alaska.
+mam.set <- get_dataset(datasettype= 'vertebrate fauna', loc = c(-125, 24, -66, 49.5))
+
+#  Calling this many sites can be very time consuming.  It takes approximately an
+#  hour to run fully.
+if (!file.exists('mam.dl.Rdata')) {
+  mam.dl <- get_download(dataset = mam.set)
+  save(mam.dl, file = 'mam.dl.Rdata')
+} else {
+  load('mam.dl.Rdata')
+}
+```
+
+Now that we have all the sites, we need to bin them into dicrete time periods as in Graham et al. [@graham1996spatial].  To do that we first need to build a large table with time and `xy` coordinates for each site. Time data in `sample.meta` is not the same as for for pollen data, where many pollen sites contain an age (often mean age) and upper and lower bounds.  Most mammal sites have younger and older bounds, but no estimates of exact age.  Here we make the simplifying assumption that the age is equalt to the average of the younger and older bounds, although in practice estimating mammal age is typically more involved.
+
+```{r mammal-example-compile, echo = TRUE, message=FALSE, warning=FALSE}
+compiled.mam <- compile_downloads(mam.dl)
+
+#  We assign time bins to the data.  The command findInterval should tell us if it is
+#  in an inteval equivalent to the Modern (0 - 500ybp), Late Holocene (500 -
+#  4000ybp), Early-Mid Holocene (4kyr - 10kyr), Late Glacial (10kyr - 15kyr),
+#  Full Glacial (15kyr - 20kyr) or Late Pleistocene (20kyr+).
+time.bins <- c(500, 4000, 10000, 15000, 20000)
+
+#  This is not the best option, age bounds cross our pre-defined bins, however
+#  solving this is more complex than this example requires.
+mean.age <- rowMeans(compiled.mam[,c('ageold', 'ageyoung', 'age')], na.rm = TRUE)
+interval <- findInterval(mean.age, time.bins)
+
+periods <- c('Modern', 'Late Holocene', 'Early-Mid Holocene', 'Late Glacial', 'Full Glacial', 'Late Pleistocene')
+compiled.mam$ageInterval <- periods[interval+1]
+
+#  The melt and dcast commands are in reshape2
+mam.melt <- melt(compiled.mam,
+                 measure.vars = 10:(ncol(compiled.mam)-1),
+                 na.rm = TRUE,
+                 factorsAsStrings = TRUE)
+
+mam.melt$ageInterval <- factor(mam.melt$ageInterval, levels = periods)
+
+mam.lat <- dcast(data = mam.melt, variable ~ ageInterval, value.var = 'lat' ,
+                 fun.aggregate = mean, drop = TRUE)[,c(1,3,5,6)]
+
+#  We only want taxa that appear at all time periods:
+mam.lat <- mam.lat[rowSums(is.na(mam.lat)) == 0, ]
+
+#  Group the samples based on the range & direction (N vs S) of migration.
+mam.lat$grouping <- factor(findInterval(mam.lat[,2] - mam.lat[,4],
+                                        c(-11, -1, 1, 20)),
+                           labels = c('Southward', 'Stationary', 'Northward'))
+
+
+mam.lat.melt                <- melt(mam.lat) 
+colnames(mam.lat.melt)[2:3] <- c('cluster', 'Era')
+```
+
+```{r mammal-example-plot, fig.width=7, fig.height=4, echo=TRUE, warning=FALSE}
+ggplot(mam.lat.melt, aes(x = Era, y = value)) + 
+  geom_path(aes(group = variable, color = cluster)) + 
+  facet_wrap(~cluster) +
+  scale_x_discrete(expand = c(.1,0)) +
+  ylab('Mean Latitude of Occurance') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+```
+
+In Figure XX, we see patterns emerge from this simple analysis - species are not uniformly responding to climatic warming following deglaciation.  These patterns are consistent with those in Graham et al. [@graham1996spatial] who showed that taxon response is largely individualistic.  While we do see the pre-ponderance of migration is northward, a number of taxa show little migratory response and a number show southward migration.  For the sake of brevity, we do not consider movement to the west or east, and ignore potential issues associated with the complex topography of the mountainous west. In this example we have demonstrate that `neotoma` can support research that is reproducible and robust.  
+
+Conclusion
+==========================
+The increasing pressure to develop large-scale databases requires the development of tools that can access the data and can leave reproducible analyses so that others can build from and verify results.
+
+Here we present the `neotoma` package for R [@RCoreTeam2014] and use examples from the literature to show its utility.  `neotoma` joins a number of other existing packages that are designed either to exploit exisiting paleoecological datasets [@paleofire2014] or to manipulate paleoecological data [@analogue2013; @analogue2007; @rioja2013].  The `neotoma` package itself is available either from the CRAN repository, or from GitHub where ongoing development continues with help from the public.
+
+The use of the Neotoma database continues to expand, and here we provide researchers with the tools to move analytics to an open framework using R [@RCoreTeam2014] so that methods can be fully visible.  *Add text here about reproducibility, check the Uhen papers & stuff too.*
+
+
+References
+==========================================
