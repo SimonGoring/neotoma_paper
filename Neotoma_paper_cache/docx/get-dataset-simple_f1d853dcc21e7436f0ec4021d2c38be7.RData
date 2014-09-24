@@ -1,0 +1,16 @@
+RDA2
+A
+2
+196865
+131840
+1026
+1
+262153
+77
+.Neotoma_paper_cache/docx/get-dataset-simple_f1d853dcc21e7436f0ec4021d2c38be7
+16
+1
+262153
+91
+\n```r\nwestern.sites\040<-\040rbind(marion,\040louise)\nwestern.data\040<-\040get_dataset(western.sites)\n```
+254

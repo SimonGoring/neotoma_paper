@@ -20,8 +20,12 @@ knitr::opts_chunk$set(
   # Note: I have set EVAL to false just to make the bib work. 
   # Once the bib is fixed, you'll set this to TRUE or just delete this line.
   eval = TRUE,
+  cache = TRUE,
   tidy = TRUE
 )
+
+library(pander)
+panderOptions('table.style', 'rmarkdown')
 ```
 
 Abstract:
@@ -111,35 +115,47 @@ We have `r length(western.dl)` records downloaded, one for Marion Lake and one f
 In this case we are interested in the percentage of *Alnus* in the core, so we can compile the taxa to the most straightforward taxonomy, 'P25' from @gavin2003statistical.  The first record downloaded is Marion Lake.  We can see in the `"download"` the `taxon.table` has 5 columns:
 
 
-```{r kable-western, results='as is'}
-kable(head(western.dl[[1]]$taxon.list))
+```{r kable-western-codeonly, results='asis', eval = FALSE}
+head(western.dl[[1]]$taxon.list)
+```
+
+```{r kable-western, results='asis', echo = FALSE}
+pandoc.table(head(western.dl[[1]]$taxon.list), justify = "left")
 ```
 
 Once we apply `compile_taxa()` to the dataset using the 'P25' compiler:
 
 ```{r compile-taxa-western, echo=TRUE, message=FALSE, warning=FALSE}
 western.comp <- compile_taxa(western.dl, list.name = 'P25')
+names(western.comp) <- c("marion", "louise")
 ```
 
 we can see that the `taxon.table` now has an extra column (note that we've removed several columns to improve readability here).
 
-```{r kable-wstern-2, results = 'as.is'}
-kable(head(western.comp[[1]]$taxon.list[,c(1, 5, 6)]))
+# This block shows just the code necesssary but skips the formatting parts needed to make the table play nice with pandoc
+```{r kable-wstern-2-codeonly, results = 'asis', echo = TRUE, eval = FALSE}
+head(western.comp[[1]]$taxon.list[,c(1, 5, 6)])
+```
+```{r kable-wstern-2, results = 'asis', echo = FALSE}
+pandoc.table(head(western.comp[[1]]$taxon.list[,c(1, 5, 6)]), justify = "left")
 ```
 
 `compile_taxa()` returns an object that looks exactly like the `"download"` object passed to it, however, the `taxon.list` data frame gains a column named `compressed` that links the original taxonomy to the revised taxonomy.  This acts as an important check for researchers who choose to use this package for large-scale analysis.  Here we see that all the spore types listed have been lumped into a single *Other*.  The `compile_taxa()` function can also accept user-defined tables for aggregation if the provided compilations are not acceptable.
 
 In this case the counts look reasonable, and the synonomy appears to have been applied correctly (although we're really only interested in *Alnus*).  We now transform our `counts` into percentages to standardize across cores.  We can see what happens with *Alnus* on the west coast of North America during the Holocene:
 
-```{r alnus-data-plot}
-alnus.df = data.frame(alnus = c(tran(x=western.comp[[1]]$counts, method='percent')[,'Alnus'],
-                                tran(x=western.comp[[2]]$counts, method='percent')[,'Alnus']),
-                      ages  = c(western.comp[[1]]$sample.meta$Age,
-                                western.comp[[2]]$sample.meta$Age),
-                      site = c(rep('Marion', nrow(western.comp[[1]]$counts)),
-                               rep('Louise', nrow(western.comp[[2]]$counts))))
+```{r alnus-data-plot, tidy = FALSE}
 
-plot(alnus~ages, data = alnus.df, col = alnus.df$site, pch = 19)
+marion.alnus <- tran(x = western.comp$marion$counts, method = 'percent')[,'Alnus']
+louise.alnus <- tran(x = western.comp$louise$counts, method = 'percent')[,'Alnus']
+
+alnus.df <- data.frame(alnus = c(marion.alnus, louise.alnus),
+                      ages  = c(western.comp$marion$sample.meta$Age,
+                                western.comp$louise$sample.meta$Age),
+                      site = c(rep('Marion', length(marion.alnus)),
+                               rep('Louise', length(louise.alnus))))
+
+plot(alnus ~ ages, data = alnus.df, col = alnus.df$site, pch = 19)
 ```
 
 In this example we see that Marion Lake (red) maintains much higher proportions of *Alnus* throughout it's history, and has a rapid increase in *Alnus* pollen during the historical period.  This rapid shift in the last 200 years is likely as a result of rapid colonization by pioneer *Alnus rubra* following forest clearance in the lower mainland of British Columbia.

@@ -1,0 +1,16 @@
+RDA2
+A
+2
+196865
+131840
+1026
+1
+262153
+70
+.Neotoma_paper_cache/docx/load-pkgs-1_fdd7bfb0cb4bd6755e9c49952711ee20
+16
+1
+262153
+594
+\n```r\nlibrary(\"neotoma\")\nlibrary(\"analogue\")\n```\n\n```\n\040\040Loading\040required\040package:\040vegan\n\040\040Loading\040required\040package:\040permute\n\040\040\n\040\040Attaching\040package:\040\'permute\'\n\040\040\n\040\040The\040following\040object\040is\040masked\040from\040\'package:devtools\':\n\040\040\n\040\040\040\040\040\040check\n\040\040\n\040\040Loading\040required\040package:\040lattice\n\040\040This\040is\040vegan\0402.0-10\n\040\040This\040is\040analogue\0400.14-0\n```\n\n```r\nlibrary(\"knitr\")\nmarion\040<-\040get_site(sitename\040=\040\"Marion\040Lake%\")\n```\n\n```\n\040\040The\040API\040call\040was\040successful,\040you\040have\040returned\040\0401\040records.\n```\n\n```r\nlouise\040<-\040get_site(sitename\040=\040\"Louise\040Pond%\")\n```\n\n```\n\040\040The\040API\040call\040was\040successful,\040you\040have\040returned\040\0401\040records.\n```
+254
