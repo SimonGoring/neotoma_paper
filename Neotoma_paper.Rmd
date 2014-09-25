@@ -277,16 +277,17 @@ top.pinus <- function(x) {
   #  return a data frame with site name and locations, and then the age and date type
   #  associated with the oldest recorded Pinus presence.
   #  We preserve date type since some records have ages in radiocarbon years.
-  if (oldest.row > 0) {
-    return(data.frame(site = x$metadata$site.data$sitename,
-                      lat = x$metadata$site.data$lat,
-                      long = x$metadata$site.data$long,
-                      age = x$sample.meta$Age[oldest.row],
-                      date = x$sample.meta$AgeType[oldest.row]))
-    } else {
+  out <-if (oldest.row > 0) {
+      data.frame(site = x$metadata$site.data$sitename,
+                 lat = x$metadata$site.data$lat,
+                 long = x$metadata$site.data$long,
+                 age = x$sample.meta$Age[oldest.row],
+                 date = x$sample.meta$AgeType[oldest.row])
+  } else {
       NULL
-	  }
-	}
+  }
+  out                                   # return
+}
 
 #  Apply the function 'top.pinus' to each core (here we use the plyr function ldply so we can
 #  pass in a list (compiled.cores) and return a data.frame.
