@@ -318,15 +318,15 @@ regress <- ggplot(summary.pinus, aes(x = lat, y = age)) +
   geom_point(aes(color = age), size = 2) +
   scale_y_reverse(expand = c(0,100)) +
   xlab('Latitude North') + ylab('Years Before Present') +
-  geom_smooth(n=40, method = 'loess') +
+  geom_smooth(n = 40, method = 'loess') +
   geom_rect(aes(xmin = 59, xmax = 60, ymin = 7000, ymax = 10000), 
   				color = 2, fill = 'blue', alpha = 0.01)
 
 mapped <- ggplot(data = data.frame(map), aes(long, lat)) + 
-  geom_polygon(aes(group=group), color='blue', alpha=0.2) +
+  geom_polygon(aes(group = group), color = 'blue', alpha = 0.2) +
   geom_point(data = summary.pinus, 
              aes(x = long, y = lat, colour = age), size = 3) +
-    coord_map(projection='albers', lat0=40, lat1=65, 
+    coord_map(projection = 'albers', lat0 = 40, lat1 = 65, 
             xlim = c(-140, -110), ylim = c(40, 70)) +
   theme(legend.position = 'none')
 
@@ -348,7 +348,7 @@ mam.set <- get_dataset(datasettype= 'vertebrate fauna', loc = c(-125, 24, -66, 4
 #  hour to run fully.
 if (!file.exists('mam.dl.Rdata')){
   mam.dl <- get_download(dataset = mam.set)
-  save(mam.dl, file='mam.dl.Rdata')
+  save(mam.dl, file = 'mam.dl.Rdata')
 } else {
   load('mam.dl.Rdata')
 }
@@ -393,7 +393,7 @@ mam.lat <- dcast(data = mam.melt, variable ~ ageInterval, value.var = 'lat' ,
 mam.lat <- mam.lat[rowSums(is.na(mam.lat)) == 0, ]
 
 #  Group the samples based on the range & direction (N vs S) of migration.
-mam.lat$grouping <- factor(findInterval(mam.lat[,2] - mam.lat[,4],
+mam.lat$grouping <- factor(findInterval(mam.lat[,2] - mam.lat[, 4],
                                         c(-11, -1, 1, 20)),
                            labels = c('Southward', 'Stationary', 'Northward'))
 
@@ -404,8 +404,8 @@ mam.lat.melt <- melt(mam.lat); colnames(mam.lat.melt)[2:3] <- c('cluster', 'Era'
 ```{r mammal-example-plot, fig.width = 7, fig.height = 4, echo = TRUE, warning = FALSE, tidy = FALSE}
 ggplot(mam.lat.melt, aes(x = Era, y = value)) + 
   geom_path(aes(group = variable, color = cluster)) + 
-  facet_wrap(~cluster) +
-  scale_x_discrete(expand=c(.1,0)) +
+  facet_wrap(~ cluster) +
+  scale_x_discrete(expand = c(.1,0)) +
   ylab('Mean Latitude of Occurance') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
