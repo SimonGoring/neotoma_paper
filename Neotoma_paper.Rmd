@@ -334,7 +334,7 @@ mapped <- ggplot(data = data.frame(map), aes(long, lat)) +
 grid.arrange(mapped, regress, nrow=1)
 ```
 
-And so we see a clear pattern of migration by *Pinus* in northwestern North America.  These results match up broadly with the findings of Strong and Hills [@strong2013holocene] who suggest that *Pinus* reached a northern extent between 59 and 60^o^N at approximately 7 - 10kyr as a result of geographic barriers.
+And so we see a clear pattern of migration by *Pinus* in northwestern North America.  These results match up broadly with the findings of Strong and Hills [@strong2013holocene] who suggest that *Pinus* reached a northern extent between 59 and 60^o^N at approximately 7--10kyr as a result of geographic barriers.
 
 ### Mammal Distributions in the Pleistocene
 
