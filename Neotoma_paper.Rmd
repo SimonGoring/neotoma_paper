@@ -129,7 +129,7 @@ In this case we are interested in the percentage of *Alnus* in the core, so we c
 head(western.dl[[1]]$taxon.list)
 ```
 
-```{r kable-western, results='asis', echo = FALSE}
+```{r kable-western, results = 'asis', echo = FALSE}
 df <- unrowname(western.dl[[1]]$taxon.list)
 pandoc.table(head(df), justify = "left")
 ```
@@ -162,9 +162,9 @@ marion.alnus <- tran(x = western.comp$marion$counts, method = 'percent')[,'Alnus
 louise.alnus <- tran(x = western.comp$louise$counts, method = 'percent')[,'Alnus']
 
 alnus.df <- data.frame(alnus = c(marion.alnus, louise.alnus),
-                      ages  = c(western.comp$marion$sample.meta$Age,
+                       ages  = c(western.comp$marion$sample.meta$Age,
                                 western.comp$louise$sample.meta$Age),
-                      site = c(rep('Marion', length(marion.alnus)),
+                       site = c(rep('Marion', length(marion.alnus)),
                                rep('Louise', length(louise.alnus))))
 
 plot(alnus ~ ages, data = alnus.df, col = alnus.df$site, pch = 19)
@@ -207,7 +207,7 @@ ggplot(data = data.frame(map), aes(long, lat)) +
   geom_polygon(aes(group=group), color = 'steelblue', alpha = 0.2) +
   geom_point(data = all.sites, aes(x = long, y = lat)) +
   geom_point(data = get_site(all.datasets),
-  	aes(x = long, y = lat), color = 2) +
+  aes(x = long, y = lat), color = 2) +
   xlab('Longitude West') + 
   ylab('Latitude North') +
   coord_map(projection = 'albers', lat0 = 40, lat1 = 65, 
@@ -222,12 +222,12 @@ Let's get the data for each of the cores we have.  Because we have assigned the 
 #  This step may be time consuming when you run it, particularly if you have a
 #  slow internet connection.
 
-if (!file.exists("all.downloads.Rdata")){
+if (!file.exists("all.downloads.Rdata")) {
   all.downloads <- get_download(all.datasets, verbose = FALSE)
   save(all.downloads, file="all.downloads.Rdata")
-} else {
-  load(file="all.downloads.Rdata")
-}
+  } else {
+  load(file = "all.downloads.Rdata")
+  }
 ```
 
 For our purposes we are really only interested in the percentage of *Pinus* in the core, so we can again compile the taxa using the 'P25' taxonomy [@gavin2003statistical].
@@ -264,8 +264,9 @@ top.pinus <- function(x) {
   old.enough <- max(x$sample.meta$Age) > 5000 & !all(is.na(x$sample.meta$Age))
 
   #  Find the highest row index associated with Pinus presence over 5%
-  oldest.row <- ifelse(any(x.pct[, 'Pinus'] > .05 & old.enough), 
-  					   max(which(x.pct[, 'Pinus'] > .05)), 0)
+  oldest.row <- ifelse(any(x.pct[, 'Pinus'] > .05 & old.enough),
+                       max(which(x.pct[, 'Pinus'] > .05)),
+                       0)
 
   #  return a data frame with site name and locations, and then the age and date type
   #  associated with the oldest recorded Pinus presence.
@@ -278,8 +279,8 @@ top.pinus <- function(x) {
                date = x$sample.meta$AgeType[oldest.row]))
     } else {
       NULL
-  }
-}
+	  }
+	}
 
 #  Apply the function 'top.pinus' to each core (here we use the plyr function ldply so we can
 #  pass in a list (compiled.cores) and return a data.frame.
@@ -307,22 +308,23 @@ summary.pinus <- summary.pinus[!((summary.pinus$age < 2000) & (summary.pinus$lon
 
 #  We're using a loess curve here but the curve can be improved by using a monotone spline.
 regress <- ggplot(summary.pinus, aes(x = lat, y = age)) +
-  geom_point(aes(color = age), size = 2) +
-  scale_y_reverse(expand = c(0,100)) +
-  xlab('Latitude North') + ylab('Years Before Present') +
-  geom_smooth(n = 40, method = 'loess') +
-  geom_rect(aes(xmin = 59, xmax = 60, ymin = 7000, ymax = 10000), 
-  				color = 2, fill = 'blue', alpha = 0.01)
+  				  geom_point(aes(color = age), size = 2) +
+  				  scale_y_reverse(expand = c(0, 100)) +
+  				  xlab('Latitude North') + 
+  				  ylab('Years Before Present') +
+  				  geom_smooth(n = 40, method = 'loess') +
+  				  geom_rect(aes(xmin = 59, xmax = 60, ymin = 7000, ymax = 10000), 
+  				  color = 2, fill = 'blue', alpha = 0.01)
 
 mapped <- ggplot(data = data.frame(map), aes(long, lat)) + 
-  geom_polygon(aes(group = group), color = 'steelblue', alpha = 0.2) +
-  geom_point(data = summary.pinus, 
-             aes(x = long, y = lat, colour = age), size = 3) +
-    coord_map(projection = 'albers', lat0 = 40, lat1 = 65, 
-            xlim = c(-140, -110), ylim = c(40, 70)) +
-  theme(legend.position = 'none')
+  				 geom_polygon(aes(group = group), color = 'steelblue', alpha = 0.2) +
+  				 geom_point(data = summary.pinus, 
+                 aes(x = long, y = lat, colour = age), size = 3) +
+    			 coord_map(projection = 'albers', lat0 = 40, lat1 = 65, 
+            	 xlim = c(-140, -110), ylim = c(40, 70)) +
+  				 theme(legend.position = 'none')
 
-grid.arrange(mapped, regress, nrow=1)
+  grid.arrange(mapped, regress, nrow=1)
 ```
 
 And so we see a clear pattern of migration by *Pinus* in northwestern North America.  These results match up broadly with the findings of Strong and Hills [@strong2013holocene] who suggest that *Pinus* reached a northern extent between 59 and 60^o^N at approximately 7 - 10kyr as a result of geographic barriers.
