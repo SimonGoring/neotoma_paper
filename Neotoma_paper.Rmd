@@ -311,7 +311,7 @@ wmean.date <- function(x)sum(x$ageGrid*x$densities / sum(x$densities))
 summary.pinus$age[radio.years] <- sapply(calibrated, wmean.date)
 summary.pinus <- na.omit(summary.pinus)
 
-summary.pinus <- summary.pinus[!((summary.pinus$age < 2000) & (summary.pinus$long < -130)),]
+summary.pinus  <- subset(summary.pinus, subset = !(age < 2000  & long < -130))
 
 #  We're using a loess curve here but the curve can be improved by using a monotone spline.
 regress <- ggplot(summary.pinus, aes(x = lat, y = age)) +
