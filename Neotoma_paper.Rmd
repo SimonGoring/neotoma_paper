@@ -385,7 +385,7 @@ mam.melt <- melt(compiled.mam,
                  na.rm = TRUE,
                  factorsAsStrings = TRUE)
 
-mam.melt$ageInterval <- factor(mam.melt$ageInterval, levels = periods)
+mam.melt <- transform(mam.melt, ageInterval = factor(ageInterval, levels = periods))
 
 mam.lat <- dcast(data = mam.melt, variable ~ ageInterval, value.var = 'lat' ,
                  fun.aggregate = mean, drop = TRUE)[,c(1, 3, 5, 6)]
