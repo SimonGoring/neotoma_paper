@@ -12,6 +12,8 @@ csl: harvard1.csl
 neotoma: A Programmatic Interface to the Neotoma Paleoecological Database
 ========================================================
 
+<!--
+
 ```{r setup-knitr, echo = FALSE, message = FALSE}
 # Simon: Note that these are global options that apply to all chunks below.
 knitr::opts_chunk$set(
@@ -26,9 +28,13 @@ knitr::opts_chunk$set(
   # I'll file a bug PR with knitr
 )
 
+
+
 library(pander)
 panderOptions('table.style', 'rmarkdown')
 ```
+-->
+
 
 Abstract:
 -------------------
