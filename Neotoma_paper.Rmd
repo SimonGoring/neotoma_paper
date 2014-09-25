@@ -12,6 +12,8 @@ csl: harvard1.csl
 neotoma: A Programmatic Interface to the Neotoma Paleoecological Database
 ========================================================
 
+<!--
+
 ```{r setup-knitr, echo = FALSE, message = FALSE}
 # Simon: Note that these are global options that apply to all chunks below.
 knitr::opts_chunk$set(
@@ -25,6 +27,8 @@ knitr::opts_chunk$set(
   # Note to @gavinsimpson, I think this is now a knitr issue.
   # I'll file a bug PR with knitr
 )
+
+-->
 
 library(pander)
 panderOptions('table.style', 'rmarkdown')
@@ -273,10 +277,10 @@ top.pinus <- function(x) {
   #  We preserve date type since some records have ages in radiocarbon years.
   if (oldest.row > 0) {
     return(data.frame(site = x$metadata$site.data$sitename,
-               lat = x$metadata$site.data$lat,
-               long = x$metadata$site.data$long,
-               age = x$sample.meta$Age[oldest.row],
-               date = x$sample.meta$AgeType[oldest.row]))
+                      lat = x$metadata$site.data$lat,
+                      long = x$metadata$site.data$long,
+                      age = x$sample.meta$Age[oldest.row],
+                      date = x$sample.meta$AgeType[oldest.row]))
     } else {
       NULL
 	  }
@@ -308,21 +312,21 @@ summary.pinus <- summary.pinus[!((summary.pinus$age < 2000) & (summary.pinus$lon
 
 #  We're using a loess curve here but the curve can be improved by using a monotone spline.
 regress <- ggplot(summary.pinus, aes(x = lat, y = age)) +
-  				  geom_point(aes(color = age), size = 2) +
-  				  scale_y_reverse(expand = c(0, 100)) +
-  				  xlab('Latitude North') + 
-  				  ylab('Years Before Present') +
-  				  geom_smooth(n = 40, method = 'loess') +
-  				  geom_rect(aes(xmin = 59, xmax = 60, ymin = 7000, ymax = 10000), 
-  				  color = 2, fill = 'blue', alpha = 0.01)
+                  geom_point(aes(color = age), size = 2) +
+                  scale_y_reverse(expand = c(0, 100)) +
+                  xlab('Latitude North') + 
+                  ylab('Years Before Present') +
+                  geom_smooth(n = 40, method = 'loess') +
+                  geom_rect(aes(xmin = 59, xmax = 60, ymin = 7000, ymax = 10000), 
+                  color = 2, fill = 'blue', alpha = 0.01)
 
 mapped <- ggplot(data = data.frame(map), aes(long, lat)) + 
-  				 geom_polygon(aes(group = group), color = 'steelblue', alpha = 0.2) +
-  				 geom_point(data = summary.pinus, 
+                 geom_polygon(aes(group = group), color = 'steelblue', alpha = 0.2) +
+                 geom_point(data = summary.pinus, 
                  aes(x = long, y = lat, colour = age), size = 3) +
-    			 coord_map(projection = 'albers', lat0 = 40, lat1 = 65, 
-            	 xlim = c(-140, -110), ylim = c(40, 70)) +
-  				 theme(legend.position = 'none')
+                 coord_map(projection = 'albers', lat0 = 40, lat1 = 65, 
+                 xlim = c(-140, -110), ylim = c(40, 70)) +
+                 theme(legend.position = 'none')
 
   grid.arrange(mapped, regress, nrow=1)
 ```
@@ -365,11 +369,11 @@ mean.age <- rowMeans(compiled.mam[,c('ageold', 'ageyoung', 'age')], na.rm = TRUE
 interval <- findInterval(mean.age, time.bins)
 
 periods <- c('Modern', 
-			 'Late Holocene', 
-			 'Early-Mid Holocene', 
-			 'Late Glacial', 
-			 'Full Glacial', 
-			 'Late Pleistocene')
+             'Late Holocene', 
+             'Early-Mid Holocene', 
+             'Late Glacial', 
+             'Full Glacial', 
+             'Late Pleistocene')
 compiled.mam$ageInterval <- periods[interval + 1]
 
 #  The melt and dcast commands are in reshape2
