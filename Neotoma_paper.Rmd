@@ -134,7 +134,7 @@ pandoc.table(head(df), justify = "left")
 
 Once we apply `compile_taxa()` to the dataset using the 'P25' compiler:
 
-```{r compile-taxa-western, echo = TRUE, message=FALSE, warning = FALSE}
+```{r compile-taxa-western, echo = TRUE, message = FALSE, warning = FALSE}
 western.comp <- compile_taxa(western.dl, list.name = 'P25')
 names(western.comp) <- c("marion", "louise")
 ```
@@ -154,7 +154,7 @@ pandoc.table(head(western.comp[[1]]$taxon.list[,c(1, 5, 6)]), justify = "left")
 
 In this case the counts look reasonable, and the synonomy appears to have been applied correctly (although we're really only interested in *Alnus*).  We now transform our `counts` into percentages to standardize across cores.  We can see what happens with *Alnus* on the west coast of North America during the Holocene:
 
-```{r alnus-data-plot, tidy = FALSE}
+```{r alnus-data-plot}
 
 marion.alnus <- tran(x = western.comp$marion$counts, method = 'percent')[,'Alnus']
 louise.alnus <- tran(x = western.comp$louise$counts, method = 'percent')[,'Alnus']
@@ -209,7 +209,7 @@ all.datasets <- get_dataset(loc = c(-140, 45, -110, 65),
 
 The API tells us we now have `r length(all.datasets)` datasets from the original `r nrow(all.sites)` sites.  Many of the samples that are not included are pollen surface samples, or vertebrate fauna, meaning pollen core data comprises much less than half of the records.  Regardless, we now know that there is pollen core data from `r length(all.datasets)` sites and we can plot those sites over our original `r nrow(all.sites)`.
 
-```{r map-pinus-example, echo = TRUE, message=FALSE, warning = FALSE, tidy = FALSE}
+```{r map-pinus-example, echo = TRUE, message = FALSE, warning = FALSE}
 map <- map_data('world')
 ggplot(data = data.frame(map), aes(long, lat)) + 
   geom_polygon(aes(group=group), color = 'steelblue', alpha = 0.2) +
@@ -242,7 +242,7 @@ For our purposes we are really only interested in the percentage of *Pinus* in t
 
 In this case the synonomy (not shown) appears to have been applied correctly (although we're really only interested in *Pinus*).  We now transform our `counts` into percentages to standardize across cores.  We can see what a single core looks like:
 
-```{r pinus-stratiplot, fig.height=3, fig.width=6, echo = TRUE, message=FALSE, warning = FALSE, tidy = FALSE}
+```{r pinus-stratiplot, fig.height = 3, fig.width = 6, message = FALSE, warning = FALSE}
 
 compiled.cores <- compile_taxa(all.downloads, 'P25')
 
@@ -261,7 +261,7 @@ Andy Lake [@szeicz1995late] shows changes through time, particularly for *Betula
 
 Pollen data is found in the `counts` component of the `"download"`.  We want to determine which sample has the first local *Pinus* presence in each core using a cutoff of 5% [@strong2013holocene].  Programmatically we can find which rows in the *Pinus* column have presence over 5% and then find the highest row number since age increases with row number.
 
-```{r pinus-first-occur, echo = TRUE, fig.width = 6, fig.height  =  3, warning = FALSE, tidy = FALSE}
+```{r pinus-first-occur, echo = TRUE, fig.width = 6, fig.height = 3, warning = FALSE}
 
 top.pinus <- function(x) {
   #  Convert the core data into proportions.
@@ -340,7 +340,7 @@ And so we see a clear pattern of migration by *Pinus* in northwestern North Amer
 Graham et al. [@graham1996spatial] look for patterns of change in mammal distributions through the Pleistocene to modern era using fossil assemblages collated from FAUNMAP.  Using involved data analysis methods, they show that mammal species have responded in a Gleasonian manner to climate change since the late-Pleistocene.  Their results indicate some species migrating northward in response to warming climates, others staying relatively stable and some moving southward.  Since FAUNMAP has been incorporated into Neotoma we aim to replicate tests of species distributional changes in a straightforward manner to demonstrate the utility of `neotoma` in analysing mammal distributions and change through time.
 
 First we need to obtain all fossil assemblages from Neotoma for vertabeate fauna, 
-```{r mammal-example, message=FALSE, warning = FALSE, echo = TRUE}
+```{r mammal-example, message = FALSE, warning = FALSE, echo = TRUE}
 #  Bounding box is effectively the continental USA, excluding Alaska.
 mam.set <- get_dataset(datasettype= 'vertebrate fauna', loc = c(-125, 24, -66, 49.5))
 
@@ -356,7 +356,7 @@ if (!file.exists('mam.dl.Rdata')){
 
 So, now we have all the sites, we need to bin them into time periods as in Graham et al. [@graham1996spatial].  To do that we first need to build a large table with time and `xy` coordinates for each site. Time data in `sample.meta` is not the same as for for pollen data, where many pollen sites contain an age (often mean age) and upper and lower bounds.  Most mammal sites have younger and older bounds, but no estimates of exact age.  In this case we take a short-cut and simply average the younger and older bounds to save the reader from having to examine too much code.
 
-```{r mammal-example-compile, echo = TRUE, message = FALSE, warning = FALSE, tidy = FALSE}
+```{r mammal-example-compile, echo = TRUE, message = FALSE, warning = FALSE}
 compiled.mam <- compile_downloads(mam.dl)
 
 #  We assign time bins to the data.  The command findInterval should tell us if it is
@@ -401,7 +401,7 @@ mam.lat$grouping <- factor(findInterval(mam.lat[,2] - mam.lat[, 4],
 mam.lat.melt <- melt(mam.lat); colnames(mam.lat.melt)[2:3] <- c('cluster', 'Era')
 ```
 
-```{r mammal-example-plot, fig.width = 7, fig.height = 4, echo = TRUE, warning = FALSE, tidy = FALSE}
+```{r mammal-example-plot, fig.width = 7, fig.height = 4, echo = TRUE, warning = FALSE}
 ggplot(mam.lat.melt, aes(x = Era, y = value)) + 
   geom_path(aes(group = variable, color = cluster)) + 
   facet_wrap(~ cluster) +
