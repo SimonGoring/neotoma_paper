@@ -22,6 +22,8 @@ knitr::opts_chunk$set(
   eval = TRUE,
   cache = TRUE,
   tidy = FALSE
+  # Note to @gavinsimpson, I think this is now a knitr issue.
+  # I'll file a bug PR with knitr
 )
 
 library(pander)
@@ -175,16 +177,6 @@ Macdonald and Cwynar [-@macdonald1991post] used pollen percentage data for *Pinu
 
 To begin we must define a spatial bounding box and a set of taxa of interest.  Strong and Hills [-@strong2013holocene] use a region approximately bounded by 54^o^N to the south and 65^o^N to the North, and from 110^o^W to 130^o^W.  We can use `get_site()` to find all sites within a bounding box:
 
-```{r knitr-opts-2, echo = FALSE, message = FALSE, warning = FALSE}
-# These are just some options I like to set - KR
-knitr::opts_chunk$set(
-  comment = "#>",
-  error = FALSE,
-  tidy = TRUE,
-  message = FALSE
-)
-```
-
 
 ```{r load-pkgs-example-2, echo = TRUE, message=FALSE, warning = FALSE}
 #install.packages('ggmap', 'ggplot2', 'reshape2', 'plyr', 'Bchron', 'gridExtra')
@@ -323,7 +315,7 @@ regress <- ggplot(summary.pinus, aes(x = lat, y = age)) +
   				color = 2, fill = 'blue', alpha = 0.01)
 
 mapped <- ggplot(data = data.frame(map), aes(long, lat)) + 
-  geom_polygon(aes(group = group), color = 'blue', alpha = 0.2) +
+  geom_polygon(aes(group = group), color = 'steelblue', alpha = 0.2) +
   geom_point(data = summary.pinus, 
              aes(x = long, y = lat, colour = age), size = 3) +
     coord_map(projection = 'albers', lat0 = 40, lat1 = 65, 
