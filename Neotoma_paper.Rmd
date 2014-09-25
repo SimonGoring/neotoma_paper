@@ -128,7 +128,7 @@ head(western.dl[[1]]$taxon.list)
 ```
 
 ```{r kable-western, results='asis', echo = FALSE}
-df <- plyr::unrowname(western.dl[[1]]$taxon.list)
+df <- unrowname(western.dl[[1]]$taxon.list)
 pandoc.table(head(df), justify = "left")
 ```
 
