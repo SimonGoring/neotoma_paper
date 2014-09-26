@@ -277,16 +277,17 @@ top.pinus <- function(x) {
   #  return a data frame with site name and locations, and then the age and date type
   #  associated with the oldest recorded Pinus presence.
   #  We preserve date type since some records have ages in radiocarbon years.
-  if (oldest.row > 0) {
-    return(data.frame(site = x$metadata$site.data$sitename,
-                      lat = x$metadata$site.data$lat,
-                      long = x$metadata$site.data$long,
-                      age = x$sample.meta$Age[oldest.row],
-                      date = x$sample.meta$AgeType[oldest.row]))
-    } else {
+  out <-if (oldest.row > 0) {
+      data.frame(site = x$metadata$site.data$sitename,
+                 lat = x$metadata$site.data$lat,
+                 long = x$metadata$site.data$long,
+                 age = x$sample.meta$Age[oldest.row],
+                 date = x$sample.meta$AgeType[oldest.row])
+  } else {
       NULL
-	  }
-	}
+  }
+  out                                   # return
+}
 
 #  Apply the function 'top.pinus' to each core (here we use the plyr function ldply so we can
 #  pass in a list (compiled.cores) and return a data.frame.
@@ -310,7 +311,7 @@ wmean.date <- function(x)sum(x$ageGrid*x$densities / sum(x$densities))
 summary.pinus$age[radio.years] <- sapply(calibrated, wmean.date)
 summary.pinus <- na.omit(summary.pinus)
 
-summary.pinus <- summary.pinus[!((summary.pinus$age < 2000) & (summary.pinus$long < -130)),]
+summary.pinus  <- subset(summary.pinus, subset = !(age < 2000  & long < -130))
 
 #  We're using a loess curve here but the curve can be improved by using a monotone spline.
 regress <- ggplot(summary.pinus, aes(x = lat, y = age)) +
@@ -330,10 +331,10 @@ mapped <- ggplot(data = data.frame(map), aes(long, lat)) +
                  xlim = c(-140, -110), ylim = c(40, 70)) +
                  theme(legend.position = 'none')
 
-  grid.arrange(mapped, regress, nrow=1)
+grid.arrange(mapped, regress, nrow=1)
 ```
 
-And so we see a clear pattern of migration by *Pinus* in northwestern North America.  These results match up broadly with the findings of Strong and Hills [@strong2013holocene] who suggest that *Pinus* reached a northern extent between 59 and 60^o^N at approximately 7 - 10kyr as a result of geographic barriers.
+And so we see a clear pattern of migration by *Pinus* in northwestern North America.  These results match up broadly with the findings of Strong and Hills [@strong2013holocene] who suggest that *Pinus* reached a northern extent between 59 and 60^o^N at approximately 7--10kyr as a result of geographic barriers.
 
 ### Mammal Distributions in the Pleistocene
 
@@ -384,7 +385,7 @@ mam.melt <- melt(compiled.mam,
                  na.rm = TRUE,
                  factorsAsStrings = TRUE)
 
-mam.melt$ageInterval <- factor(mam.melt$ageInterval, levels = periods)
+mam.melt <- transform(mam.melt, ageInterval = factor(ageInterval, levels = periods))
 
 mam.lat <- dcast(data = mam.melt, variable ~ ageInterval, value.var = 'lat' ,
                  fun.aggregate = mean, drop = TRUE)[,c(1, 3, 5, 6)]
