@@ -63,7 +63,7 @@ Examples
 Here we present several examples that both introduce users to the `neotoma` package, and highlight how `neotoma` can be used in a paleoecological worklfow. We beging with a simple example in which we compare change in Alnus between two sites, followed by two more involved examples where we look at Pine migration and mammal distributions.
 
 ### A simple example
-A researcher is interested in finding the pollen record for Marion Lake, in British Columbia [@mathewes1973palynological] and comparing the change in Alnus pollen to pollen from Louise Pond [@pellatt1997holocene] on Haida G'Waii, further north.  We search for specific sites by name using `get_site()`, and make use of the wildcard `%` to catch all sites whose site names begin with `Marion Lake` or `Louise Pond`:
+A researcher is interested in finding the pollen record for Marion Lake, in British Columbia [@mathewes1973palynological] and comparing the change in Alnus pollen to pollen from Louise Pond [@pellatt1997holocene] on Haida G'Waii, further north.  We search for specific sites by name using `get_site()`, making use of the wildcard `"%"` to catch sites whose site names begin with `Marion Lake` or `Louise Pond`:
 
 ```{r load-pkgs-1}
 library("neotoma")
@@ -74,7 +74,7 @@ marion <- get_site(sitename = 'Marion Lake%')
 louise <- get_site(sitename = 'Louise Pond%')
 ```
 
-`get_site()` returns an object of class `"site"`, which is a data frame with columns `siteid`, `sitename`, `lat`, `long`, `elev`, `description`, `long_acc`, and `lat_acc`. Here we queried the database for site based on sitenames, but alternatively we could have queried the database for sites within a geographical bounding box, or by geopolitical region. Each row of the object returned by `get_site` represents a unique site, and provides enough descriptive data to plot site locations and understand the spatial extent of a site.  Using the class assignment `"site"` allows objects returned by `get_site()` to be recognized by other functions, so that site information can easily be used to obtain datasets or whole data downloads.  Sites, conceptually, are containers for datasets. Generally it's better to search for a neotoma dataset.  The `neotoma` package allows you to use almost all of the same search terms in `get_dataset()` as in `get_site()`, and returns a more complete description of the datasets available, however, `get_site()` is the only method by which you can search by site name.
+`get_site()` returns an object of class `"site"`, a `"data.frame"` with columns `siteid`, `sitename`, `lat`, `long`, `elev`, `description`, `long_acc`, and `lat_acc`. These column headings are generally self explanatory; `long_acc` and `lat_acc` are used to indicate the width of the bounding box for a sample site (with a midpoint of `long` and `lat`).  Here we queried the database for site based on sitenames, but alternatively we could have queried the database for sites within a geographical bounding box, or by geopolitical region. Each row of the object returned by `get_site` represents a unique site, and provides enough descriptive data to plot site locations and understand the spatial extent of a site.  Using the class assignment `"site"` allows objects returned by `get_site()` to be recognized by other functions, so that site information can easily be used to obtain datasets or whole data downloads.  Sites, conceptually, are containers for datasets. Generally it's better to search for a neotoma dataset.  The `neotoma` package allows you to use almost all of the same search terms in `get_dataset()` as in `get_site()`, and returns a more complete description of the datasets available, however, `get_site()` is the only method by which you can search by site name.
 
 To get the `"dataset"` for these records we can simplify the workflow by `rbind()`ing the two site records, and then using `get_dataset()` directly (Figure 1):
 
@@ -141,9 +141,25 @@ alnus.df = data.frame(alnus = c(tran(x=western.comp[[1]]$counts, method='percent
 
 plot(alnus~ages, data = alnus.df, col = alnus.df$site, pch = 19)
 ```
+**Figure XX**.  *Plots of* Alnus *pollen proportions at two sites in the lower mainland of British Columbia.  Axis labels are presented as if the code was run directly, but represent calibrated radiocarbon years before present on the x axis and* Alnus *pollen proportions on the y-axis.*
 
-In this example we see that Marion Lake (red) maintains much higher proportions of *Alnus* throughout it's history, and has a rapid increase in *Alnus* pollen during the historical period.  This rapid shift in the last 200 years is likely as a result of rapid colonization by pioneer *Alnus rubra* following forest clearance in the lower mainland of British Columbia.
+In this example we see that Marion Lake (red) maintains much higher proportions of *Alnus* throughout its history, and has a rapid increase in *Alnus* pollen during the historical period.  This rapid shift in the last 200 years is likely as a result of rapid colonization by pioneer *Alnus rubra* following forest clearance in the lower mainland of British Columbia.
 
+It is also possible to plot the pollen stratigraphy at any one site suing the `analogue` package for R.  Here we plot Marion Lake:
+
+```{r, marion-plot, fig.height=3, fig.width=6, echo=TRUE, message=FALSE, warning=FALSE}
+
+core.pct <- data.frame(tran(western.comp[[1]]$counts, method = "percent"))
+
+core.pct$age <-   western.comp[[1]]$sample.meta$Age
+
+#  Eliminate taxa with no samples greater than 4%.
+core.pct <- chooseTaxa(core.pct, max.abun = 4)
+
+#  Plotted using the Stratiplot function in 'analogue', very naive plotting for demonstration.
+Stratiplot(age ~ ., core.pct, sort = 'wa', type = 'poly')
+```
+**Figure XXX***. *Stratigraphic plot for Marion Lake.*
 ### Pinus migration following the last Glacial Maximum
 Macdonald and Cwynar [-@macdonald1991post] used pollen percentage data for *Pinus* to map the northward migration of lodgepole pine (*Pinus contorta* var *latifolia*) following glaciation.  In their study a cutoff of 15% *Pinus* pollen is associated with presence at pollen sample sites.  Recent work by Strong and Hills [@strong2013holocene] has remapped the migration front using a lower pollen proportion (5%) and more sites.  Here, we attempt to replicate the analysis as an example both of the strengths of the package and limitations of paleoinformatic approaches.
 
@@ -214,24 +230,7 @@ if (!file.exists("all.downloads.Rdata")){
 
 For our purposes we are really only interested in the percentage of *Pinus* in the core, so we can again compile the taxa using the 'P25' taxonomy [@gavin2003statistical].
 
-In this case the synonomy (not shown) appears to have been applied correctly (although we're really only interested in *Pinus*).  We now transform our `counts` into percentages to standardize across cores.  We can see what a single core looks like:
-
-```{r pinus-stratiplot, fig.height=3, fig.width=6, echo=TRUE, message=FALSE, warning=FALSE}
-
-compiled.cores <- compile_taxa(all.downloads, 'P25')
-
-core.pct <- data.frame(tran(compiled.cores[[1]]$counts, method = "percent"))
-
-core.pct$age <-   compiled.cores[[1]]$sample.meta$Age
-
-#  Eliminate taxa with no samples greater than 4%.
-core.pct <- chooseTaxa(core.pct, max.abun = 4)
-
-#  Plotted using the Stratiplot function in 'analogue', very naive plotting for demonstration.
-Stratiplot(age ~ ., core.pct, sort = 'wa', type = 'poly')
-```
-
-Andy Lake [@szeicz1995late] shows changes through time, particularly for *Betula* and *Alnus*, but little *Pinus* pollen.
+In this case the synonomy (not shown) appears to have been applied correctly (although we're really only interested in *Pinus*).  We now transform our `counts` into percentages to standardize across cores.
 
 Pollen data is found in the `counts` component of the `"download"`.  We want to determine which sample has the first local *Pinus* presence in each core using a cutoff of 5% [@strong2013holocene].  Programmatically we can find which rows in the *Pinus* column have presence over 5% and then find the highest row number since age increases with row number.
 
