@@ -119,19 +119,6 @@
   Publisher                = {Faculty of 1000 Ltd}
 }
 
-@InProceedings{C4PExecutive2013,
-  Title                    = {Paleobiology Workshop Report},
-  Author                   = {C4P Executive Committee},
-  Booktitle                = {EarthCube Collaboration and Cyberinfrastructure for Paleogeosciences (C4P)},
-  Year                     = {2014},
-  Month                    = {May},
-  Organization             = {National Science Foundation EarthCube Research Coordination Network: Cyberinfrastructure for Paleogeoscience},
-
-  Owner                    = {Simon Goring},
-  Timestamp                = {2014.10.04},
-  Url                      = {http://workspace.earthcube.org/sites/default/files/files/document-repository/C4P%20Paleogbiology%20Workshop%20Report.pdf}
-}
-
 @InCollection{davis1981quaternary,
   Title                    = {Quaternary history and the stability of forest communities},
   Author                   = {Davis, Margaret Bryan},
