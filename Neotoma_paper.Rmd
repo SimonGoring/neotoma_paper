@@ -185,7 +185,7 @@ pandoc.table(head(western.comp[[1]]$taxon.list[,c(1, 5, 6)]), justify = "left")
 
 The sample data (`"counts"`) contained in each `"download"` in the `"download_list"` `wester.dl` are converted into percentages to standardize between cores using `tran()` from the `analogue` package [@analogue2007] so we can see what happens with *Alnus* on the west coast of North America during the Holocene:
 
-```{r alnus-data-plot, dpi=300, dev = c("png","eps","tiff")}
+```{r alnus-data-plot, dpi=300, dev=c('png','eps','tiff')}
 library("analogue")
 
 marion.alnus <- tran(x = western.comp$marion$counts, method = 'percent')[,'Alnus']
@@ -206,7 +206,7 @@ Marion Lake (red) maintains much higher proportions of *Alnus* throughout its hi
 
 It is also possible to plot the pollen stratigraphy at any one site, again, using the `analogue` package for R [@analogue2007].  Here we plot Marion Lake:
 
-```{r, marion-plot, fig.height=6, fig.width=6, echo=TRUE, message=FALSE, warning=FALSE, dpi=300, dev = c("png","eps","tiff")}
+```{r, marion-plot, fig.height=6, fig.width=6, echo=TRUE, message=FALSE, warning=FALSE, dpi=300, dev=c('png','eps','tiff')}
 core.pct <- data.frame(tran(western.comp[[1]]$counts, method = "percent"))
 core.pct$age <- western.comp[[1]]$sample.meta$age
 #  Eliminate taxa with no samples greater than 4%.
@@ -242,7 +242,7 @@ all.datasets <- get_dataset(loc = c(-140, 45, -110, 65),
 
 The API returned `r length(all.datasets)` datasets.  Many dropped sites were  pollen surface samples, or sites with datasets for other taxonomic groups. The distribution of the `r length(all.datasets)` fossil pollen sites can be plotted over the original `r nrow(all.sites)` sites. We use the `ggplot2` package [@wickham2009ggplot2] to make the figures:
 
-```{r map-pinus-example, echo = TRUE, message = FALSE, warning = FALSE, dpi=300, dev = c("png","eps","tiff")}
+```{r map-pinus-example, echo = TRUE, message = FALSE, warning = FALSE, dpi=300, dev=c('png','eps','tiff')}
 map <- map_data('world')
 ggplot(data = data.frame(map), aes(long, lat)) + 
   geom_polygon(aes(group=group), color = 'steelblue', alpha = 0.2) +
@@ -301,7 +301,7 @@ summary.pinus <- do.call("rbind.data.frame", lapply(compiled.cores, top.pinus))
 
 We need to calibrate dates that are recorded in radiocarbon years using the `Bchron` package [@bchron2014].  In most cases the original uncertainty for individual ages is not recorded in `"sample.meta"` so we assume a 100 year standard deviation, however, direct recalibration of radiocarbon dates from interpolated age models is not the best approach, but we use it as an example here:
 
-```{r pinus-recal-plot, echo = TRUE, fig.width = 7, fig.height = 4, warning = FALSE, dpi=300, dev = c("png","eps","tiff")}
+```{r pinus-recal-plot, echo = TRUE, fig.width = 7, fig.height = 4, warning = FALSE, dpi=300, dev=c('png','eps','tiff')}
 radio.years <- summary.pinus$date %in% 'Radiocarbon years BP'
 sryears <- sum(radio.years, na.rm = TRUE)
 # BChronCalibrate is in the BChron package:
@@ -390,7 +390,7 @@ colnames(mam.lat.melt)[2:3] <- c('cluster', 'Era')
 
 The output of the above manipulations is displayed via a `ggplot2` plot using
 
-```{r mammal-example-plot, fig.width = 7, fig.height = 4, echo = TRUE, warning = FALSE, dpi=300, dev = c("png","eps","tiff"}
+```{r mammal-example-plot, fig.width = 7, fig.height = 4, echo = TRUE, warning = FALSE, dpi=300, dev = c('png','eps','tiff')}
 ggplot(mam.lat.melt, aes(x = Era, y = value)) + 
   geom_path(aes(group = variable, color = cluster)) + 
   facet_wrap(~ cluster) +
