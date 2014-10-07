@@ -30,8 +30,8 @@ knitr::opts_chunk$set(
 
 
 
-library(pander)
-library(plyr)
+library("pander")
+library("plyr")
 panderOptions('table.style', 'rmarkdown')
 ```
 -->
