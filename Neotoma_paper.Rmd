@@ -1,6 +1,6 @@
 ---
-title: Neotoma paper
-author: Simon Goring
+title: "Neotoma paper"
+author: "Simon Goring *et al*."
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
 pdf_document:
