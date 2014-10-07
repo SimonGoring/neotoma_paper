@@ -324,8 +324,7 @@ regress <- ggplot(summary.pinus, aes(x = lat, y = age)) +
                   ylab('Years Before Present') +
                   geom_smooth(n = 40, method = 'loess') +
                   geom_rect(aes(xmin = 59, xmax = 60, ymin = 7000, ymax = 10000), 
-                  color = 2, fill = 'blue', alpha = 0.01) +
-                  theme(legend.position = 'top')
+                  color = 2, fill = 'blue', alpha = 0.01)
 
 mapped <- ggplot(data = data.frame(map), aes(long, lat)) + 
                  geom_polygon(aes(group = group), color = 'steelblue', alpha = 0.2) +
