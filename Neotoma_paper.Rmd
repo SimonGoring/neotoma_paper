@@ -288,7 +288,7 @@ top.pinus <- function(x) {
                  lat = x$dataset$site.data$lat,
                  long = x$dataset$site.data$long,
                  age = x$sample.meta$age[oldest.row],
-                 date = x$sample.meta$age.type[oldest.row]))
+                 date = x$sample.meta$age.type[oldest.row])
   } else {
       NULL
   }
