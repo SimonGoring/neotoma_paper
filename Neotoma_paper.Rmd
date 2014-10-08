@@ -319,7 +319,7 @@ wmean.date <- function(x) sum(x$ageGrid*x$densities / sum(x$densities))
 
 summary.pinus$age[radio.years] <- sapply(calibrated, wmean.date)
 summary.pinus <- na.omit(summary.pinus)
-summary.pinus <- summary.pinus[!((summary.pinus$age < 2000) & (summary.pinus$long < -130)),]
+summary.pinus <- subset(summary.pinus, subset=!(age < 2000 & long < -130))
 
 #  A loess curve is straightforward, but not the best model:
 regress <- ggplot(summary.pinus, aes(x = lat, y = age)) +
@@ -378,7 +378,7 @@ mam.melt <- melt(compiled.mam,
                  measure.vars = 10:(ncol(compiled.mam)-1),
                  na.rm = TRUE,
                  factorsAsStrings = TRUE)
-mam.melt$ageInterval <- factor(mam.melt$ageInterval, levels = periods)
+mam.melt <- transform(mam.melt, ageInterval = factor(ageInterval, levels = periods))
 mam.lat <- dcast(data = mam.melt, variable ~ ageInterval, value.var = 'lat',
                  fun.aggregate = mean, drop = TRUE)[,c(1, 3, 5, 6)]
 #  We only want taxa that appear at all time periods:
