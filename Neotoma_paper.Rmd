@@ -37,20 +37,26 @@ panderOptions('table.style', 'rmarkdown')
 -->
 
 Simon Goring^1^
-Andrea Dawson^2^
+Andria Dawson^2^
 Gavin L. Simpson^3^
 Kathik Ram ^4^
 Russ W. Graham^5^
 Eric C. Grimm^6^
 John W. Williams^1,7^
 
-^1^ Department of Geography, University of Wisconsin, Madison, WI, USA
+^1^ Department of Geography, University of Wisconsin-Madison, Madison, WI, USA
+
 ^2^ Department of Statistics, University of California, Berkeley, CA, USA
+
 ^3^ Institute of Environmental Change and Society, University of Regina, Regina, SK, Canada
-^4^ Department of Environmental Science, Policy, and Management, University of California, Berkeley, CA, USA
+
+^4^ Berkeley Institute for Data Science, University of California, Berkeley. Berkeley, CA
+
 ^5^ Department of Geosciences, Pennsylvania State University, University Park, PA, USA
-^6^ Research and Collections Center, Illinois State Museum, Springfield, Illinois
-^7^ Center for Climatic Research, University of Wisconsin, Madison, WI, USA
+
+^6^ Research and Collections Center, Illinois State Museum, Springfield, IL, USA
+
+^7^ Center for Climatic Research, University of Wisconsin-Madison, Madison, WI, USA
 
 Contact: goring@wisc.edu
 
@@ -187,7 +193,7 @@ pandoc.table(head(western.comp[[1]]$taxon.list[,c(1, 5, 6)]), justify = "left")
 
 The sample data (`"counts"`) contained in each `"download"` in the `"download_list"` `wester.dl` are converted into percentages to standardize between cores using `tran()` from the `analogue` package [@analogue2007] so we can see what happens with *Alnus* on the west coast of North America during the Holocene:
 
-```{r alnus-data-plot, dpi=150}
+```{r fig-3-alnus-data-plot, dpi=150, fig.ext='png'}
 
 marion.alnus <- tran(x = western.comp$marion$counts, method = 'percent')[,'Alnus']
 louise.alnus <- tran(x = western.comp$louise$counts, method = 'percent')[,'Alnus']
@@ -203,11 +209,11 @@ plot(alnus ~ ages, data = alnus.df, col = alnus.df$site, pch = 19,
 ```
 **Figure 3**.  *Plots of* Alnus *pollen percentages at two sites, one in the lower mainland of British Columbia (Marion Lake) and the other on Haida G'waii (Louise Pond).  Axis labels are presented as if the code was run directly, but represent calibrated radiocarbon years before present on the x-axis and* Alnus *pollen percentages on the y-axis.*
 
-Marion Lake (red) maintains much higher proportions of *Alnus* throughout its history, and has a rapid increase in *Alnus* pollen during the historical period.  This rapid shift in the last 200 years is likely as a result of rapid colonization by pioneer *Alnus rubra* following forest clearance and fire in the lower mainland of British Columbia [@mathewes1973palynological].
+Marion Lake (red, Figure 3) maintains much higher proportions of *Alnus* throughout its history, and has a rapid increase in *Alnus* pollen during the historical period.  This rapid shift in the last 200 years is likely as a result of rapid colonization by pioneer *Alnus rubra* following forest clearance and fire in the lower mainland of British Columbia [@mathewes1973palynological].
 
-It is also possible to plot the pollen stratigraphy at any one site, again, using the `analogue` package for R [@analogue2007].  Here we plot Marion Lake:
+It is also possible to plot the pollen stratigraphy (Figure 4) at any one site, again, using the `analogue` package for R [@analogue2007].  Here we plot Marion Lake:
 
-```{r, marion-plot, fig.height=3, fig.width=6, echo=TRUE, message=FALSE, warning=FALSE}
+```{r, fig-4-marion-plot, fig.height=3, fig.width=6, echo=TRUE, message=FALSE, warning=FALSE}
 
 core.pct <- data.frame(tran(western.comp[[1]]$counts, method = "percent"))
 
@@ -246,7 +252,7 @@ all.datasets <- get_dataset(loc = c(-140, 45, -110, 65),
 
 The API returns `r length(all.datasets)` datasets.  Many dropped sites were  pollen surface samples, or sites with datasets for other taxonomic groups. The distribution of the `r length(all.datasets)` fossil pollen sites can be plotted over our original `r nrow(all.sites)` sites. We use ggplot2 [@wickham2009ggplot2] to make the figures:
 
-```{r map-pinus-example, echo = TRUE, message = FALSE, warning = FALSE}
+```{r fig-5-map-pinus-example, echo = TRUE, message = FALSE, warning = FALSE}
 map <- map_data('world')
 ggplot(data = data.frame(map), aes(long, lat)) + 
   geom_polygon(aes(group=group), color = 'steelblue', alpha = 0.2) +
@@ -314,7 +320,7 @@ summary.pinus <- do.call(rbind.data.frame, lapply(compiled.cores, top.pinus))
 
 We need to calibrate dates that are recorded in radiocarbon years using the Bchron package [@bchron2014].  In most cases the original uncertainty for individual ages is not recorded in `"sample.meta"` so we assume a 100 year standard deviation, however, direct recalibration of radiocarbon dates from interpolated age models is not the best approach, but we use it as an example here:
 
-```{r pinus-recal-plot, echo = TRUE, fig.width = 6, fig.height = 3, warning = FALSE}
+```{r fig-6-pinus-recal-plot, echo = TRUE, fig.width = 6, fig.height = 3, warning = FALSE}
 
 radio.years <- summary.pinus$date %in% 'Radiocarbon years BP'
 
@@ -354,7 +360,7 @@ grid.arrange(mapped, regress, nrow=1)
 ```
 **Figure 6**. *Mapped ages of first* Pinus *establishment in the interior of British Columbia and the Yukon Territory based on a 5% pollen cut-off.  The age of first appearance is also plotted and smoothed with a loess curve.*
 
-The results show a clear pattern of northward expansion for *Pinus* in northwestern North America. These results agree broadly with the findings of Strong and Hills  [-@strong2013holocene] who suggest that *Pinus* reached a northern extent between 59^o^N and 60^o^N at approximately 10 - 7 ka cal BP as a result of geographic barriers before continuing northward after 7 ka cal BP.
+The results show a clear pattern of northward expansion for *Pinus* in northwestern North America (Figure 6). These results agree broadly with the findings of Strong and Hills  [-@strong2013holocene] who suggest that *Pinus* reached a northern extent between 59^o^N and 60^o^N at approximately 10 - 7 ka cal BP as a result of geographic barriers before continuing northward after 7 ka cal BP.
 
 ### Mammal Distributions in the Pleistocene
 
@@ -431,7 +437,7 @@ Here we present the `neotoma` package for R and show how it can be used to direc
 
 Acknowledgements
 ==========================================
-We would like to acknowledge the support of the ROpenSci project and the invaluable efforts made by data contributors across the globe who have provided the platform upon which Neotoma and the `neotoma` package are able to build. This paper is a product of the PalEON project ([http://paleonproject.net]()), funded through the NSF-Macrosystems program grants #1241868 and 1241874.
+We would like to acknowledge the support of the ROpenSci project and the invaluable efforts made by data contributors across the globe who have provided the platform upon which Neotoma and the `neotoma` package are built. This paper is a product of the PalEON project ([http://paleonproject.net]()), funded through the NSF-Macrosystems program grants #1065656, 1241868 and 1241874, and the Neotoma Paleoecology Database, funded by the NSF Geoinformatics program grants #0947459 and #0948652.
 
 References
 ==========================================
