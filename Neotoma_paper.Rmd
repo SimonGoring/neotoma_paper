@@ -117,7 +117,6 @@ A researcher is interested in finding the pollen record for Marion Lake, in Brit
 ```{r load-pkgs-1-code, echo = FALSE, warning = FALSE, message = FALSE}
 library("neotoma")
 suppressPackageStartupMessages(library("analogue"))
-library("knitr")
 ```
 
 ```{r load-pkgs-1}
