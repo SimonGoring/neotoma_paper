@@ -3,8 +3,10 @@ title: "Neotoma paper"
 author: "Simon Goring *et al*."
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-pdf_document:
-pandoc_args: "-H margins.sty"
+  md_document:
+    variant: markdown
+  pdf_document:
+    pandoc_args: "-H margins.sty"
 bibliography: neotoma_bib.bib
 csl: harvard1.csl
 ---
