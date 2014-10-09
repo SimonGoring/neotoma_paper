@@ -187,7 +187,7 @@ head(western.comp[[1]]$taxon.list[,c(1, 5, 6)])
 pandoc.table(head(western.comp[[1]]$taxon.list[,c(1, 5, 6)]), justify = "left")
 ```
 
-`compile_taxa()` returns a `"download_list"` or `"download"`, for which `taxon.list` gains a column named `compressed` to link the original taxonomy to the revised taxonomy.  This linkage is an important reference for researchers who choose to use this package for large-scale analysis, but who might need to later check the aggregated taxonomic groups against the original data. In this example we see that spore-types have been lumped into a single taxon *Other* along with other taxa such as Rosaceae.
+`compile_taxa()` returns a `"download_list"` or `"download"`, for which `taxon.list` gains a column named `compressed` to link the original taxonomy to the revised taxonomy.  This linkage is an important reference for researchers who choose to use this package for large-scale analysis, but who might need to later check the aggregated taxonomic groups against the original data. In this example we see that all the spore types have been lumped into a single taxon *Other*.
 
 The sample data (`"counts"`) contained in each `"download"` in the `"download_list"` `western.dl` are converted into percentages using `tran()` from the `analogue` package [@analogue2007]. We can then compare *Alnus* pollen percentages from these two locations to learn about vegetation changes on the west coast of North America during the Holocene:
 
