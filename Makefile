@@ -6,5 +6,3 @@ pdf: Neotoma_paper.Rmd
 
 word: Neotoma_paper.Rmd
 	Rscript -e "library(rmarkdown); render('Neotoma_paper.Rmd', 'word_document')"
-
-	
