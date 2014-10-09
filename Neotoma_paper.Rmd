@@ -6,7 +6,7 @@ output:
   md_document:
     variant: markdown
   pdf_document:
-    pandoc_args: "-H margins.sty"
+    pandoc_args: "-V geometry:vmargin=1in -V geometry:hmargin=1in"
 bibliography: neotoma_bib.bib
 csl: harvard1.csl
 ---
@@ -267,7 +267,15 @@ The map (Figure 5) shows a number of sites in the interior of British Columbia t
 
 To obtain the data for the `r length(all.datasets)` sites we use `get_download()`:
 
-```{r get-downloads-pinus, echo = TRUE, message = FALSE, warning = FALSE}
+```{r load-or-download-pinus-example-data, echo=FALSE, message=FALSE, warning=FALSE}
+if (file.exists("all.downloads.rds")) {
+  all.downloads <- readRDS("all.downloads.rds")
+} else {
+  all.downloads <- get_download(all.datasets, verbose = FALSE)
+}
+```
+
+```{r get-downloads-pinus, echo = TRUE, eval=FALSE, message=FALSE, warning=FALSE}
 all.downloads <- get_download(all.datasets, verbose = FALSE)
 ```
 
@@ -353,7 +361,20 @@ Graham et al. [-@graham1996spatial] built and applied the FAUNMAP dataset ([http
 
 First, all vertebrate fauna  datasets are obtained from Neotoma:
 
-```{r mammal-example, message = FALSE, warning = FALSE, echo = TRUE}
+```{r load-or-download-mammal-data, message = FALSE, warning = FALSE, echo = FALSE}
+if (file.exists("mammal-example.rds")) {
+  mam.set <- readRDS("mammal-datasets.rds")
+  mam.dl <- readRDS("mammal-example.rds")
+} else {
+  #  Bounding box is effectively the continental USA, excluding Alaska
+  mam.set <- get_dataset(datasettype= 'vertebrate fauna',
+                         loc = c(-125, 24, -66, 49.5))
+  #  Retrieving this many sites can be very time consuming
+  mam.dl <- get_download(mam.set)
+}
+```
+
+```{r mammal-example, message = FALSE, warning = FALSE, echo = TRUE, eval=FALSE}
 #  Bounding box is effectively the continental USA, excluding Alaska
 mam.set <- get_dataset(datasettype= 'vertebrate fauna',
                        loc = c(-125, 24, -66, 49.5))
