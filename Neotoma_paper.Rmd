@@ -3,8 +3,10 @@ title: "Neotoma paper"
 author: "Simon Goring *et al*."
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 output:
-pdf_document:
-pandoc_args: "-H margins.sty"
+  md_document:
+    variant: markdown
+  pdf_document:
+    pandoc_args: "-V geometry:vmargin=1in -V geometry:hmargin=1in"
 bibliography: neotoma_bib.bib
 csl: harvard1.csl
 ---
@@ -91,7 +93,7 @@ The `neotoma` package
 ---------------------------
 The `neotoma` R package is an interface between the Neotoma Paleoecological Database ([http://neotomadb.org]()) and statistical tools in R.  `neotoma` uses an API to send data requests to the Neotoma Database, and then forms data objects that are compatible for use with existing packages such as `analogue` [@analogue2014] and `rioja` [@rioja2013], which are used for environmental reconstruction, manipulation, and presentation of paleoecological data.  The `neotoma` package also includes tools to standardize pollen taxon names across sample sites using a set of published pollen taxonomies for North America, or user defined taxonomies.
 
-![Data object UML](misc/object_diagram.png)
+![Data object UML](figure/object_diagram.png)
 **Figure 1**. *Major classes in `neotoma`, their relations to one another and the associated methods (functions).  The classes described below have a heavier outline than their associated variables.*
 
 Data in the `neotoma` package is represented in three main classes (Figure 1): `"site"`s, `"dataset"`s (grouped into `"dataset_list"`s), and `"download"`s (grouped into `"download_list"`s). A `"site"` is the most basic form of spatial information representing the spatial locations of datasets along with site names, descriptions and a unique `site.id`. `"site"`s are `"data.frame"`s with columns `siteid`, `sitename`, `lat`, `long`, `elev`, `description`, `long_acc`, and `lat_acc`. These column headings are generally self explanatory; `long_acc` and `lat_acc` are used to indicate the width of the bounding box for a sample site (with a midpoint of `long` and `lat`).  In the Neotoma Database, examples of sites include a lake from which one or more cores are collected, a cave from which one or more faunal assemblages are collected,  an archaeological dig with one or more excavation pits, and so forth. Each unique site returned by the `get_site()` search is placed in a row, providing enough descriptive data to plot locations and understand the spatial context of a site.
@@ -108,7 +110,7 @@ The age controls of existing default radiocarbon-year chronologies may sometimes
 
 The `"taxon.list"` component lists taxa found in the dataset samples (`"counts"`) and any laboratory data (`"lab.data"`), along with the units of measurement and taxonomic grouping (Figure 1).  The `"counts"` are the actual count, presence or percentage data recorded for the dataset.  The `"lab.data"` component contains information about any spike used to determine concentrations, sample quantities and, in some cases, charcoal counts.
 
-![Data object flow](misc/flowchart.png)
+![Data object flow](figure/flowchart.png)
 **Figure 2**. *How the main data objects relate to one another in the `neotoma` package, and the helper functions used to move from one data type to another.*
 
 Each of these objects, `"site"`, `"dataset"` and `"download"` can be obtained using direct calls to the API, or using functions defined in the `neotoma` package (Figure 2).
@@ -266,7 +268,15 @@ The map (Figure 5) shows a number of sites in the interior of British Columbia t
 
 To obtain the data for the `r length(all.datasets)` sites we use `get_download()`:
 
-```{r get-downloads-pinus, echo = TRUE, message = FALSE, warning = FALSE}
+```{r load-or-download-pinus-example-data, echo=FALSE, message=FALSE, warning=FALSE}
+if (file.exists("all.downloads.rds")) {
+  all.downloads <- readRDS("all.downloads.rds")
+} else {
+  all.downloads <- get_download(all.datasets, verbose = FALSE)
+}
+```
+
+```{r get-downloads-pinus, echo = TRUE, eval=FALSE, message=FALSE, warning=FALSE}
 all.downloads <- get_download(all.datasets, verbose = FALSE)
 ```
 
@@ -352,7 +362,20 @@ Graham et al. [-@graham1996spatial] built and applied the FAUNMAP dataset ([http
 
 First, all vertebrate fauna  datasets are obtained from Neotoma:
 
-```{r mammal-example, message = FALSE, warning = FALSE, echo = TRUE}
+```{r load-or-download-mammal-data, message = FALSE, warning = FALSE, echo = FALSE}
+if (file.exists("mammal-example.rds")) {
+  mam.set <- readRDS("mammal-datasets.rds")
+  mam.dl <- readRDS("mammal-example.rds")
+} else {
+  #  Bounding box is effectively the continental USA, excluding Alaska
+  mam.set <- get_dataset(datasettype= 'vertebrate fauna',
+                         loc = c(-125, 24, -66, 49.5))
+  #  Retrieving this many sites can be very time consuming
+  mam.dl <- get_download(mam.set)
+}
+```
+
+```{r mammal-example, message = FALSE, warning = FALSE, echo = TRUE, eval=FALSE}
 #  Bounding box is effectively the continental USA, excluding Alaska
 mam.set <- get_dataset(datasettype= 'vertebrate fauna',
                        loc = c(-125, 24, -66, 49.5))
