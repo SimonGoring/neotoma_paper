@@ -28,7 +28,8 @@ knitr::opts_chunk$set(
   tidy = FALSE,
   # Note to @gavinsimpson, I think this is now a knitr issue.
   # I'll file a bug PR with knitr
-  fig.path = "figure/"
+  fig.path = "figure/",
+  cache.path = "cache/"
 )
 
 

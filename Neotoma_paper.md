@@ -376,7 +376,7 @@ western.data
 ```
 
       A dataset_list containing 2 objects:
-      Accessed from 2014-10-09 21:18h to 2014-10-09 21:18h. 
+      Accessed from 2014-10-11 09:13h to 2014-10-11 09:13h. 
       Datasets:
        dataset.id                         site.name   long   lat   type
              1705 Marion Lake (CA:British Columbia) -122.5 49.31 pollen
@@ -387,7 +387,7 @@ western.data[[1]]
 ```
 
       A dataset for Marion Lake (CA:British Columbia)
-      Accessed 2014-10-09 21:18h. 
+      Accessed 2014-10-11 09:13h. 
        dataset.id                         site.name   long   lat   type
              1705 Marion Lake (CA:British Columbia) -122.5 49.31 pollen
 
@@ -409,7 +409,7 @@ western.dl
 ```
 
       A download_list containing 2 objects:
-      Accessed from 2014-10-09 21:18h to 2014-10-09 21:18h. 
+      Accessed from 2014-10-11 09:13h to 2014-10-11 09:13h. 
       Datasets:
        dataset.id                         site.name   long   lat age.younger
              1705 Marion Lake (CA:British Columbia) -122.5 49.31          58
@@ -423,7 +423,7 @@ western.dl[[1]]
 ```
 
       A download object for Marion Lake (CA:British Columbia)
-      Accessed 2014-10-09 21:18h. 
+      Accessed 2014-10-11 09:13h. 
        dataset.id                         site.name   long   lat age.young
              1705 Marion Lake (CA:British Columbia) -122.5 49.31        58
        age.old   type
@@ -457,14 +457,14 @@ is Marion Lake. We can see the `"download"` for Marion Lake the
 head(western.dl[[1]]$taxon.list)
 ```
 
-  taxon.name             variable.units   variable.element
-  ---------------------- ---------------- ------------------
-  Tsuga heterophylla     NISP             pollen
-  Tsuga mertensiana      NISP             pollen
-  Pinus monticola-type   NISP             pollen
-  Rosaceae               NISP             pollen
-  Asteraceae undiff.     NISP             pollen
-  Pteridium              NISP             spore
+  taxon.name           variable.units   variable.element
+  -------------------- ---------------- ------------------
+  Tsuga mertensiana    NISP             pollen
+  Pseudotsuga          NISP             pollen
+  Rosaceae             NISP             pollen
+  Tsuga heterophylla   NISP             pollen
+  Acer circinatum      NISP             pollen
+  Potamogetonaceae     NISP             pollen
 
   : Table continues below
 
@@ -492,14 +492,14 @@ several columns were removed to improve readability).
 head(western.comp[[1]]$taxon.list[,c(1, 5, 6)])
 ```
 
-           taxon.name             taxon.group       compressed
-  -------- ---------------------- ----------------- ---------------
-  **2**    Tsuga heterophylla     Vascular plants   Tsuga
-  **29**   Tsuga mertensiana      Vascular plants   Tsuga
-  **3**    Pinus monticola-type   Vascular plants   Pinus
-  **4**    Rosaceae               Vascular plants   Other
-  **5**    Asteraceae undiff.     Vascular plants   Prairie Forbs
-  **6**    Pteridium              Vascular plants   Other
+           taxon.name           taxon.group       compressed
+  -------- -------------------- ----------------- ------------
+  **2**    Tsuga mertensiana    Vascular plants   Tsuga
+  **29**   Pseudotsuga          Vascular plants   Larix
+  **3**    Rosaceae             Vascular plants   Other
+  **4**    Tsuga heterophylla   Vascular plants   Tsuga
+  **5**    Acer circinatum      Vascular plants   Acer
+  **6**    Potamogetonaceae     Vascular plants   Other
 
 `compile_taxa()` returns a `"download_list"` or `"download"`, for which
 `taxon.list` gains a column named `compressed` to link the original
