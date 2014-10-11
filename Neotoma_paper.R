@@ -8,9 +8,10 @@ knitr::opts_chunk$set(
   # Once the bib is fixed, you'll set this to TRUE or just delete this line.
   eval = TRUE,
   cache = TRUE,
-  tidy = FALSE
+  tidy = FALSE,
   # Note to @gavinsimpson, I think this is now a knitr issue.
   # I'll file a bug PR with knitr
+  fig.path = "figure/"
 )
 
 
@@ -125,8 +126,16 @@ ggplot(data = data.frame(map), aes(long, lat)) +
             xlim = c(-140, -110), ylim = c(45, 70))
 
 
-## ----get-downloads-pinus, echo = TRUE, message = FALSE, warning = FALSE----
-all.downloads <- get_download(all.datasets, verbose = FALSE)
+## ----load-or-download-pinus-example-data, echo=FALSE, message=FALSE, warning=FALSE----
+if (file.exists("all.downloads.rds")) {
+  all.downloads <- readRDS("all.downloads.rds")
+} else {
+  all.downloads <- get_download(all.datasets, verbose = FALSE)
+}
+
+
+## ----get-downloads-pinus, echo = TRUE, eval=FALSE, message=FALSE, warning=FALSE----
+## all.downloads <- get_download(all.datasets, verbose = FALSE)
 
 
 ## ----pinus-compile, message = FALSE, warning = FALSE---------------------
@@ -196,12 +205,25 @@ mapped <- ggplot(data = data.frame(map), aes(long, lat)) +
 grid.arrange(mapped, regress, nrow=1)
 
 
-## ----mammal-example, message = FALSE, warning = FALSE, echo = TRUE-------
-#  Bounding box is effectively the continental USA, excluding Alaska
-mam.set <- get_dataset(datasettype= 'vertebrate fauna',
-                       loc = c(-125, 24, -66, 49.5))
-#  Retrieving this many sites can be very time consuming
-mam.dl <- get_download(mam.set)
+## ----load-or-download-mammal-data, message = FALSE, warning = FALSE, echo = FALSE----
+if (file.exists("mammal-example.rds")) {
+  mam.set <- readRDS("mammal-datasets.rds")
+  mam.dl <- readRDS("mammal-example.rds")
+} else {
+  #  Bounding box is effectively the continental USA, excluding Alaska
+  mam.set <- get_dataset(datasettype= 'vertebrate fauna',
+                         loc = c(-125, 24, -66, 49.5))
+  #  Retrieving this many sites can be very time consuming
+  mam.dl <- get_download(mam.set)
+}
+
+
+## ----mammal-example, message = FALSE, warning = FALSE, echo = TRUE, eval=FALSE----
+## #  Bounding box is effectively the continental USA, excluding Alaska
+## mam.set <- get_dataset(datasettype= 'vertebrate fauna',
+##                        loc = c(-125, 24, -66, 49.5))
+## #  Retrieving this many sites can be very time consuming
+## mam.dl <- get_download(mam.set)
 
 
 ## ----mammal-example-compile, echo = TRUE, message = FALSE, warning = FALSE----
