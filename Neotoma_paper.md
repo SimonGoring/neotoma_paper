@@ -3,7 +3,7 @@ author: 'Simon Goring *et al*.'
 biblio-files: 'neotoma_bib'
 bibliography: 'neotoma_bib.bib'
 csl: 'harvard1.csl'
-date: '09 October, 2014'
+date: '11 October, 2014'
 output:
   md_document:
     variant: markdown
@@ -376,7 +376,7 @@ western.data
 ```
 
       A dataset_list containing 2 objects:
-      Accessed from 2014-10-09 13:43h to 2014-10-09 13:43h. 
+      Accessed from 2014-10-11 09:13h to 2014-10-11 09:13h. 
       Datasets:
        dataset.id                         site.name   long   lat   type
              1705 Marion Lake (CA:British Columbia) -122.5 49.31 pollen
@@ -387,7 +387,7 @@ western.data[[1]]
 ```
 
       A dataset for Marion Lake (CA:British Columbia)
-      Accessed 2014-10-09 13:43h. 
+      Accessed 2014-10-11 09:13h. 
        dataset.id                         site.name   long   lat   type
              1705 Marion Lake (CA:British Columbia) -122.5 49.31 pollen
 
@@ -409,7 +409,7 @@ western.dl
 ```
 
       A download_list containing 2 objects:
-      Accessed from 2014-10-09 13:44h to 2014-10-09 13:44h. 
+      Accessed from 2014-10-11 09:13h to 2014-10-11 09:13h. 
       Datasets:
        dataset.id                         site.name   long   lat age.younger
              1705 Marion Lake (CA:British Columbia) -122.5 49.31          58
@@ -423,7 +423,7 @@ western.dl[[1]]
 ```
 
       A download object for Marion Lake (CA:British Columbia)
-      Accessed 2014-10-09 13:44h. 
+      Accessed 2014-10-11 09:13h. 
        dataset.id                         site.name   long   lat age.young
              1705 Marion Lake (CA:British Columbia) -122.5 49.31        58
        age.old   type
@@ -457,14 +457,14 @@ is Marion Lake. We can see the `"download"` for Marion Lake the
 head(western.dl[[1]]$taxon.list)
 ```
 
-  taxon.name            variable.units   variable.element
-  --------------------- ---------------- ------------------
-  Tsuga mertensiana     NISP             pollen
-  Rosaceae              NISP             pollen
-  Abies                 NISP             pollen
-  Tsuga heterophylla    NISP             pollen
-  Pinus contorta-type   NISP             pollen
-  Acer circinatum       NISP             pollen
+  taxon.name           variable.units   variable.element
+  -------------------- ---------------- ------------------
+  Tsuga mertensiana    NISP             pollen
+  Pseudotsuga          NISP             pollen
+  Rosaceae             NISP             pollen
+  Tsuga heterophylla   NISP             pollen
+  Acer circinatum      NISP             pollen
+  Potamogetonaceae     NISP             pollen
 
   : Table continues below
 
@@ -492,23 +492,22 @@ several columns were removed to improve readability).
 head(western.comp[[1]]$taxon.list[,c(1, 5, 6)])
 ```
 
-           taxon.name            taxon.group       compressed
-  -------- --------------------- ----------------- ------------
-  **2**    Tsuga mertensiana     Vascular plants   Tsuga
-  **29**   Rosaceae              Vascular plants   Other
-  **3**    Abies                 Vascular plants   Abies
-  **4**    Tsuga heterophylla    Vascular plants   Tsuga
-  **5**    Pinus contorta-type   Vascular plants   Pinus
-  **6**    Acer circinatum       Vascular plants   Acer
+           taxon.name           taxon.group       compressed
+  -------- -------------------- ----------------- ------------
+  **2**    Tsuga mertensiana    Vascular plants   Tsuga
+  **29**   Pseudotsuga          Vascular plants   Larix
+  **3**    Rosaceae             Vascular plants   Other
+  **4**    Tsuga heterophylla   Vascular plants   Tsuga
+  **5**    Acer circinatum      Vascular plants   Acer
+  **6**    Potamogetonaceae     Vascular plants   Other
 
 `compile_taxa()` returns a `"download_list"` or `"download"`, for which
 `taxon.list` gains a column named `compressed` to link the original
 taxonomy to the revised taxonomy. This linkage is an important reference
 for researchers who choose to use this package for large-scale analysis,
 but who might need to later check the aggregated taxonomic groups
-against the original data. In this example we see that spore-types have
-been lumped into a single taxon *Other* along with other taxa such as
-Rosaceae.
+against the original data. In this example we see that all the spore
+types have been lumped into a single taxon *Other*.
 
 The sample data (`"counts"`) contained in each `"download"` in the
 `"download_list"` `western.dl` are converted into percentages using
@@ -533,8 +532,7 @@ plot(alnus ~ ages, data = alnus.df, col = alnus.df$site, pch = 19,
      xlab = 'Years Before Present', ylab = 'Percent Alnus')
 ```
 
-![plot of chunk
-fig-3alnus-data-plot](./Neotoma_paper_files/figure-markdown/fig-3alnus-data-plot.png)
+![plot of chunk fig-3alnus-data-plot](figure/fig-3alnus-data-plot.png)
 **Figure 3**. *Plots of* Alnus *pollen percentages at two sites, one in
 the lower mainland of British Columbia (Marion Lake, red) and the other
 on Haida G'waii (Louise Pond, black). Axis labels are presented as if
@@ -562,11 +560,10 @@ Stratiplot(age ~ ., core.pct, sort = 'wa', type = 'poly',
            ylab = "Years Before Present")
 ```
 
-![plot of chunk
-fig-4marion-plot](./Neotoma_paper_files/figure-markdown/fig-4marion-plot.png)
-**Figure 4**. *Stratigraphic plot for Marion Lake. Age is plotted on the
-y-axis in calibrated radiocarbon years before present. The `analogue`
-package provides the opportunity for users to further customize the
+![plot of chunk fig-4marion-plot](figure/fig-4marion-plot.png) **Figure
+4**. *Stratigraphic plot for Marion Lake. Age is plotted on the y-axis
+in calibrated radiocarbon years before present. The `analogue` package
+provides the opportunity for users to further customize the
 stratigraphic plot if so desired.*
 
 ### *Pinus* migration following the last Glacial Maximum
@@ -635,10 +632,10 @@ ggplot(data = data.frame(map), aes(long, lat)) +
 ```
 
 ![plot of chunk
-fig-5-map-pinus-example](./Neotoma_paper_files/figure-markdown/fig-5-map-pinus-example.png)
-**Figure 5** *Mapped sites with pollen cores in British Columbia,
-Alberta and the Yukon Territory of Canada (red), including other Neotoma
-sites without stratigraphic pollen data (black).*
+fig-5-map-pinus-example](figure/fig-5-map-pinus-example.png) **Figure
+5** *Mapped sites with pollen cores in British Columbia, Alberta and the
+Yukon Territory of Canada (red), including other Neotoma sites without
+stratigraphic pollen data (black).*
 
 The map (Figure 5) shows a number of sites in the interior of British
 Columbia that have no fossil pollen. There are also other sites not
@@ -749,11 +746,10 @@ grid.arrange(mapped, regress, nrow=1)
 ```
 
 ![plot of chunk
-fig-6-pinus-recal-plot](./Neotoma_paper_files/figure-markdown/fig-6-pinus-recal-plot.png)
-**Figure 6**. *Mapped ages of first* Pinus *establishment in the
-interior of British Columbia and the Yukon Territory based on a 5%
-pollen cut-off. The age of first appearance is also plotted and smoothed
-with a loess curve.*
+fig-6-pinus-recal-plot](figure/fig-6-pinus-recal-plot.png) **Figure 6**.
+*Mapped ages of first* Pinus *establishment in the interior of British
+Columbia and the Yukon Territory based on a 5% pollen cut-off. The age
+of first appearance is also plotted and smoothed with a loess curve.*
 
 The results show a clear pattern of northward expansion for *Pinus* in
 northwestern North America (Figure 6). These results broadly agree with
@@ -847,7 +843,7 @@ ggplot(mam.lat.melt, aes(x = Era, y = value)) +
 ```
 
 ![plot of chunk
-fig-7-mammal-example-plot](./Neotoma_paper_files/figure-markdown/fig-7-mammal-example-plot.png)
+fig-7-mammal-example-plot](figure/fig-7-mammal-example-plot.png)
 **Figure 7**. *Mean latitudinal distribution of fossil mammal taxa
 during the late-Pleistocene show that while there appears to be a net
 northward migratory pattern, a number of taxa appear not to shift their
