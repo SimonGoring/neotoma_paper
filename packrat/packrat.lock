@@ -1,0 +1,341 @@
+PackratFormat: 1.4
+PackratVersion: 0.4.1.8
+RVersion: 3.1.1
+Repos: CRAN=http://cran.rstudio.com,
+    BioCsoft=http://bioconductor.org/packages/2.14/bioc,
+    BioCann=http://bioconductor.org/packages/2.14/data/annotation,
+    BioCexp=http://bioconductor.org/packages/2.14/data/experiment,
+    BioCextra=http://bioconductor.org/packages/2.14/extra
+
+Package: Bchron
+Source: CRAN
+Version: 4.1.1
+Hash: f3ee041fff52154c6e2aa70be099d3e0
+Requires: coda, ellipse, hdrcde, inline, mclust
+
+Package: RColorBrewer
+Source: CRAN
+Version: 1.0-5
+Hash: 6a849b729bec970204ca88b96906adbc
+
+Package: RCurl
+Source: CRAN
+Version: 1.95-4.3
+Hash: 158377109f939084a72f240125f821d3
+Requires: bitops
+
+Package: RJSONIO
+Source: CRAN
+Version: 1.3-0
+Hash: 8b1341dfd547c90ed4b3365d5aa46a7b
+
+Package: Rcpp
+Source: github
+Version: 0.11.3
+Hash: 298ce7134755074c1d538507e2a8af3f3627f6db
+GithubRepo: Rcpp
+GithubUsername: RcppCore
+GithubRef: master
+GithubSha1: 298ce7134755074c1d538507e2a8af3f3627f6db
+
+Package: RgoogleMaps
+Source: CRAN
+Version: 1.2.0.6
+Hash: 94d5dca13d4b4b6b7e747f1ac735f77b
+Requires: RJSONIO, png
+
+Package: analogue
+Source: CRAN
+Version: 0.14-0
+Hash: 7d548308afa49ab779cbec66899fa72c
+Requires: brglm, mgcv, princurve, vegan
+
+Package: ash
+Source: CRAN
+Version: 1.0-14
+Hash: 1ce494f1117f72a0e80929e485f44f0e
+
+Package: bitops
+Source: CRAN
+Version: 1.0-6
+Hash: cb26464a8321628636b547518994c931
+
+Package: brglm
+Source: CRAN
+Version: 0.5-9
+Hash: ab397c3e2a17f6fa4bb52992c8a0c871
+Requires: profileModel
+
+Package: caTools
+Source: CRAN
+Version: 1.17.1
+Hash: bb5fdc266f716b8a289a4f92007d53e3
+Requires: bitops
+
+Package: coda
+Source: CRAN
+Version: 0.16-1
+Hash: 8bdc942ab0d8cba20f6ed4b870569ef4
+
+Package: colorspace
+Source: CRAN
+Version: 1.2-4
+Hash: b775bd08a10f968fef582304b7c3ab9c
+
+Package: dichromat
+Source: CRAN
+Version: 2.0-0
+Hash: 42be2136555fa4b6167605df56d8cd7c
+
+Package: digest
+Source: CRAN
+Version: 0.6.4
+Hash: e4bf0e79b15a352510aff0de905d31e2
+
+Package: ellipse
+Source: CRAN
+Version: 0.3-8
+Hash: b001ec8edea6b27ec5519ee0b31af8f5
+
+Package: evaluate
+Source: CRAN
+Version: 0.5.5
+Hash: 20881970e590ee68de97a468694db7b0
+Requires: stringr
+
+Package: formatR
+Source: CRAN
+Version: 1.0
+Hash: a90c211d7df7e61a72b8ab6c99c2e848
+
+Package: ggmap
+Source: CRAN
+Version: 2.3
+Hash: de98e41d089a704b5c03da03a806f2fb
+Requires: RgoogleMaps, ggplot2, mapproj, plyr, png, proto, reshape2,
+    rjson, scales
+
+Package: ggplot2
+Source: CRAN
+Version: 1.0.0
+Hash: c8bff66238347472f08b6a35608539ff
+Requires: digest, gtable, plyr, proto, reshape2, scales
+
+Package: gridExtra
+Source: CRAN
+Version: 0.9.1
+Hash: 1cb7af8c140431ec4e99905f1d8adcc4
+
+Package: gtable
+Source: CRAN
+Version: 0.1.2
+Hash: 0cf4a2b54c02b35dec7e74a8ebed12a0
+
+Package: hdrcde
+Source: CRAN
+Version: 3.1
+Hash: c2485abde622049fe03ad5bbc7709730
+Requires: ash, ks, locfit, mvtnorm
+
+Package: highr
+Source: CRAN
+Version: 0.3
+Hash: 7c85a9b7d07a75e2d8ca74f9467fee21
+
+Package: htmltools
+Source: github
+Version: 0.2.6
+Hash: fa3e0ab34006f809bc94730a79bd662266b62973
+Requires: digest
+GithubRepo: htmltools
+GithubUsername: rstudio
+GithubRef: master
+GithubSha1: fa3e0ab34006f809bc94730a79bd662266b62973
+
+Package: inline
+Source: CRAN
+Version: 0.3.13
+Hash: b8b120573ac79d1510ba97f6953e3a88
+
+Package: knitr
+Source: CRAN
+Version: 1.7
+Hash: 2711841bd9ede48d13c4d14abc452b54
+Requires: digest, evaluate, formatR, highr, markdown, stringr
+
+Package: ks
+Source: CRAN
+Version: 1.9.3
+Hash: 9967bb7d2c9df3eea5af322526b6510b
+Requires: misc3d, multicool, mvtnorm, rgl
+
+Package: labeling
+Source: CRAN
+Version: 0.3
+Hash: 568a992912caf7eeddfb121924154047
+
+Package: locfit
+Source: CRAN
+Version: 1.5-9.1
+Hash: f50f72e2b1a3ae02e591bceab01bcf27
+
+Package: mapproj
+Source: CRAN
+Version: 1.2-2
+Hash: 26b74cac98f12af52703765791824ea2
+Requires: maps
+
+Package: maps
+Source: CRAN
+Version: 2.3-9
+Hash: 236a24fa187bb1f3a1694f2915597c5e
+
+Package: markdown
+Source: CRAN
+Version: 0.7.4
+Hash: 01d7f71ed6e3d9b1c17ba51cff91be72
+Requires: mime
+
+Package: mclust
+Source: CRAN
+Version: 4.4
+Hash: 60902eba294fddd2216c79d8e5f4c7d6
+
+Package: mgcv
+Source: CRAN
+Version: 1.8-3
+Hash: 623a50839d07264cb8ca0b1497003671
+
+Package: mime
+Source: CRAN
+Version: 0.2
+Hash: 9179db921fcb2e5be44e217042ed06bc
+
+Package: misc3d
+Source: CRAN
+Version: 0.8-4
+Hash: 7eb7b8c87599ffa8e2f81ef47743ecf4
+
+Package: multicool
+Source: CRAN
+Version: 0.1-2
+Hash: d2851217d7c8a23cfa33822c15ca3e60
+
+Package: munsell
+Source: CRAN
+Version: 0.4.2
+Hash: fa8af6d040041439b249351e9d16ae9a
+Requires: colorspace
+
+Package: mvtnorm
+Source: CRAN
+Version: 1.0-0
+Hash: 6ddfb0bff7855213c48351aa1e85f3de
+
+Package: neotoma
+Source: github
+Version: 1.0-2
+Hash: 8ed78e46e1ecc6dd989cfe8f425fd187f7ea9477
+Requires: RCurl, RJSONIO, plyr, reshape2
+GithubRepo: neotoma
+GithubUsername: ropensci
+GithubRef: master
+GithubSha1: 8ed78e46e1ecc6dd989cfe8f425fd187f7ea9477
+
+Package: packrat
+Source: github
+Version: 0.4.1.8
+Hash: ee57b7e7ba891d23079b12f1ff5106d0db0594e5
+GithubRepo: packrat
+GithubUsername: rstudio
+GithubRef: master
+GithubSha1: ee57b7e7ba891d23079b12f1ff5106d0db0594e5
+
+Package: pander
+Source: CRAN
+Version: 0.3.8
+Hash: b867a27efb0ed511ec115bc9c34547b8
+Requires: digest
+
+Package: permute
+Source: CRAN
+Version: 0.8-3
+Hash: 92a39171e57ccc8c82abc65db2ef593d
+
+Package: plyr
+Source: CRAN
+Version: 1.8.1
+Hash: 93de82b37eb8f3a18fb8ecc8c5aa0a8f
+Requires: Rcpp
+
+Package: png
+Source: CRAN
+Version: 0.1-7
+Hash: 7559dcd0a9f188351986d0494ec1516d
+
+Package: princurve
+Source: CRAN
+Version: 1.1-12
+Hash: 1f5f62f565e4b271777ce35e2b61d2b9
+
+Package: profileModel
+Source: CRAN
+Version: 0.5-9
+Hash: 122950462321c92e539e4ab8ac2ffd58
+
+Package: proto
+Source: CRAN
+Version: 0.3-10
+Hash: 668a9e87cedbdc5f56c396edf1bd2648
+
+Package: reshape2
+Source: github
+Version: 1.4.0.99
+Hash: bac94816ffc21ac52458e974de3307f1f3b753d7
+Requires: Rcpp, plyr, stringr
+GithubRepo: reshape
+GithubUsername: hadley
+GithubRef: master
+GithubSha1: bac94816ffc21ac52458e974de3307f1f3b753d7
+
+Package: rgl
+Source: CRAN
+Version: 0.93.1098
+Hash: 3aaa8dbaf7183d1779b5b963d0e4b0ce
+
+Package: rjson
+Source: CRAN
+Version: 0.2.14
+Hash: 6dfb12a8996f481bf8000d885b76db2e
+
+Package: rmarkdown
+Source: github
+Version: 0.3.3
+Hash: b6b38d1ce8ae712dab68b31a6be71c9482accbfc
+Requires: caTools, htmltools, knitr, yaml
+GithubRepo: rmarkdown
+GithubUsername: rstudio
+GithubRef: master
+GithubSha1: b6b38d1ce8ae712dab68b31a6be71c9482accbfc
+
+Package: scales
+Source: CRAN
+Version: 0.2.4
+Hash: b8b1af97bd07818605223060386b00dd
+Requires: RColorBrewer, dichromat, labeling, munsell, plyr
+
+Package: stringr
+Source: CRAN
+Version: 0.6.2
+Hash: cdde0cfa0f52cffeaca23a11a3899779
+
+Package: vegan
+Source: CRAN
+Version: 2.0-10
+Hash: e8d0d575c0cbce6da2c8777ac291e5aa
+Requires: permute
+
+Package: yaml
+Source: CRAN
+Version: 2.1.13
+Hash: e5d041c001f6d641fd009c1f6ef7d831
