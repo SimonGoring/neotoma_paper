@@ -46,8 +46,11 @@ Introduction
 --  please read the references you cited! Peters and Foote is about taxonomic diversity (not speciation rates) and sampling, Raup and Sepkoski is about extinction rates and do not directly look at speciation (or even origination which is what these authors normally look at) rates, Sepkoski 1997 is a review paper. These papers are probably well known among people who work on longer time scales, so it will be a bit embarrassing.  I don't know the citations in the second half of the sentence, but please also
 check, especially if those are well known in the "individualistic response" field.
 
+**Our apologies.  I agree with the characterization of these papers, the intention was to provide a range of references representing multiple appraoches to the use of large networks of data, but the phrasing was poor.  We have revised this section to read: "allowing us to understand ecological and evolutionary processes and patterns through deep time [@alroy2008phanerozoic; @raup1984periodicity; @sepkoski1997biodiversity; @barnosky2011has]" and added more general references including the more recent Barnosky et al. paper.**
+
 "Constituent databases include, among others" -- please just name all the databases or point to the neotoma website where a list of databases can be seen. Are they all 5 My and less? Is that the way it will remain in Neotoma?
-****
+
+**The list is current as of the time of writing, but the Neotoma database is in a period of flux at the moment as more constituent databases are being added.  I have added a link to the contituent group webpages to provide more information and indicated in the text that Neotoma is a Pliocene-modern database.**
 
 "The database framework was generalized from the pollen databases (which had identical structures) and the FAUNMAP database to accomodate both macro-and microfossil data as well as other kinds of data such as geochemical, isotopic, and loss-on-ignition. --  A citation for the database framework will be good to have.
 **We've added a reference for that from the original Neotoma manual.**
