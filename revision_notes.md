@@ -1,3 +1,7 @@
+**We would like to thank the reviewers for their helpful comments.  We have taken their suggestions into account and we believe that the manuscript is much improved in its current version.  To improve readability we have included our responses to the reviewers coments inline with the comments themselves.  Our responses are bolded.**
+
+**-Simon J Goring**
+
 Reviewer A:
 ==========
 
@@ -17,7 +21,7 @@ Abstract
 
 **We assume that interactions occur both among entities within the community and in a two-way flow between the abiotic elements of the environment and the organisms in the community.  I understand the reviewer's comment, but feel like this sentence is acceptable as it stands.**
 
-"study processes that occur infrequently, such as megadroughts,
+"study processes that occur infrequently, such as mega-droughts,
 hurricanes, and rapid climate change." --  This is a somewhat weird
 construction, because ecologists study these as well, since we do have
 historical data for data associated with these processes.
@@ -52,7 +56,7 @@ check, especially if those are well known in the "individualistic response" fiel
 
 **The list is current as of the time of writing, but the Neotoma database is in a period of flux at the moment as more constituent databases are being added.  I have added a link to the contituent group webpages to provide more information and indicated in the text that Neotoma is a Pliocene-modern database.**
 
-"The database framework was generalized from the pollen databases (which had identical structures) and the FAUNMAP database to accomodate both macro-and microfossil data as well as other kinds of data such as geochemical, isotopic, and loss-on-ignition. --  A citation for the database framework will be good to have.
+"The database framework was generalized from the pollen databases (which had identical structures) and the FAUNMAP database to accommodate both macro-and microfossil data as well as other kinds of data such as geochemical, isotopic, and loss-on-ignition. --  A citation for the database framework will be good to have.
 **We've added a reference for that from the original Neotoma manual.**
 
 The URL  http://api.neotomadb.org/v1/apps/geochronologies?datasetid=8 Returned {"success":1,"data":[]} for me, can't be right. Please check.
@@ -85,7 +89,7 @@ misleading. There might be other places in the ms like that.
 
 **In some cases I would agree, however the specific ecological setting of these two sites is well known, as is the species make up of the parent vegetation. Higher proportions of Alnus pollen at Marion Lake do explicitly represent higher proportions of Alnus at the site. Regardless, I have changed the caption to generalize the example adding ". . .  much higher proportions of Alnus _pollen_ . . ."**
 
-You used other pacakges (e.g. reshape2). Please state versions. Might be
+You used other packages (e.g. reshape2). Please state versions. Might be
 important later on.
 
 **I've added the version numbers into the references.  They are included in the bib file we use, but they were not rendered in the final version.  I have modified the bib style file to allow these to be rendered.**
@@ -116,7 +120,7 @@ ecology.
 
 **The Neotoma group is working toward building these relationships.  This publication intends to provide a tool to access the Neotoma database, not build the database, as the reviewer recognizes.  We certainly hope that by presenting the neotoma database as an option for accessing data we can increase end user buy-in.**
 
-1) It's very well done. I consider this a significant, modern, and wasy to use
+1) It's very well done. I consider this a significant, modern, and easy to use
 tool for paleoecological research.
 **No comment neccessary.**
 
