@@ -216,12 +216,12 @@ plot(alnus ~ ages, data = alnus.df, col = alnus.df$site, pch = 19,
 
 Marion Lake (red, Figure 3) maintains much higher proportions of *Alnus* pollen throughout its history, and has a rapid increase in *Alnus* pollen during the historical period.  This rapid shift in the last 200 years is likely as a result of rapid colonization by pioneer *Alnus rubra* following forest clearance and fire in the lower mainland of British Columbia [@mathewes1973palynological].
 
-It is also possible to plot the pollen stratigraphy (Figure 4) at any one site using the `analogue` package for R [@analogue2007].  Here we plot Marion Lake:
+It is also possible to plot the pollen stratigraphy (Figure 4) at any one site using the `Stratiplot()` function in the `analogue` package for R [@analogue2007].  Here we plot pollen percentages for Marion Lake, eliminating all taxa with maximum abundances less than 4% using `chooseTaxa()`:
 
 ```{r, fig-4marion-plot, fig.height=6, fig.width=6, echo=TRUE, message=FALSE, warning=FALSE, dpi=300, dev=c('png','postscript','tiff')}
 core.pct <- data.frame(tran(western.comp[[1]]$counts, method = "percent"))
 core.pct$age <- western.comp[[1]]$sample.meta$age
-#  Eliminate taxa with no samples greater than 4%.
+
 core.pct <- chooseTaxa(core.pct, max.abun = 4)
 Stratiplot(age ~ ., core.pct, sort = 'wa', type = 'poly',
            ylab = "Years Before Present")
@@ -290,7 +290,7 @@ Only the percentage of *Pinus* is of interest, so we can again compile the taxa 
 compiled.cores <- compile_taxa(all.downloads, 'P25')
 ```
 
-We want to determine which sample has the first local *Pinus* presence in each core using a cutoff of 5% [@strong2013holocene].  We can find which rows in the *Pinus* column in each `"download"`'s `"count"` data frame have presence over 5% and then find the highest row number since the samples in a dataset are ordered stratigraphically, with the youngest sample in the top row and the oldest sample in the bottom row.  This is a more complicated example:
+We want to determine which sample has the first local *Pinus* presence in each core using a cutoff of 5% [@strong2013holocene].  We can find which rows in the *Pinus* column in each `"download"`'s `"count"` data frame have presence over 5% and then find the highest row number since the samples in a dataset are ordered stratigraphically, with the youngest sample in the top row and the oldest sample in the bottom row.  This is a more complicated example.  We first have to write a function that can take pollen count data 
 
 ```{r pinus-first-occur, echo = TRUE, warning = FALSE}
 top.pinus <- function(x) {
@@ -423,7 +423,7 @@ colnames(mam.lat.melt)[2:3] <- c('cluster', 'Era')
 The output of the above manipulations is displayed via a `ggplot2` plot using
 
 ```{r fig-7-mammal-example-plot, fig.width = 7, fig.height = 4, echo = TRUE, warning = FALSE, dpi=300, dev = c('png','postscript','tiff')}
-ggplot(mam.lat.melt, aes(x = Era, y = value)) + 
+ggplot(mam.lat.melt, 1071aes(x = Era, y = value)) + 
   geom_path(aes(group = variable, color = cluster)) + 
   facet_wrap(~ cluster) +
   scale_x_discrete(expand = c(.1,0)) +
