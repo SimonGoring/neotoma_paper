@@ -161,6 +161,8 @@ western.dl
 western.dl[[1]]
 ```
 
+It is worth noting that it is possible to go directly from a `"site"` object or set of `"site"`s to `get_download()` as well if desired.
+
 Pollen taxonomy can vary substantially across cores depending on the level taxonomic resolution used by a pollen analyst, or as a result of changes to taxonomies over time.  One analyst might discriminate subgenera of *Pinus*, another might simply identify *Pinus* to the genus level.  Gramineae - a common pollen type in earlier pollen records - has now been renamed Poaceae. This variable and shifting taxonomy is a first-order challenge for analysts seeking to analyze the dynamics of taxa across multiple groups. `neotoma` provides several options for standardized taxonomic list, corresponding to three published taxonomies for the United States and Canada [@gavin2003statistical; @whitmore2005modern; @williams2008obtaining]. This function can be helpful, but should be used with care. The aggregation table is accessible using the command `data(pollen.equiv)` and the function to compile the data is called `compile_taxa()`. It can accomodate either the internal translation table provided with the package, or a user-defined table with the same structure as `pollen.equiv`.
 
 We are interested in comparing the relative pollen abundances of *Alnus* between two sites. We compile the pollen data using the `'P25'` taxonomy from Gavin et al. [-@gavin2003statistical]. The first record downloaded is Marion Lake. We can see the `"download"` for Marion Lake the `taxon.table` has 5 columns:
@@ -440,7 +442,7 @@ Here we present the `neotoma` package for R and show how it can be used to direc
 
 Acknowledgements
 ==========================================
-We would like to acknowledge the support of the ROpenSci project and the invaluable efforts made by data contributors across the globe who have provided the platform upon which Neotoma and the `neotoma` package are built. This paper is a product of the PalEON project ([http://paleonproject.net]()), funded through the NSF-Macrosystems program grants #1065656, 1241868 and 1241874, and the Neotoma Paleoecology Database, funded by the NSF Geoinformatics program grants #0947459 and #0948652. GLS was supported by the Natural Sciences and Engineering Research Council of Canada (NSERC) Discovery Grant Program (RGPIN 2014-04032). We would also like to thank Lee Hsiang Liow, Pasquale Raia and one anonymous reviewer for their helpful comments.
+We would like to acknowledge the support of the ROpenSci project and the invaluable efforts made by data contributors across the globe who have provided the platform upon which Neotoma and the `neotoma` package are built. Brian Bills and Michael Anderson at Penn State University's Center for Environmental Informatics of provided considerable support in helping us to understand and use the API.  This paper is a product of the PalEON project ([http://paleonproject.net]()), funded through the NSF-Macrosystems program grants #1065656, 1241868 and 1241874, and the Neotoma Paleoecology Database, funded by the NSF Geoinformatics program grants #0947459 and #0948652. GLS was supported by the Natural Sciences and Engineering Research Council of Canada (NSERC) Discovery Grant Program (RGPIN 2014-04032). We would also like to thank Lee Hsiang Liow, Pasquale Raia and one anonymous reviewer for their helpful comments.
 
 References
 ==========================================
