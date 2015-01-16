@@ -423,7 +423,7 @@ colnames(mam.lat.melt)[2:3] <- c('cluster', 'Era')
 The output of the above manipulations is displayed via a `ggplot2` plot using
 
 ```{r fig-7-mammal-example-plot, fig.width = 7, fig.height = 4, echo = TRUE, warning = FALSE, dpi=300, dev = c('png','postscript','tiff')}
-ggplot(mam.lat.melt, 1071aes(x = Era, y = value)) + 
+ggplot(mam.lat.melt, aes(x = Era, y = value)) + 
   geom_path(aes(group = variable, color = cluster)) + 
   facet_wrap(~ cluster) +
   scale_x_discrete(expand = c(.1,0)) +
