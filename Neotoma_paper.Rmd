@@ -8,7 +8,7 @@ output:
   pdf_document:
     pandoc_args: "-V geometry:vmargin=1in -V geometry:hmargin=1in"
 bibliography: neotoma_bib.bib
-csl: harvard1_mod.csl
+csl: elsevier-harvard.csl
 ---
 
 neotoma: A Programmatic Interface to the Neotoma Paleoecological Database
@@ -18,6 +18,7 @@ neotoma: A Programmatic Interface to the Neotoma Paleoecological Database
 
 ```{r setup-knitr, echo = FALSE, message = FALSE}
 # Simon: Note that these are global options that apply to all chunks below.
+
 knitr::opts_chunk$set(
   comment = " ",
   error = FALSE,
