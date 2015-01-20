@@ -26,3 +26,5 @@ John W. Williams^1,7^
 ^7^ Center for Climatic Research, University of Wisconsin-Madison, Madison, WI, USA</small>
 
 The paper represents the development and execution of the [`neotoma` package](https://github.com/ropensci/neotoma) for R, part of the [ROpenSci](http://ropensci.org) project.
+
+The paper is presented as accepted for the open access journal [Open Quaternary](http://www.openquaternary.com/).
