@@ -36,6 +36,7 @@ knitr::opts_chunk$set(
 library("pander")
 library("plyr")
 panderOptions('table.style', 'rmarkdown')
+panderOptions('table.split.table', 300)
 ```
 -->
 
@@ -97,6 +98,7 @@ The `neotoma` package
 The `neotoma` R package is an interface between the Neotoma Paleoecological Database ([http://neotomadb.org]()) and statistical tools in R.  `neotoma` uses an API to send data requests to the Neotoma Database, and then forms data objects that are compatible for use with existing packages such as `analogue` [@analogue2014] and `rioja` [@rioja2013], which are used for environmental reconstruction, manipulation, and presentation of paleoecological data.  The `neotoma` package also includes tools to standardize pollen taxon names across sample sites using a set of published pollen taxonomies for North America, or user defined taxonomies.
 
 ![Data object UML](figure/object_diagram.png)
+
 **Figure 1**. *Major classes in `neotoma`, their relations to one another and the associated methods (functions). The classes described below have a heavier outline than their associated variables. The class `download` contains multiple lists, including `dataset`, which is a list and defined class.  `dataset` itself contains lists, one of which is also a class, `site`.  `neotoma` can interact directly with classes through the use of special methods for the various functions described here.  These objects and classes are described in more detail below.*
 
 Data in the `neotoma` package is represented in three main classes (Figure 1): `"site"`s, `"dataset"`s (grouped into `"dataset_list"`s), and `"download"`s (grouped into `"download_list"`s). A `"site"` is the most basic form of spatial information representing the spatial locations of datasets along with site names, descriptions and a unique `site.id`. `"site"`s are `"data.frame"`s with columns `siteid`, `sitename`, `lat`, `long`, `elev`, `description`, `long_acc`, and `lat_acc`. These column headings are generally self explanatory; `long_acc` and `lat_acc` are used to indicate the width of the bounding box for a sample site (with a midpoint of `long` and `lat`).  In the Neotoma Database, examples of sites include a lake from which one or more cores are collected, a cave from which one or more faunal assemblages are collected,  an archaeological dig with one or more excavation pits, and so forth. Each unique site returned by the `get_site()` search is placed in a row, providing enough descriptive data to plot locations and understand the spatial context of a site.
@@ -114,6 +116,7 @@ The age controls of existing default radiocarbon-year chronologies may sometimes
 The `"taxon.list"` component lists taxa found in the dataset samples (`"counts"`) and any laboratory data (`"lab.data"`), along with the units of measurement and taxonomic grouping (Figure 1).  The `"counts"` are the actual count, presence or percentage data recorded for the dataset.  The `"lab.data"` component contains information about any spike used to determine concentrations, sample quantities and, in some cases, charcoal counts.
 
 ![Data object flow](figure/flowchart.png)
+
 **Figure 2**. *How the main data objects relate to one another in the `neotoma` package, and the helper functions used to move from one data type to another.*
 
 Each of these objects, `"site"`, `"dataset"` and `"download"` can be obtained using direct calls to the API, or using functions defined in the `neotoma` package (Figure 2).
@@ -213,6 +216,7 @@ alnus.df <- data.frame(alnus = c(marion.alnus, louise.alnus),
 plot(alnus ~ ages, data = alnus.df, col = alnus.df$site, pch = 19,
      xlab = 'Years Before Present', ylab = 'Percent Alnus')
 ```
+
 **Figure 3**.  *Plots of* Alnus *pollen percentages at two sites, one in the lower mainland of British Columbia (Marion Lake, red) and the other on Haida G'waii (Louise Pond, black).  Axis labels are presented as if the code was run directly, but represent calibrated radiocarbon years before present on the x-axis and* Alnus *pollen percentages on the y-axis.*
 
 Marion Lake (red, Figure 3) maintains much higher proportions of *Alnus* pollen throughout its history, and has a rapid increase in *Alnus* pollen during the historical period.  This rapid shift in the last 200 years is likely as a result of rapid colonization by pioneer *Alnus rubra* following forest clearance and fire in the lower mainland of British Columbia [@mathewes1973palynological].
@@ -227,6 +231,7 @@ core.pct <- chooseTaxa(core.pct, max.abun = 4)
 Stratiplot(age ~ ., core.pct, sort = 'wa', type = 'poly',
            ylab = "Years Before Present")
 ```
+
 **Figure 4**. *Stratigraphic plot for Marion Lake.  Age is plotted on the y-axis in calibrated radiocarbon years before present.  The `analogue` package provides the opportunity for users to further customize the stratigraphic plot if so desired.*
 
 ### *Pinus* migration following the last Glacial Maximum
@@ -267,6 +272,7 @@ ggplot(data = data.frame(map), aes(long, lat)) +
   coord_map(projection = 'albers', lat0 = 40, lat1 = 65, 
             xlim = c(-140, -110), ylim = c(45, 70))
 ```
+
 **Figure 5** *Mapped sites with pollen cores in British Columbia, Alberta and the Yukon Territory of Canada (red), including other Neotoma sites without stratigraphic pollen data (black).*
 
 The map (Figure 5) shows a number of sites in the interior of British Columbia that have no fossil pollen. There are also other sites not shown here that may have relevant data but have yet to be entered into the database. This highlights a common challenge in paleoecoinformatics --- the import of individual records into data repositories takes some time and is an on-going process that is aided by the collective contributions of the original analysts, data stewards, and large-scale research initiatives (e.g. PAGES 2K, PalEON). Fortunately, new software tools are speeding up the process of uploading and vetting data. The Tilia software ([http://www.neotomadb.org/data/category/tilia]()) has been updated to allow direct upload to the Neotoma Database and includes a large number of automated data quality checks and standardized look-up tables for variable names. Because `neotoma` directly  links to the Neotoma Database via APIs, analyses using `neotoma` can be updated continuously as new sites are added.
@@ -357,6 +363,7 @@ mapped <- ggplot(data = data.frame(map), aes(long, lat)) +
 
 grid.arrange(mapped, regress, nrow=1)
 ```
+
 **Figure 6**. *Mapped ages of first* Pinus *establishment in the interior of British Columbia and the Yukon Territory based on a 5% pollen cut-off.  The age of first appearance is also plotted and smoothed with a loess curve.*
 
 The results show a clear pattern of northward expansion for *Pinus* in northwestern North America (Figure 6). These results broadly agree with the findings of Strong and Hills  [-@strong2013holocene] who suggest that *Pinus* reached a northern extent between 59^o^N and 60^o^N at approximately 10--7 ka cal BP as a result of geographic barriers before continuing northward after 7 ka cal BP.
@@ -431,6 +438,7 @@ ggplot(mam.lat.melt, aes(x = Era, y = value)) +
   ylab('Mean Latitude of Occurrance') +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
+
 **Figure 7**. *Mean latitudinal distribution of fossil mammal taxa during the late-Pleistocene show that while there appears to be a net northward migratory pattern, a number of taxa appear not to shift their ranges, or move southward following deglaciation.*
 
 Even with this fairly simple set of analyses we see that species did not respond uniformly to climatic warming following deglaciation (Figure 7), consistent with the prior work of Graham *et al*. [-@graham1996spatial]. Although most range shifts were northward, a number of taxa show little change in their ranges and a number show southward range shifts (Figure 7). This example does not examine east-west movement and ignores the issues that may be associated with the complex topography of the mountainous west, or possible confounding effects introduced by temporal variations in the available set of sites. The broader point here is that the use of `neotoma` can support research that is synchronized with the data holdings of large repositories such as Neotoma and reproducible.
