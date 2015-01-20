@@ -26,9 +26,9 @@ knitr::opts_chunk$set(
   # Once the bib is fixed, you'll set this to TRUE or just delete this line.
   eval = TRUE,
   cache = TRUE,
-  tidy = FALSE
-  # Note to @gavinsimpson, I think this is now a knitr issue.
-  # I'll file a bug PR with knitr
+  tidy = FALSE,
+  fig.path = "figure/",
+  cache.path = "cache/"
 )
 
 

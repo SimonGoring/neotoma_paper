@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Reviewer A:</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+
+
+
+
+</head>
+
+<body>
+<p><strong>We would like to thank the reviewers for their helpful comments.  We have taken their suggestions into account and we believe that the manuscript is much improved in its current version.  To improve readability we have included our responses to the reviewers coments inline with the comments themselves.  Our responses are bolded.</strong></p>
+
+<p><strong>-Simon J Goring</strong></p>
+
+<h1>Reviewer A:</h1>
+
+<p>The Neotoma package is timely: many paleoecologists/paleobiologists use R as a programming language and being able to integrate data downloading and data analysis and hence contribute to repeatability or ?reproducibility? is welcome. My review of the package and this paper describing the package is naturally colored by my experience, so I would like to briefly state some relevant information. I am a regular R user but I have never used the neotoma database for my own research. Am however familiar with the Paleobiology Data and have contributed data to it, used data from it and published with data from it.</p>
+
+<p>I am pleased that neotoma package is now available and hope that my comments/questions will help to improve this ms describing the package.</p>
+
+<p>I mostly have specific comments and since there are no line numbers, I have cited sentences where I have comments and then followed those by my thoughts.</p>
+
+<h2>Abstract</h2>
+
+<p>&ldquo;Paleoecological data are integral to ecological analyses.&rdquo; &ndash; Well, they are also integral to evolutionary analyses! Don&#39;t short change paleoecological data!</p>
+
+<p><strong>We have added the word &#39;evolutionary&#39; to the abstract.</strong></p>
+
+<p>&ldquo;ecological and evolutionary interactions between communities and abiotic environments over long time scales&rdquo; &ndash; This is a bit vague: do you mean interactions among entities in communities, and then also biotic communities with the abiotic environment? Do you assume that information flow is &ldquo;one way&rdquo;&ldquo;, i.e. from physical environment to biota and not the other way around (but totally possible if we are talking about biogeochemical feedbacks).</p>
+
+<p><strong>We assume that interactions occur both among entities within the community and in a two-way flow between the abiotic elements of the environment and the organisms in the community.  I understand the reviewer&#39;s comment, but feel like this sentence is acceptable as it stands.</strong></p>
+
+<p>&quot;study processes that occur infrequently, such as mega-droughts,
+hurricanes, and rapid climate change.&rdquo; &ndash;  This is a somewhat weird
+construction, because ecologists study these as well, since we do have
+historical data for data associated with these processes.</p>
+
+<p><strong>We have revised this sentence to read &ldquo;Second, they allow us to study the <em>long-term outcomes</em> of processes that occur infrequently&rdquo; to differentiate this from ecological studies of infrequent events.</strong></p>
+
+<p>&ldquo;The Neotoma Database provides the cyberinfrastructure&rdquo;&ndash; the database
+also (very importantly!) provides data, infrastructure is not enough!</p>
+
+<p><strong>Now reads &ldquo;&hellip;the data and the cyberinfrastructure &hellip;&rdquo;</strong></p>
+
+<p>&ldquo;examples of key functions based on the published literature&rdquo; &ndash; this
+is a bit too abbreviated, sounds like the functions themselves are already
+published, but it is more that inference has been published with the same
+data and that you demonstrate how to arrive at the inference in order to
+show the utility of the neotoma package, right?</p>
+
+<p><strong>Yes, we have changed the sentence to read: &ldquo;We show how key functions in the <code>neotoma</code> package can be used, by reproducing analytic examples from the published literature focusing on <em>Pinus</em> migration following deglaciation and shifts in mammal species distributions during the Pleistocene.&rdquo;</strong></p>
+
+<p>In general, I strongly recommend that the abstract be rewritten for clarity
+and correctness.</p>
+
+<h2>Introduction</h2>
+
+<p>&ldquo;e.g. the responses of speciation rates to the five major extinction events in geological history (Peters &amp; Foote 2001; Raup &amp; Sepkoski 1984; Sepkoski 1997)&rdquo;
+&ndash;  please read the references you cited! Peters and Foote is about taxonomic diversity (not speciation rates) and sampling, Raup and Sepkoski is about extinction rates and do not directly look at speciation (or even origination which is what these authors normally look at) rates, Sepkoski 1997 is a review paper. These papers are probably well known among people who work on longer time scales, so it will be a bit embarrassing.  I don&#39;t know the citations in the second half of the sentence, but please also
+check, especially if those are well known in the &ldquo;individualistic response&rdquo; field.</p>
+
+<p><strong>Our apologies.  I agree with the characterization of these papers, the intention was to provide a range of references representing multiple appraoches to the use of large networks of data, but the phrasing was poor.  We have revised this section to read: &ldquo;allowing us to understand ecological and evolutionary processes and patterns through deep time [@alroy2008phanerozoic; @raup1984periodicity; @sepkoski1997biodiversity; @barnosky2011has]&rdquo; and added more general references including the more recent Barnosky et al. paper.</strong></p>
+
+<p>&ldquo;Constituent databases include, among others&rdquo; &ndash; please just name all the databases or point to the neotoma website where a list of databases can be seen. Are they all 5 My and less? Is that the way it will remain in Neotoma?</p>
+
+<p><strong>The list is current as of the time of writing, but the Neotoma database is in a period of flux at the moment as more constituent databases are being added.  I have added a link to the contituent group webpages to provide more information and indicated in the text that Neotoma is a Pliocene-modern database.</strong></p>
+
+<p>&ldquo;The database framework was generalized from the pollen databases (which had identical structures) and the FAUNMAP database to accommodate both macro-and microfossil data as well as other kinds of data such as geochemical, isotopic, and loss-on-ignition. &ndash;  A citation for the database framework will be good to have.
+<strong>We&#39;ve added a reference for that from the original Neotoma manual.</strong></p>
+
+<p>The URL  <a href="http://api.neotomadb.org/v1/apps/geochronologies?datasetid=8">http://api.neotomadb.org/v1/apps/geochronologies?datasetid=8</a> Returned {&quot;success&rdquo;:1,&ldquo;data&rdquo;:[]} for me, can&#39;t be right. Please check.</p>
+
+<p><strong>The API was revised, we have replaced this example with one for datasets.  This example is also more useful.</strong></p>
+
+<h2>Examples</h2>
+
+<p>I find the data download extremely slow (I have a new computer!). Is there
+someway to make the download more efficient? For example, let the default
+downloads have less information be downloaded (verbal descriptions etc) and
+allow the user to ?turn on? more information if they want it at a later
+stage. Especially in the data exploration phase, it is a bit annoying to
+have to see long descriptions. I gave up running the mammal example because
+it was taking forever, so you might want to shorten the example or have a
+shorter version for people who only want a quick demo of mammal data.</p>
+
+<p><strong>The limitation with the speed is in the API itself, not the R package.  The limitation is the time to send the message to the neotoma and then recieve the reply.  We are working on modifying the API to allow multiple sites to be downloaded at the same time.  We will include the <code>.RData</code> file for the mammal data as a Supplement to enable faster analysis.</strong></p>
+
+<p>I think it is important to be &ldquo;correct&rdquo; in examples. You say (for
+instance) ?Marion Lake (red, Figure 3) maintains much higher proportions
+of Alnus throughout its history, but this is an observation, not the
+&ldquo;truth&rdquo;. If preservation for Louise is worse for Alnus, then it will
+seem like Marion has higher proportions. Better to say &ldquo;Marion Lake (red,
+Figure 3) maintains much observed higher proportions of Alnus throughout its
+history&rdquo;. As programmers, I assume you are more quantitatively inclined
+than most users and should assume the responsibility for not being
+misleading. There might be other places in the ms like that.</p>
+
+<p><strong>In some cases I would agree, however the specific ecological setting of these two sites is well known, as is the species make up of the parent vegetation. Higher proportions of Alnus pollen at Marion Lake do explicitly represent higher proportions of Alnus at the site. Regardless, I have changed the caption to generalize the example adding &ldquo;&hellip;  much higher proportions of Alnus <em>pollen</em> &hellip;&rdquo;</strong></p>
+
+<p>You used other packages (e.g. reshape2). Please state versions. Might be
+important later on.</p>
+
+<p><strong>I&#39;ve added the version numbers into the references.  They are included in the bib file we use, but they were not rendered in the final version.  I have modified the bib style file to allow these to be rendered.</strong></p>
+
+<p>Lee Hsiang Liow</p>
+
+<h1>Reviewer B:</h1>
+
+<p>1) General comments and summary of recommendation
+Describe your overall impressions of the submission, how it fits within the
+scope of the journal, and your recommendation.</p>
+
+<p>It&#39;s a very nice implementation. It&#39;s well built, rational, and user
+friendly. It solves some of the problems associated with paleobiological
+research, especially the never ending quest for multiple-source, well
+interpolated data presented in a modern fashion. Needless to say, it also
+have some of the limitations intrinsic to this approach. The wealth of data
+present is very much oriented towards particular regions, hence taxa and
+records, of the world. For instance, as of mammals, it would benefit from
+including datasets, such as the Now database and PANGEA, that also deal with
+the old world. I know that there are problems and limitations depending on
+intellectual property rights and the like, and won&#39;t blame the authors for
+this drawback. At the very least, neotoma will help encouraging more
+integration in our field, as it is currently happening in the field of
+ecology.</p>
+
+<p><strong>The Neotoma group is working toward building these relationships.  This publication intends to provide a tool to access the Neotoma database, not build the database, as the reviewer recognizes.  We certainly hope that by presenting the neotoma database as an option for accessing data we can increase end user buy-in.</strong></p>
+
+<p>1) It&#39;s very well done. I consider this a significant, modern, and easy to use
+tool for paleoecological research.
+<strong>No comment neccessary.</strong></p>
+
+<p>2) The abs is ok
+<strong>No comment neccessary.</strong></p>
+
+<p>3) Figures are clear and easy to understand
+<strong>No comment neccessary.</strong></p>
+
+<p>4) the language is ok
+<strong>No comment neccessary.</strong></p>
+
+<p>5) N/A
+<strong>No comment neccessary.</strong></p>
+
+<h1>Reviewer C:</h1>
+
+<p>1) General comments and summary of recommendation</p>
+
+<p>The paper gives an introduction to the neotoma package, an R package for
+interfacing with the neotoma database, a rich source of data for scientific
+research. The topic is within the scope of the journal and the paper is in
+general well written and clear and the package will clearly be of use to
+many researchers, however I suggest some minor changes.</p>
+
+<p><strong>No comment neccessary.</strong></p>
+
+<p>2) Content:
+I cannot speak to the paleoecological relevance and rigor of the paper as
+this is not my area of expertise. The R package however is well designed and
+implemented. Since R is widely used in the research community this seems an
+appropriate platform on which to have implemented this tool.</p>
+
+<p><strong>No comment neccessary.</strong></p>
+
+<p>3) Structure and argument:
+The introduction and abstract are appropriate though the relationship to
+ROpenSci could be made more explicit. The structure of the main text,
+progressing through examples, is logical and gradually introduces the user
+to more features of the package
+<strong>We have added the sentence: &ldquo;The <code>neotoma</code> package was developed in conjunction with ROpenSci and represents one of two ROpenSci packages that interact with paleoecological data along with the <code>paleobioDB</code> package [@varela2014pbdbR].&rdquo; to make the relationship with ROpenSci more explicit.</strong></p>
+
+<p>4) Figures/tables:
+The figures are key to helping readers interpret the package and the
+objects it creates. Figure 1 is the most important and should be explained
+more clearly in the caption.
+<strong>We have added more clarification to figure 1: &ldquo;The class <code>download</code> contains multiple lists, including <code>dataset</code>, which is a list and defined class.  <code>dataset</code> itself contains lists, one of which is also a class, <code>site</code>.  <code>neotoma</code> can interact directly with classes through the use of special methods for the various functions described here.  These objects and classes are described in more detail below.&rdquo;</strong></p>
+
+<p>5) Language:
+The language is good.
+<strong>No comment neccessary</strong></p>
+
+<p>6) Ethical approval:
+NA
+<strong>No comment neccessary</strong></p>
+
+<p>8) Open Reviewer name</p>
+
+</body>
+
+</html>
+

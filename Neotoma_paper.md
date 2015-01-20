@@ -2,8 +2,8 @@
 author: 'Simon Goring *et al*.'
 biblio-files: 'neotoma_bib'
 bibliography: 'neotoma_bib.bib'
-csl: 'harvard1.csl'
-date: '09 October, 2014'
+csl: 'elsevier-harvard.csl'
+date: '19 January, 2015'
 output:
   md_document:
     variant: markdown
@@ -18,6 +18,13 @@ neotoma: A Programmatic Interface to the Neotoma Paleoecological Database
 <!--
 
 
+```
+## Warning: package 'pander' was built under R version 3.1.2
+```
+
+```
+## Warning: package 'plyr' was built under R version 3.1.1
+```
 -->
 
 Simon Goring^1^ Andria Dawson^2^ Gavin L. Simpson^3^ Kathik Ram ^4^ Russ
@@ -49,19 +56,20 @@ Contact: <goring@wisc.edu>
 Abstract:
 ---------
 
-Paleoecological data are integral to ecological analyses. First, they
-provide an opportunity to study ecological and evolutionary interactions
-between communities and abiotic environments over long time scales.
-Second, they allow us to study processes that occur infrequently, such
-as megadroughts, hurricanes, and rapid climate change. Third, the past
-allows us to study ecological processes in the absence of widespread
-anthropogenic influence.
+Paleoecological data are integral to ecological and evolutionary
+analyses. First, they provide an opportunity to study ecological and
+evolutionary interactions between communities and abiotic environments
+across time scales. Second, they allow us to study the long-term
+outcomes of processes that occur infrequently, such as megadroughts,
+hurricanes, and rapid climate change. Third, the past allows us to study
+ecological processes in the absence of widespread anthropogenic
+influence.
 
 The R package `neotoma`, described here, obtains and manipulates data
 from the Neotoma Paleoecological Database (Neotoma Database:
 [<http://www.neotomadb.org>]()). The Neotoma Database is a public-domain
 searchable repository for multiproxy paleoecological records spanning
-the past 5 million years. The Neotoma Database provides the
+the past 5 million years. The Neotoma Database provides the data and
 cyberinfrastructure to study spatiotemporal dynamics of species and
 communities from the Pliocene to the present; `neotoma` provides a user
 interface to enable these studies. `neotoma` searches the Neotoma
@@ -77,9 +85,10 @@ analysis, including the ability to standardize taxonomies using built-in
 taxonomies derived from the published literature or user-provided
 taxonomies.
 
-To demonstrate the use of the `neotoma` package we provide examples of
-key functions based on the published literature, for both plant and
-mammal taxa.
+We show how key functions in the `neotoma` package can be used, by
+reproducing analytic examples from the published literature focusing on
+*Pinus* migration following deglaciation and shifts in mammal species
+distributions during the Pleistocene.
 
 Keywords: R software, neotoma, paleoecology, database, pollen, mammal
 
@@ -92,12 +101,12 @@ from the recent past to the dawn of life. Although individual site-level
 studies have provided significant insights into past ecological
 dynamics, the true power of paleoecological data emerges from networks
 of data assembled to study broad-scale ecological and evolutionary
-phenomena, e.g. the responses of speciation rates to the five major
-extinction events in geological history
-[@peters2001biodiversity; @raup1984periodicity; @sepkoski1997biodiversity]
+phenomena allowing us to understand ecological and evolutionary
+processes and patterns through deep time
+[@alroy2008phanerozoic; @raup1984periodicity; @sepkoski1997biodiversity; @barnosky2011has],
 and the rapid and individualistic responses of species to the climate
 changes accompanying recent glacial-interglacial cycles
-[@davis1981quaternary; @schroeder1996spatial; @huntley1988vegetation; @tzedakis1994vegetation; @williams2004late].
+[@davis1981quaternary; @graham1996spatial; @huntley1988vegetation; @tzedakis1994vegetation; @williams2004late].
 Paleoecoinformatics [@brewer2012paleo; @uhen2013card] is dedicated to
 providing tools to researchers across disciplines to access and use
 large paleoecological datasets spanning thousands of years. These
@@ -112,36 +121,41 @@ will require more robust tools to access and synthesize data from the
 modern and paleo time domains.
 
 The Neotoma Paleoecological Database represents a consortium of
-paleoecological databases, with distributed scientific governance and
-expertise, but sharing a common database infrastructure. Constituent
-databases include, among others, the European, Latin American, and North
-American Pollen Databases; the North American Plant Macrofossil
-Database; FAUNMAP (Pliocene to Quaternary mammal fossils in the United
-States and Canada); the North Dakota State University Fossil Insect
-Database; the North American Non-Marine Ostrocode Database; and the
-Diatom Paleolimnology Data Cooperative. Neotoma is the outgrowth of a
-longstanding collaboration between the European Pollen Database and the
-North American Pollen Database [@grimm2013databases] and the desire to
-integrate these data with faunal and other paleo data. The database
-framework was generalized from the pollen databases (which had identical
-structures) and the FAUNMAP database to accomodate both macro- and
-microfossil data as well as other kinds of data such as geochemical,
-isotopic, and loss-on-ignition. Work is underway to include other
-taxonomic groups and depositional contexts (e.g. testate amoeba records,
-packrat midden data), thus further expanding the data that can be
-accomodated by Neotoma. Crucially, Neotoma is a vetted database. Through
-the use of data stewards --- domain experts distributed among
-constituent bases who can check for inaccuracies, upload and manage data
-records --- Neotoma can support high qualitycontrol assurance for each
-of the constituent data types, and receive feedback from research
-communities involved with each specific data type [@grimm2013databases].
+paleoecological databases spanning the Pliocene to the Holocene (and
+Anthropocene), with distributed scientific governance and expertise, but
+sharing a common database infrastructure. Constituent databases include,
+the European, Latin American, and North American Pollen Databases; the
+North American Plant Macrofossil Database; FAUNMAP (Pliocene to
+Quaternary mammal fossils in the United States and Canada); the North
+Dakota State University Fossil Insect Database; the North American
+Non-Marine Ostrocode Database (NANODe); and the Diatom Paleolimnology
+Data Cooperative. More information is available from the Neotoma Working
+Group webpage ([<http://www.neotomadb.org/groups>]()).
+
+Neotoma is the outgrowth of a longstanding collaboration between the
+European Pollen Database and the North American Pollen Database
+[@grimm2013databases] and the desire to integrate these data with faunal
+and other paleo data. The database framework [@neotomamanual] was
+generalized from the pollen databases (which had identical structures)
+and the FAUNMAP database to accomodate both macro- and microfossil data
+as well as other kinds of data such as geochemical, isotopic, and
+loss-on-ignition. Work is underway to include other taxonomic groups and
+depositional contexts (e.g. testate amoeba records, packrat midden
+data), thus further expanding the data that can be accomodated by
+Neotoma. Crucially, Neotoma is a vetted database. Through the use of
+data stewards --- domain experts distributed among constituent bases who
+can check for inaccuracies, upload and manage data records --- Neotoma
+can support high qualitycontrol assurance for each of the constituent
+data types, and receive feedback from research communities involved with
+each specific data type [@grimm2013databases].
 
 The Neotoma Database has also developed an Application Programming
 Interface (API) that allow users to query the database via web services,
 which return data using properly formed URL requests. For example, the
-URL: [<http://api.neotomadb.org/v1/apps/geochronologies/?datasetid=8>]()
-will return all geochronological data for the record associated with the
-dataset ID 8.
+URL: [<http://api.neotomadb.org/v1/data/datasets?siteid=960>]() will
+return all dataset information for the record associated with site 960,
+Guardipee Lake [@barnosky1989postglacial], originally published by Cathy
+Whitlock.
 
 The analysis of paleoecological data is often performed using the
 statistical software R [@RCoreTeam2014]. There are several R packages
@@ -170,7 +184,10 @@ rOpenSci provides a number of tools that can directly interact with APIs
 to access data from a number of databases including `rfishbase` for
 FishBase [@boettiger2012rfishbase], and `taxize` for the Encyclopedia of
 Life, iPlant/Taxosaurus and others [@chamberlain2013taxize] among
-others.
+others. The `neotoma` package was developed in conjunction with ROpenSci
+and represents one of two ROpenSci packages that interact with
+paleoecological data along with the `paleobioDB` package
+[@varela2014pbdbR].
 
 The `neotoma` package addresses concerns regarding data access and
 workflow reproducibility by providing users with tools that allow
@@ -198,7 +215,12 @@ America, or user defined taxonomies.
 ![Data object UML](figure/object_diagram.png) **Figure 1**. *Major
 classes in `neotoma`, their relations to one another and the associated
 methods (functions). The classes described below have a heavier outline
-than their associated variables.*
+than their associated variables. The class `download` contains multiple
+lists, including `dataset`, which is a list and defined class. `dataset`
+itself contains lists, one of which is also a class, `site`. `neotoma`
+can interact directly with classes through the use of special methods
+for the various functions described here. These objects and classes are
+described in more detail below.*
 
 Data in the `neotoma` package is represented in three main classes
 (Figure 1): `"site"`s, `"dataset"`s (grouped into `"dataset_list"`s),
@@ -339,8 +361,8 @@ louise <- get_site(sitename = 'Louise Pond%')
 louise
 ```
 
-                  siteid   long   lat elev
-      Louise Pond   1618 -131.8 53.42  650
+                  site.id      long      lat elev
+      Louise Pond    1618 -131.7533 53.41667  650
                                                                                                                                           description
       Louise Pond Glacial scour lake. Physiography: Queen Charlotte Ranges, Louise Island. Surrounding vegetation: Tsuga mertensiana, Pinus contorta.
                   long.acc lat.acc
@@ -375,21 +397,28 @@ see the special `print()` method for both `"dataset"`s and
 western.data
 ```
 
-      A dataset_list containing 2 objects:
-      Accessed from 2014-10-09 13:43h to 2014-10-09 13:43h. 
+      A dataset_list containing 4 objects:
+      Accessed from 2015-01-19 16:53h to 2015-01-19 16:53h. 
       Datasets:
-       dataset.id                         site.name   long   lat   type
-             1705 Marion Lake (CA:British Columbia) -122.5 49.31 pollen
-             1670 Louise Pond                       -131.8 53.42 pollen
+       dataset.id                         site.name      long      lat
+             1705 Marion Lake (CA:British Columbia) -122.5472 49.30833
+             8377 Marion Lake (CA:British Columbia) -122.5472 49.30833
+             1670 Louise Pond                       -131.7533 53.41667
+             8356 Louise Pond                       -131.7533 53.41667
+                 type
+       pollen        
+       geochronologic
+       pollen        
+       geochronologic
 
 ``` {.r}
 western.data[[1]]
 ```
 
       A dataset for Marion Lake (CA:British Columbia)
-      Accessed 2014-10-09 13:43h. 
-       dataset.id                         site.name   long   lat   type
-             1705 Marion Lake (CA:British Columbia) -122.5 49.31 pollen
+      Accessed 2015-01-19 16:53h. 
+       dataset.id                         site.name      long      lat   type
+             1705 Marion Lake (CA:British Columbia) -122.5472 49.30833 pollen
 
 before we download the full records and print them:
 
@@ -398,36 +427,44 @@ western.dl <- get_download(western.data)
 ```
 
       API call was successful. Returned record for Marion Lake(CA:British Columbia)
+      API call was successful. Returned record for Marion Lake(CA:British Columbia)
+      The dataset ID 8377 is associated with a geochronology object, not count data.
       API call was successful. Returned record for Louise Pond
 
       Warning: 
-      Modifiers are absent from the lab objects Lycopodium tablets, Lycopodium spike, Sample quantity. 
+      Modifiers are absent from the lab objects Lycopodium tablets, Sample quantity, Lycopodium spike. 
       get_download will use uniqueidentifiers to resolve the problem.
+
+      API call was successful. Returned record for Louise Pond
+      The dataset ID 8356 is associated with a geochronology object, not count data.
 
 ``` {.r}
 western.dl
 ```
 
       A download_list containing 2 objects:
-      Accessed from 2014-10-09 13:44h to 2014-10-09 13:44h. 
+      Accessed from 2015-01-19 16:53h to 2015-01-19 16:53h. 
       Datasets:
-       dataset.id                         site.name   long   lat age.younger
-             1705 Marion Lake (CA:British Columbia) -122.5 49.31          58
-             1670 Louise Pond                       -131.8 53.42          62
-       age.older   type
-           13051 pollen
-           10065 pollen
+       dataset.id                         site.name      long      lat
+             1705 Marion Lake (CA:British Columbia) -122.5472 49.30833
+             1670 Louise Pond                       -131.7533 53.41667
+       age.younger age.older   type
+                58     13051 pollen
+                62     10065 pollen
 
 ``` {.r}
 western.dl[[1]]
 ```
 
       A download object for Marion Lake (CA:British Columbia)
-      Accessed 2014-10-09 13:44h. 
-       dataset.id                         site.name   long   lat age.young
-             1705 Marion Lake (CA:British Columbia) -122.5 49.31        58
+      Accessed 2015-01-19 16:53h. 
+       dataset.id                         site.name      long      lat age.young
+             1705 Marion Lake (CA:British Columbia) -122.5472 49.30833        58
        age.old   type
          13051 pollen
+
+It is worth noting that it is possible to go directly from a `"site"`
+object or set of `"site"`s to `get_download()` as well if desired.
 
 Pollen taxonomy can vary substantially across cores depending on the
 level taxonomic resolution used by a pollen analyst, or as a result of
@@ -457,25 +494,25 @@ is Marion Lake. We can see the `"download"` for Marion Lake the
 head(western.dl[[1]]$taxon.list)
 ```
 
-  taxon.name            variable.units   variable.element
-  --------------------- ---------------- ------------------
-  Tsuga mertensiana     NISP             pollen
-  Rosaceae              NISP             pollen
-  Abies                 NISP             pollen
-  Tsuga heterophylla    NISP             pollen
-  Pinus contorta-type   NISP             pollen
-  Acer circinatum       NISP             pollen
+  taxon.name             variable.units   variable.element
+  ---------------------- ---------------- ------------------
+  Pinus monticola-type   NISP             pollen
+  Asteraceae undiff.     NISP             pollen
+  Cupressaceae           NISP             pollen
+  Pseudotsuga            NISP             pollen
+  Corylus                NISP             pollen
+  Betula                 NISP             pollen
 
   : Table continues below
 
   variable.context   taxon.group
   ------------------ -----------------
-                     Vascular plants
-                     Vascular plants
-                     Vascular plants
-                     Vascular plants
-                     Vascular plants
-                     Vascular plants
+  NA                 Vascular plants
+  NA                 Vascular plants
+  NA                 Vascular plants
+  NA                 Vascular plants
+  NA                 Vascular plants
+  NA                 Vascular plants
 
 Once we apply `compile_taxa()` to the dataset using the `'P25'`
 compiler:
@@ -492,23 +529,22 @@ several columns were removed to improve readability).
 head(western.comp[[1]]$taxon.list[,c(1, 5, 6)])
 ```
 
-           taxon.name            taxon.group       compressed
-  -------- --------------------- ----------------- ------------
-  **2**    Tsuga mertensiana     Vascular plants   Tsuga
-  **29**   Rosaceae              Vascular plants   Other
-  **3**    Abies                 Vascular plants   Abies
-  **4**    Tsuga heterophylla    Vascular plants   Tsuga
-  **5**    Pinus contorta-type   Vascular plants   Pinus
-  **6**    Acer circinatum       Vascular plants   Acer
+           taxon.name             taxon.group       compressed
+  -------- ---------------------- ----------------- -----------------------
+  **2**    Pinus monticola-type   Vascular plants   Pinus
+  **29**   Asteraceae undiff.     Vascular plants   Prairie Forbs
+  **3**    Cupressaceae           Vascular plants   Cupressaceae/Taxaceae
+  **4**    Pseudotsuga            Vascular plants   Larix
+  **5**    Corylus                Vascular plants   Corylus
+  **6**    Betula                 Vascular plants   Betula
 
 `compile_taxa()` returns a `"download_list"` or `"download"`, for which
 `taxon.list` gains a column named `compressed` to link the original
 taxonomy to the revised taxonomy. This linkage is an important reference
 for researchers who choose to use this package for large-scale analysis,
 but who might need to later check the aggregated taxonomic groups
-against the original data. In this example we see that spore-types have
-been lumped into a single taxon *Other* along with other taxa such as
-Rosaceae.
+against the original data. In this example we see that all the spore
+types have been lumped into a single taxon *Other*.
 
 The sample data (`"counts"`) contained in each `"download"` in the
 `"download_list"` `western.dl` are converted into percentages using
@@ -533,41 +569,39 @@ plot(alnus ~ ages, data = alnus.df, col = alnus.df$site, pch = 19,
      xlab = 'Years Before Present', ylab = 'Percent Alnus')
 ```
 
-![plot of chunk
-fig-3alnus-data-plot](./Neotoma_paper_files/figure-markdown/fig-3alnus-data-plot.png)
-**Figure 3**. *Plots of* Alnus *pollen percentages at two sites, one in
-the lower mainland of British Columbia (Marion Lake, red) and the other
-on Haida G'waii (Louise Pond, black). Axis labels are presented as if
-the code was run directly, but represent calibrated radiocarbon years
-before present on the x-axis and* Alnus *pollen percentages on the
-y-axis.*
+![](figure/fig-3alnus-data-plot-1.png) **Figure 3**. *Plots of* Alnus
+*pollen percentages at two sites, one in the lower mainland of British
+Columbia (Marion Lake, red) and the other on Haida G'waii (Louise Pond,
+black). Axis labels are presented as if the code was run directly, but
+represent calibrated radiocarbon years before present on the x-axis and*
+Alnus *pollen percentages on the y-axis.*
 
 Marion Lake (red, Figure 3) maintains much higher proportions of *Alnus*
-throughout its history, and has a rapid increase in *Alnus* pollen
-during the historical period. This rapid shift in the last 200 years is
-likely as a result of rapid colonization by pioneer *Alnus rubra*
-following forest clearance and fire in the lower mainland of British
-Columbia [@mathewes1973palynological].
+pollen throughout its history, and has a rapid increase in *Alnus*
+pollen during the historical period. This rapid shift in the last 200
+years is likely as a result of rapid colonization by pioneer *Alnus
+rubra* following forest clearance and fire in the lower mainland of
+British Columbia [@mathewes1973palynological].
 
 It is also possible to plot the pollen stratigraphy (Figure 4) at any
-one site using the `analogue` package for R [@analogue2007]. Here we
-plot Marion Lake:
+one site using the `Stratiplot()` function in the `analogue` package for
+R [@analogue2007]. Here we plot pollen percentages for Marion Lake,
+eliminating all taxa with maximum abundances less than 4% using
+`chooseTaxa()`:
 
 ``` {.r}
 core.pct <- data.frame(tran(western.comp[[1]]$counts, method = "percent"))
 core.pct$age <- western.comp[[1]]$sample.meta$age
-#  Eliminate taxa with no samples greater than 4%.
+
 core.pct <- chooseTaxa(core.pct, max.abun = 4)
 Stratiplot(age ~ ., core.pct, sort = 'wa', type = 'poly',
            ylab = "Years Before Present")
 ```
 
-![plot of chunk
-fig-4marion-plot](./Neotoma_paper_files/figure-markdown/fig-4marion-plot.png)
-**Figure 4**. *Stratigraphic plot for Marion Lake. Age is plotted on the
-y-axis in calibrated radiocarbon years before present. The `analogue`
-package provides the opportunity for users to further customize the
-stratigraphic plot if so desired.*
+![](figure/fig-4marion-plot-1.png) **Figure 4**. *Stratigraphic plot for
+Marion Lake. Age is plotted on the y-axis in calibrated radiocarbon
+years before present. The `analogue` package provides the opportunity
+for users to further customize the stratigraphic plot if so desired.*
 
 ### *Pinus* migration following the last Glacial Maximum
 
@@ -599,9 +633,9 @@ library("gridExtra")
 all.sites <- get_site(loc = c(-140, 45, -110, 65))
 ```
 
-      The API call was successful, you have returned  444 records.
+      The API call was successful, you have returned  461 records.
 
-The code above returned 444 sites. To narrow down the search we will use
+The code above returned 461 sites. To narrow down the search we will use
 `get_dataset()` to search for all *Pinus* taxa within the same bounding
 box as above. `get_dataset()` can also limit the type of dataset, either
 by looking for specific taxa, or by describing the dataset type (e.g.,
@@ -615,10 +649,10 @@ all.datasets <- get_dataset(loc = c(-140, 45, -110, 65),
                             taxonname = 'Pinus%')
 ```
 
-The API returned 69 datasets. Many dropped sites were pollen surface
+The API returned 74 datasets. Many dropped sites were pollen surface
 samples, or sites with datasets for other taxonomic groups. The
-distribution of the 69 fossil pollen sites can be plotted over the
-original 444 sites. We use the `ggplot2` package [@wickham2009ggplot2]
+distribution of the 74 fossil pollen sites can be plotted over the
+original 461 sites. We use the `ggplot2` package [@wickham2009ggplot2]
 to make the figures:
 
 ``` {.r}
@@ -634,11 +668,10 @@ ggplot(data = data.frame(map), aes(long, lat)) +
             xlim = c(-140, -110), ylim = c(45, 70))
 ```
 
-![plot of chunk
-fig-5-map-pinus-example](./Neotoma_paper_files/figure-markdown/fig-5-map-pinus-example.png)
-**Figure 5** *Mapped sites with pollen cores in British Columbia,
-Alberta and the Yukon Territory of Canada (red), including other Neotoma
-sites without stratigraphic pollen data (black).*
+![](figure/fig-5-map-pinus-example-1.png) **Figure 5** *Mapped sites
+with pollen cores in British Columbia, Alberta and the Yukon Territory
+of Canada (red), including other Neotoma sites without stratigraphic
+pollen data (black).*
 
 The map (Figure 5) shows a number of sites in the interior of British
 Columbia that have no fossil pollen. There are also other sites not
@@ -656,7 +689,7 @@ tables for variable names. Because `neotoma` directly links to the
 Neotoma Database via APIs, analyses using `neotoma` can be updated
 continuously as new sites are added.
 
-To obtain the data for the 69 sites we use `get_download()`:
+To obtain the data for the 74 sites we use `get_download()`:
 
 ``` {.r}
 all.downloads <- get_download(all.datasets, verbose = FALSE)
@@ -676,7 +709,8 @@ which rows in the *Pinus* column in each `"download"`'s `"count"` data
 frame have presence over 5% and then find the highest row number since
 the samples in a dataset are ordered stratigraphically, with the
 youngest sample in the top row and the oldest sample in the bottom row.
-This is a more complicated example:
+This is a more complicated example. We first have to write a function
+that can take pollen count data
 
 ``` {.r}
 top.pinus <- function(x) {
@@ -748,12 +782,10 @@ mapped <- ggplot(data = data.frame(map), aes(long, lat)) +
 grid.arrange(mapped, regress, nrow=1)
 ```
 
-![plot of chunk
-fig-6-pinus-recal-plot](./Neotoma_paper_files/figure-markdown/fig-6-pinus-recal-plot.png)
-**Figure 6**. *Mapped ages of first* Pinus *establishment in the
-interior of British Columbia and the Yukon Territory based on a 5%
-pollen cut-off. The age of first appearance is also plotted and smoothed
-with a loess curve.*
+![](figure/fig-6-pinus-recal-plot-1.png) **Figure 6**. *Mapped ages of
+first* Pinus *establishment in the interior of British Columbia and the
+Yukon Territory based on a 5% pollen cut-off. The age of first
+appearance is also plotted and smoothed with a loess curve.*
 
 The results show a clear pattern of northward expansion for *Pinus* in
 northwestern North America (Figure 6). These results broadly agree with
@@ -800,7 +832,7 @@ are assigned only younger (`sample.meta$age.younger`) and older
 median age. In this example we average the younger and older ages to
 determine sample age. We recognize that this averaging of ages is likely
 to be methodologically indefensible in the scientific literature, but is
-sufficient for illustrative purposes here.Here we make use of the
+sufficient for illustrative purposes here. Here we make use of the
 `reshape2` package [@reshape2007] to help manipulate data structures.
 
 ``` {.r}
@@ -846,12 +878,11 @@ ggplot(mam.lat.melt, aes(x = Era, y = value)) +
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
-![plot of chunk
-fig-7-mammal-example-plot](./Neotoma_paper_files/figure-markdown/fig-7-mammal-example-plot.png)
-**Figure 7**. *Mean latitudinal distribution of fossil mammal taxa
-during the late-Pleistocene show that while there appears to be a net
-northward migratory pattern, a number of taxa appear not to shift their
-ranges, or move southward following deglaciation.*
+![](figure/fig-7-mammal-example-plot-1.png) **Figure 7**. *Mean
+latitudinal distribution of fossil mammal taxa during the
+late-Pleistocene show that while there appears to be a net northward
+migratory pattern, a number of taxa appear not to shift their ranges, or
+move southward following deglaciation.*
 
 Even with this fairly simple set of analyses we see that species did not
 respond uniformly to climatic warming following deglaciation (Figure 7),
@@ -899,10 +930,14 @@ Acknowledgements
 We would like to acknowledge the support of the ROpenSci project and the
 invaluable efforts made by data contributors across the globe who have
 provided the platform upon which Neotoma and the `neotoma` package are
-built. This paper is a product of the PalEON project
-([<http://paleonproject.net>]()), funded through the NSF-Macrosystems
-program grants \#1065656, 1241868 and 1241874, and the Neotoma
-Paleoecology Database, funded by the NSF Geoinformatics program grants
-\#0947459 and \#0948652. GLS was supported by the Natural Sciences and
-Engineering Research Council of Canada (NSERC) Discovery Grant Program
-(RGPIN 2014-04032).
+built. Brian Bills and Michael Anderson at Penn State University's
+Center for Environmental Informatics of provided considerable support in
+helping us to understand and use the API. This paper is a product of the
+PalEON project ([<http://paleonproject.net>]()), funded through the
+NSF-Macrosystems program grants \#1065656, 1241868 and 1241874, and the
+Neotoma Paleoecology Database, funded by the NSF Geoinformatics program
+grants \#0947459 and \#0948652. GLS was supported by the Natural
+Sciences and Engineering Research Council of Canada (NSERC) Discovery
+Grant Program (RGPIN 2014-04032). We would also like to thank Lee Hsiang
+Liow, Pasquale Raia and one anonymous reviewer for their helpful
+comments.
